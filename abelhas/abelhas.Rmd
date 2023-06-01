@@ -25,13 +25,13 @@ h1 {
 }
 
 p {
-    font-size: 15px;
+    font-size: 20px;
     font-weight: bold
 }
 
 #centralizar{ 
               text-align: center;
-              font-size: 15px;
+              font-size: 20px;
               font-weight: bold
 }
 ```
@@ -70,38 +70,41 @@ p {
 * Est. Pop. = Estimativa do número de indivíduos nas colônias de abelhas.
 
 
+## Banco de dados {.tabset}
+
+### Tipo de variável
+
 ```{r,echo=FALSE,out.width="100%"}
 library(ggplot2)
 visdat::vis_guess(Dados_abelhas)+
     theme(legend.position = "bottom", legend.background = element_rect(colour = "lightgray", size = .6), axis.text.x = element_text(hjust = 0.03))
 ```
 
+### Frequência de zeros
+
+```{r,echo=FALSE,out.width="100%"}
+visdat::vis_expect(Dados_abelhas, ~.x == 0)+
+    theme(legend.position = "bottom", legend.background = element_rect(colour = "lightgray", size = .6))
+```
 
 
-```{r,echo=FALSE,message=FALSE,fig.align='center'}
-library(highcharter)
-hcboxplot(
-  x = Dados_abelhas$`N° potes Mel`,
-  var = Dados_abelhas$Colônias,
-  name = "Length",
-  color = 'darkslategrey',
-  outliers = TRUE
-) %>%
-  hc_chart(type = "column") %>%
-  hc_title(text = " ") %>%
-  hc_yAxis(title = list(text = "N° potes de Mel")) %>%
-  hc_add_series(
-    data = Dados_abelhas,
-    type = "scatter",
-    hcaes(x = "Colônias", y = "Dados_abelhas$`N° potes Mel`", group = "Colônias")
-  ) %>%
-  hc_plotOptions(scatter = list(
-    color = "red",
-    marker = list(
-      radius = 2,
-      symbol = "circle",
-      lineWidth = 1
-    )
-  ))  %>%
-  hc_plotOptions(scatter = list(jitter = list(x = .2, y = 0)))
+
+---
+
+
+
+# Análise descritiva
+
+```{r,echo=FALSE,out.width="100%"}
+library(leaflet)
+r <- resumo(numerica)
+DT::datatable(r,class = 'cell-border stripe',
+              fillContainer = FALSE,
+              options = list(pageLength = 7,
+                             searching=FALSE,
+                             initComplete = JS(
+    "function(settings, json) {",
+    "$(this.api().table().header()).css({'background-color': '#a02444', 'color': '#fff', 'font-size': '14px', 'text-align':'center'});",
+    "}")))%>%
+  DT::formatStyle('N° potes Mel',  color = DT::styleEqual(c(111.4562,23.2656,25.931),'red')) 
 ```
