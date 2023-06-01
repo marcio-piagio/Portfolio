@@ -39,13 +39,19 @@ p {
 
 --- 
 
+<br><br>
+
 
 # Objetivos.
 
 
 <p id="centralizar">Propor um modelo de regressão para constatar a melhor produção de mel (N° de potes de mel ao mês) entre as 16 colônias de abelhas da espécie Scaptotrigona bipuctata e posteriormente selecionar características em relação as colônias considerando o aperfeiçoamento da produção de mel</p>
 
+<br><br>
+
 ---
+
+<br><br>
 
 # Descrição dos dados
 
@@ -80,6 +86,9 @@ visdat::vis_guess(Dados_abelhas)+
     theme(legend.position = "bottom", legend.background = element_rect(colour = "lightgray", size = .6), axis.text.x = element_text(hjust = 0.03))
 ```
 
+
+---
+
 ### Frequência de zeros
 
 ```{r,echo=FALSE,out.width="100%"}
@@ -87,13 +96,14 @@ visdat::vis_expect(Dados_abelhas, ~.x == 0)+
     theme(legend.position = "bottom", legend.background = element_rect(colour = "lightgray", size = .6))
 ```
 
-
+<br><br>
 
 ---
 
-
+<br><br>
 
 # Análise descritiva
+
 
 ```{r,echo=FALSE,out.width="100%"}
 library(leaflet)
@@ -107,4 +117,10 @@ DT::datatable(r,class = 'cell-border stripe',
     "$(this.api().table().header()).css({'background-color': '#a02444', 'color': '#fff', 'font-size': '14px', 'text-align':'center'});",
     "}")))%>%
   DT::formatStyle('N° potes Mel',  color = DT::styleEqual(c(111.4562,23.2656,25.931),'red')) 
+```
+
+
+```{r,echo=FALSE,message=FALSE,out.width="100%"}
+library(plotly)
+bar3 %>% plot_ly(x = ~Meses, y = ~`N° potes Mel`, color = ~Colônias)
 ```
