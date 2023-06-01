@@ -1,0 +1,107 @@
+---
+title: É possível fazer seleção e melhoramento genético em abelhas?
+date: "20 de setembro de 2022"
+author: "Márcio Roger Piagio"
+output:
+  rmdformats::readthedown:
+    highlight: kate
+  toc: true
+  toc_depth: 3
+---
+
+```{r,echo=FALSE,message=FALSE}
+source("01funcoes.R", encoding = 'UTF-8')
+source("00data.R", encoding = 'UTF-8')
+options(warn=-1)
+options(htmltools.dir.version = FALSE)
+```
+
+
+
+```{css,echo=FALSE}
+h1 {
+    text-align: center;
+    font-weight: bold;
+}
+
+p {
+    font-size: 15px;
+    font-weight: bold
+}
+
+#centralizar{ 
+              text-align: center;
+              font-size: 15px;
+              font-weight: bold
+}
+```
+
+
+--- 
+
+
+# Objetivos.
+
+
+<p id="centralizar">Propor um modelo de regressão para constatar a melhor produção de mel (N° de potes de mel ao mês) entre as 16 colônias de abelhas da espécie Scaptotrigona bipuctata e posteriormente selecionar características em relação as colônias considerando o aperfeiçoamento da produção de mel</p>
+
+---
+
+# Descrição dos dados
+
+* 16 Colônias de abelhas da espécie Scaptotrigona bipuctata
+
+* Os dados foram coletados todos os meses em todas as colônias no ano de 2016
+
+## As Características analisadas
+
+* Comp. Canudo (cm) = Comprimento do canudo entrada das colônias;
+
+* Diâm. Canudo (cm) = Diâmetro do canudo entrada das colônias;
+
+* N° potes Mel = Número de Potes de mel;
+
+* N° discos =  Número dos discos de crias;
+
+* Tam. Discos (cm) = Média do diâmetro dos discos de crias;
+
+* Peso (Kg) = Peso da colônia, já descontado o peso das caixas;
+
+* Est. Pop. = Estimativa do número de indivíduos nas colônias de abelhas.
+
+
+```{r,echo=FALSE,out.width="100%"}
+library(ggplot2)
+visdat::vis_guess(Dados_abelhas)+
+    theme(legend.position = "bottom", legend.background = element_rect(colour = "lightgray", size = .6), axis.text.x = element_text(hjust = 0.03))
+```
+
+
+
+```{r,echo=FALSE,message=FALSE,fig.align='center'}
+library(highcharter)
+hcboxplot(
+  x = Dados_abelhas$`N° potes Mel`,
+  var = Dados_abelhas$Colônias,
+  name = "Length",
+  color = 'darkslategrey',
+  outliers = TRUE
+) %>%
+  hc_chart(type = "column") %>%
+  hc_title(text = " ") %>%
+  hc_yAxis(title = list(text = "N° potes de Mel")) %>%
+  hc_add_series(
+    data = Dados_abelhas,
+    type = "scatter",
+    hcaes(x = "Colônias", y = "Dados_abelhas$`N° potes Mel`", group = "Colônias")
+  ) %>%
+  hc_plotOptions(scatter = list(
+    color = "red",
+    marker = list(
+      radius = 2,
+      symbol = "circle",
+      lineWidth = 1
+    )
+  ))  %>%
+  hc_plotOptions(scatter = list(jitter = list(x = .2, y = 0)))
+```
