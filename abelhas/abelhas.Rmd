@@ -50,7 +50,7 @@ p {
 
 #sidebar a:hover{
     color: red !important;
-    background-color: #008fb3;
+    background-color: transparent;
     }
 
 #sidebar h2 a {
@@ -59,16 +59,16 @@ p {
     }
 
 #toc ul.nav li.active ul li a {
-    background-color: #00ace6;
-    color: white;
-    border-right:solid 1px #008fb3 !important;
+    background-color: transparent;
+    color: red;
+    border-right:solid 1px transparent !important;
     }
 
 #toc ul.nav li.active a {
-    color: white !important;
+    color: #008fb3  !important;
     border-bottom:solid 1px white;
     border-top:solid 1px white;
-    background-color: #008fb3;
+    background-color: transparent;
     }
 
 #toc ul.nav li.active > a {
@@ -113,9 +113,9 @@ h1, h2, h3, h4, h5, h6, legend {
     }
 
 #toc ul.nav li.active ul li.active a {
-    background-color: azure;
-    color: #008fb3 !important;
-    font-weight: bold !important;
+    background-color: transparent;
+    color: red !important;
+    font-weight: none;
     }
 
 ```
