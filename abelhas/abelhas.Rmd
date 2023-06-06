@@ -1,7 +1,7 @@
 ---
 title: É possível fazer seleção e melhoramento genético em abelhas?
 date: "20 de setembro de 2022"
-author: "Márcio Roger Piagio"
+author: "Márcio Piagio"
 output:
   rmdformats::readthedown:
     highlight: kate
@@ -20,59 +20,103 @@ options(htmltools.dir.version = FALSE)
 p {
     font-size: 20px;
     font-weight: bold;
-}
+    }
 
-#centralizar{ 
-              text-align: center;
-              font-size: 20px;
-              font-weight: bold;
-}
+#centralizar{
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    }
 
 #content{
-        max-width:100%;
-        color: black;
-        <!-- background-color: coral; -->
-        <!-- background-image: url(favo.jpg); -->
-        <!-- background-repeat: no-repeat; -->
-        <!-- background-attachment: fixed; -->
-        <!-- background-position: center; -->
+    max-width:100%;
+    color: grey;
+    <!-- background-color: coral; -->
+    <!-- background-image: url(favo.jpg); -->
+    <!-- background-repeat: no-repeat; -->
+    <!-- background-attachment: fixed; -->
+    <!-- background-position: center; -->
     }
     
 #sidebar {
-  background-color: #ffe066;
-  background-image: url(favo.jpg);
-  color: red;
-}
+    background-color: white;
+    background-image: url(1.png);
+    background-repeat: no-repeat;
+    background-size: 300px 500px;
+    background-position: center;
+    }
+
+#sidebar a{color: #008fb3;}
+
+#sidebar a:hover{
+    color: red !important;
+    background-color: #008fb3;
+    }
+
+#sidebar h2 a {
+    color:#008fb3;
+    text-decoration: none;
+    }
+
+#toc ul.nav li.active ul li a {
+    background-color: #00ace6;
+    color: white;
+    border-right:solid 1px #008fb3 !important;
+    }
+
+#toc ul.nav li.active a {
+    color: white !important;
+    border-bottom:solid 1px white;
+    border-top:solid 1px white;
+    background-color: #008fb3;
+    }
+
+#toc ul.nav li.active > a {
+    border-bottom:solid 1px #008fb3 !important;
+    border-right:solid 1px transparent !important;
+    }
 
 #postamble {
-  background:#cca300;
-  border-top:solid 10px #cca300;
-}
+    background:transparent;
+    border-top:solid 1px #008fb3;
+    color: #008fb3 ;
+    }
+
+#postamble .date {color: #008fb3;}
 
 .title {
-  text-align: center;
-  color: white;
-  border: 1px solid grey;
-  background-color: #cca300;
-  padding: 50px;
-}
+    text-align: center;
+    color: #008fb3;
+    border: 1px solid #008fb3;
+    background-color: transparent;
+    padding: 50px;
+    }
 
 .subtitle {
-  color: #cca300;
-  background-color: white;
-  
-}
+    color: transparent;
+    background-color: transparent;
+    }
 
 h1, h2, h3, h4, h5, h6, legend {
-  text-align: center;
-  color: white;
-  background-color: #cca300;
-  padding: 10px;
-}
+    text-align: center;
+    color: #008fb3;
+    background-color: transparent;
+    padding: 10px;
+    border: 1px solid #008fb3;
+    }
 
 #content h2 {
-    background-color: #cca300;
-}
+    color: #008fb3;
+    background-color: white;
+    border-bottom:solid 1px #008fb3 !important;
+    border-right:solid 1px transparent ;
+    }
+
+#toc ul.nav li.active ul li.active a {
+    background-color: azure;
+    color: #008fb3 !important;
+    font-weight: bold !important;
+    }
 
 ```
 
@@ -154,7 +198,7 @@ DT::datatable(r,class = 'cell-border stripe',
                              searching=FALSE,
                              initComplete = JS(
     "function(settings, json) {",
-    "$(this.api().table().header()).css({'background-color': '#cca300', 'color': '#fff', 'font-size': '14px', 'text-align':'center'});",
+    "$(this.api().table().header()).css({'background-color': '#008fb3', 'color': '#fff', 'font-size': '13px', 'text-align':'right'});",
     "}")))%>%
   DT::formatStyle('N° potes Mel',  color = DT::styleEqual(c(111.4562,23.2656,25.931),'red')) 
 ```
