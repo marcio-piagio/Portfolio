@@ -1,7 +1,8 @@
 ---
-title: É possível fazer seleção e melhoramento genético em abelhas?
+title: "É possível fazer seleção e melhoramento genético em abelhas?"
 date: "20 de setembro de 2022"
 author: "Márcio Piagio"
+# subtitle: "Universidade Estatual de Maringá <br>Departamento de Estatística"
 output:
   rmdformats::readthedown:
     highlight: kate
@@ -9,6 +10,7 @@ output:
 
 ```{r,echo=FALSE,message=FALSE}
 source("01funcoes.R", encoding = 'UTF-8')
+source("theme_black.R", encoding = 'UTF-8')
 source("00data.R", encoding = 'UTF-8')
 options(warn=-1)
 options(htmltools.dir.version = FALSE)
@@ -31,7 +33,7 @@ p {
 #content{
     max-width:100%;
     color: grey;
-    <!-- background-color: coral; -->
+    <!-- background-color: #9F2042; -->
     <!-- background-image: url(favo.jpg); -->
     <!-- background-repeat: no-repeat; -->
     <!-- background-attachment: fixed; -->
@@ -40,22 +42,24 @@ p {
     
 #sidebar {
     background-color: white;
-    background-image: url(1.png);
+    background-image: url("1 (1).png");
     background-repeat: no-repeat;
     background-size: 300px 500px;
     background-position: center;
+    border: 1px solid #9F2042;
     }
 
-#sidebar a{color: #008fb3;}
+#sidebar a{color: #9F2042;}
 
 #sidebar a:hover{
     color: red !important;
-    background-color: transparent;
+    background-color: #9F2042;
     }
 
 #sidebar h2 a {
-    color:#008fb3;
+    color:#9F2042;
     text-decoration: none;
+    border: 1px solid #9F2042;
     }
 
 #toc ul.nav li.active ul li a {
@@ -65,61 +69,68 @@ p {
     }
 
 #toc ul.nav li.active a {
-    color: #008fb3  !important;
+    color: #9F2042  !important;
     border-bottom:solid 1px white;
     border-top:solid 1px white;
     background-color: transparent;
     }
 
 #toc ul.nav li.active > a {
-    border-bottom:solid 1px #008fb3 !important;
+    border-bottom:solid 1px #9F2042 !important;
     border-right:solid 1px transparent !important;
     }
 
 #postamble {
     background:transparent;
-    border-top:solid 1px #008fb3;
-    color: #008fb3 ;
+    border-top:solid 1px #9F2042;
+    color: #9F2042 ;
     }
 
-#postamble .date {color: #008fb3;}
+#postamble .date {color: #9F2042;}
 
 .title {
     text-align: center;
-    color: #008fb3;
-    border: 1px solid #008fb3;
-    background-color: transparent;
+    color: #9F2042;
+    border: 1px solid #9F2042;
+    background-color: white;
     padding: 50px;
     }
 
 .subtitle {
-    color: transparent;
+    text-align: center;
+    color: #9F2042;
     background-color: transparent;
+    border: 1px solid transparent;
+    }
+    
+#content h2 {
+    color: #9F2042;
+    background-color: white;
+    border-bottom:solid 1px #9F2042 !important;
     }
 
 h1, h2, h3, h4, h5, h6, legend {
     text-align: center;
-    color: #008fb3;
-    background-color: transparent;
+    color: #9F2042;
+    background-color: white;
     padding: 10px;
-    border: 1px solid #008fb3;
+    border: 1px solid #9F2042;
     }
 
-#content h2 {
-    color: #008fb3;
-    background-color: white;
-    border-bottom:solid 1px #008fb3 !important;
-    border-right:solid 1px transparent ;
-    }
+
 
 #toc ul.nav li.active ul li.active a {
-    background-color: transparent;
-    color: red !important;
+    background-color: #9F2042;
+    color: white !important;
     font-weight: none;
     }
 
 ```
 
+
+Disciplina: Laboratório de Estatística Aplicada.
+
+Professor: <a href = "http://www.des.uem.br/docentes/dfrossoni">Dr. Diogo Francisco Rossoni</a>
 
 --- 
 
@@ -198,11 +209,75 @@ DT::datatable(r,class = 'cell-border stripe',
                              searching=FALSE,
                              initComplete = JS(
     "function(settings, json) {",
-    "$(this.api().table().header()).css({'background-color': '#008fb3', 'color': '#fff', 'font-size': '13px', 'text-align':'right'});",
+    "$(this.api().table().header()).css({'background-color': '#9F2042', 'color': '#fff', 'font-size': '13px', 'text-align':'right'});",
     "}")))%>%
   DT::formatStyle('N° potes Mel',  color = DT::styleEqual(c(111.4562,23.2656,25.931),'red')) 
 ```
 
+
+## Potes de mel {.tabset}
+
+### Histograma da distribuição
+
+```{r,echo=FALSE,message=FALSE,fig.align='center',out.width="100%"}
+ggplot(Dados_abelhas, aes(`N° potes Mel`)) +
+  geom_histogram( aes(y =..density..),
+                  col = 'black',fill='darkslategrey',alpha=0.6,bins= ceiling(sqrt(length(Dados_abelhas$Meses)))) +
+  geom_density() +
+  ylab(' ') +
+  xlab('Número de Potes de mel')+
+  theme_black()
+
+```
+
+### Frequência 
+
+```{r,echo=FALSE,message=FALSE, fig.align='center',out.width="100%"}
+pct_format = scales::percent_format(accuracy = .1)
+ccc  <- Dados_abelhas %>% dplyr::group_by(`N° potes Mel`) %>% dplyr::summarise(n=n())
+ggplot(ccc,aes(`N° potes Mel`,n)) +
+  geom_col(fill='darkslategrey') + theme_minimal() +
+    ylab('Frequência absoluta') +
+  xlab('Número de Potes de mel')+
+  geom_label(aes(
+    label = sprintf(
+      '%d (%s)',
+      n,
+      pct_format(n / sum(n))
+    )),  fill='white', vjust=1,hjust=ifelse(ccc$n <= 14,-100,-.1))+
+  theme_black()
+
+```
+
+## Quantidade de potes de mel por colônia 
+
+```{r,echo=FALSE,message=FALSE,fig.align='center',out.width="100%"}
+library(highcharter)
+hcboxplot(
+  x = Dados_abelhas$`N° potes Mel`,
+  var = Dados_abelhas$Colônias,
+  name = "Length",
+  color = 'darkslategrey',
+  outliers = TRUE
+) %>%
+  hc_chart(type = "column") %>%
+  hc_title(text = " ") %>%
+  hc_yAxis(title = list(text = "N° potes de Mel")) %>%
+  hc_add_series(
+    data = Dados_abelhas,
+    type = "scatter",
+    hcaes(x = "Colônias", y = "Dados_abelhas$`N° potes Mel`", group = "Colônias")
+  ) %>%
+  hc_plotOptions(scatter = list(
+    color = "red",
+    marker = list(
+      radius = 2,
+      symbol = "circle",
+      lineWidth = 1
+    )
+  ))  %>%
+  hc_plotOptions(scatter = list(jitter = list(x = .2, y = 0)))
+```
 
 ```{r,echo=FALSE,message=FALSE,out.width="100%"}
 library(plotly)
