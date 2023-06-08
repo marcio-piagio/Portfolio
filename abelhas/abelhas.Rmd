@@ -49,12 +49,35 @@ p {
     border: 1px solid #9F2042;
     }
 
-#sidebar a{color: #9F2042;}
+#sidebar a{color: #9F2042;
+            transition: all .5s;
+            border: 10px solid transparent;}
 
 #sidebar a:hover{
     color: red !important;
     background-color: #9F2042;
+    text-decoration: underline;
     }
+    
+#sidebar a:link {
+  background-color: yellow;
+}
+
+#sidebar a:visited {
+  background-color: cyan;
+}
+
+#sidebar a:hover {
+  background-color: lightgreen;
+  width: auto;
+  border: 10px solid #136497;
+  border-radius: 50%;
+}
+
+#sidebar a:active {
+  background-color: hotpink;
+} 
+    
 
 #sidebar h2 a {
     color:#9F2042;
