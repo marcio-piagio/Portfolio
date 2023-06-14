@@ -2,7 +2,7 @@
 title: "Trabalho 3 -- Laboratório de Estatística Aplicada <br><br><br>"
 subtitle: "É possível fazer seleção e melhoramento genético em abelhas?"
 author: " Márcio Roger Piagio <br><br><br><br><br>"
-date: '`r format(Sys.time(),"%d de %B de %Y")`'
+date: '20 de setembro de 2022'
 output:
   xaringan::moon_reader:
     css: [default, metropolis, metropolis-fonts, custom.css]

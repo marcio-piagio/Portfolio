@@ -1,0 +1,587 @@
+---
+title: "Trabalho de Laboratório de Estatística Aplicada <br><br><br>"
+subtitle: "Como otimizar atendimentos baseados em seu endereço"
+author: " Márcio Roger Piagio <br><br><br><br><br>"
+date: '20 de setembro de 2022'
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts, custom.css]
+    lib_dir: libs
+    nature:
+      highlightStyle: rainbow
+      highlightLines: false
+      highlightSpans: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+      ratio: "16:9"
+---
+
+```{r setup, include=FALSE}
+source("arq/00dados.R", encoding = 'UTF-8')
+source("arq/01funcoes.R", encoding = 'UTF-8')
+options(warn=-1)
+options(htmltools.dir.version = FALSE)
+```
+
+# Proposta 
+
+### Verificar comparação entre grupos de médicos e distância dos pacientes atendidos.
+
+<br>
+
+###  Verificar comparação entre grupos de médicos e idade dos pacientes atendidos.
+
+<br>
+
+### Otimizar a distância dos médicos eferente ao endereço dos pacientes ou idade.
+
+---
+
+# Banco de dados 
+
+.pull-left[
+* **Lon** e **Lat:** coordena do endereço do paciente.  
+* **Médico:** médico que atendeu o paciente.
+* **Idade:** idade do paceiente.
+* **CatI:** variavel idade categorizada.
+* **CatD:** variavel idade categorizada.
+* **Dist:** É a distância do paciente até o médico onde foi atendido.
+]
+
+.pull-right[
+ Foi utilizado a fórmula **"haversine"**.
+ 
+$a = \sin^2(\Delta \phi/2)+\cos \phi_1 \times \phi_2 \times \sin^2(\Delta\lambda/2)\\b = 2 \times atan2(\sqrt{a} , \sqrt{(1-a)})\\d =(R\times c)/1000$
+
+onde	$\phi$ é latitude, $\lambda$ é longitude, R é o raio da Terra (raio médio = 6.371km)
+]
+
+```{r,echo=FALSE, highlight.output=c(1, 3)}
+DT::datatable(
+  data.frame('Lon'=round(paciente$Longitude, digits = 2),
+             'Lat'=round(paciente$Latitude, digits = 2),
+             'Médico'= paciente$Medico,
+             'Idade'=paciente$Idade,
+             'Dist'=round(paciente$dist,digits = 2),
+             'CatI'=paciente$categoria,
+             'CatD'=paciente$categoriaD), 
+  fillContainer = FALSE,
+              options = list(pageLength = 3,
+                             searching=FALSE,
+                             initComplete = JS(
+    "function(settings, json) {",
+    "$(this.api().table().header()).css({'background-color': 'darkslategrey', 'color': '#fff', 'font-size': '14px', 'text-align':'center'});",
+    "}")))
+
+```
+
+---
+
+class: inverse, center, middle
+
+# Analise descritiva
+
+---
+
+# Frequências das variáveis 
+
+.pull-left[
+```{r,echo=FALSE,fig.align='center',out.width="100%",warning=FALSE}
+bbb  <- paciente %>% dplyr::group_by(Medico) %>% dplyr::summarise(n=n())
+bbb %>% arrange(desc(n)) %>% 
+  hchart(type = "bar", 
+         hcaes(x = Medico, y = n)) %>%
+  hc_title(text = "Frequência de Atendimento por Médico") %>%
+  hc_xAxis(title = list(text = "")) %>%
+  hc_yAxis(title = "", stackLabels = list(enabled = TRUE)) %>% 
+  hc_colors('darkslategrey') %>% 
+  hc_tooltip(headerFormat = "",
+             pointFormat = "{point.n}  {point.antibiotic}") %>%
+  hc_plotOptions(series = list(stacking = "normal"))
+```
+]
+
+.pull-right[
+```{r,echo=FALSE,fig.align='center',out.width="100%",warning=FALSE}
+ccc  <- paciente %>% dplyr::group_by(categoria) %>% dplyr::summarise(n=n())
+ccc %>% arrange(categoria) %>% 
+  hchart(type = "column", 
+         hcaes(x = categoria, y = n)) %>%
+  hc_title(text = "Frequência dos pacientes por faixa etária") %>%
+  hc_xAxis(title = list(text = "")) %>%
+  hc_yAxis(title = "", stackLabels = list(enabled = TRUE)) %>% 
+  hc_colors(c("#2F4F4F", "#70690D", '#4F3F2F')) %>% 
+  hc_tooltip(pointFormat = " {point.cluster}") %>%
+  hc_plotOptions(series = list(stacking = "normal"))
+```
+]
+
+---
+
+# Identificando observações fora de Maringá
+
+.pull-left[
+```{r,echo=FALSE,fig.align='center',out.width="100%",warning=FALSE}
+cor <- brewer.pal(7, "Dark2")
+
+leaflet(paciente)  %>% 
+  addProviderTiles("OpenStreetMap") %>% 
+  addPolygons(data = PR_2020$geom, color = 'darkslategrey',fill = F, opacity = 0.9) %>% 
+  addPolygons(data = MGA_2020$geom, color = 'red',fill = F, opacity = 0.9) %>%
+  setView(-51.931180, -24.5, zoom =7.4 ) %>% 
+  addCircleMarkers(~Longitude, ~Latitude, weight = 3, radius=4, 
+                   color="red", stroke = F, fillOpacity = 0.9)  
+```
+]
+
+.pull-right[
+```{r,echo=FALSE}
+DT::datatable(Paciente_outros[c(8,5,4,3)], 
+  fillContainer = FALSE,,
+              options = list(pageLength = 7,
+                             searching=FALSE,
+                             initComplete = JS(
+    "function(settings, json) {",
+    "$(this.api().table().header()).css({'background-color': 'darkslategrey', 'color': '#fff', 'font-size': '14px', 'text-align':'center'});",
+    "}")))
+```
+]
+
+---
+
+# Descritiva da variável Idade
+
+**Resumo da variavel Idade**
+
+```{r, echo=FALSE}
+resulmo(Paciente_MGA$Idade)
+```
+
+**Tabela de cotigencia idade com Médico**
+
+```{r,echo=FALSE}
+dados <- table(Paciente_MGA$Medico, Paciente_MGA$categoriaI)
+knitr::kable(dados, align = "c")
+```
+
+---
+
+# Descritiva da variável Distância
+
+**Resumo da variável Distância **
+
+```{r, echo=FALSE}
+resulmo(Paciente_MGA$dist)
+```
+
+**Tabela de cotigencia Distância com Médico**
+
+```{r,echo=FALSE}
+dados1 <- table(Paciente_MGA$Medico, Paciente_MGA$categoriaD)
+knitr::kable(dados1, align = "c")
+```
+
+---
+
+
+# Gráfico dos pacientes em relação aos médicos
+
+```{r,echo=FALSE,fig.align='center',out.width="100%",warning=FALSE}
+Paciente_MGA <- as.data.frame(Paciente_MGA)
+quakes.df <- split(Paciente_MGA, Paciente_MGA$Medico)
+medicos$Local <- factor(medicos$Local)
+new <- cor[medicos$Local]
+  
+l <- leaflet() %>% addTiles()
+
+names(quakes.df) %>%
+  purrr::walk( function(df) {
+    l <<- l %>%
+      addCircleMarkers(data=quakes.df[[df]],
+                 lat=~Latitude,
+                 lng=~Longitude,
+                 group=df,
+                 weight = 3,
+                 radius=4,
+                 stroke = F,
+                 fillOpacity = 0.9,
+                 label=~as.character(Idade),
+                 color=ifelse(df=='A',cor[1],
+                              ifelse(df=='B',cor[2],
+                                     ifelse(df=='C',cor[3],
+                                            ifelse(df=='D',cor[4],
+                                                   ifelse(df=='E',cor[5],
+                                                          ifelse(df=='F',cor[6],
+                                                                 cor[7]))))))) %>% 
+          addCircleMarkers(data=medicos[ifelse(df=='A',1,
+                              ifelse(df=='B',2,
+                                     ifelse(df=='C',3,
+                                            ifelse(df=='D',4,
+                                                   ifelse(df=='E',5,
+                                                          ifelse(df=='F',6,
+                                                                 7)))))),],
+                 lat=~Latitude,
+                 lng=~Longitude,
+                 group=df,
+                 weight = 3,
+                 radius=6,
+                 stroke = F,
+                 fillOpacity = 0.9,
+                 label=~as.character(Local),
+                 color="black")
+
+  })
+
+l %>%
+  addPolygons(data = MGA_2020$geom, color = 'darkslategrey',fill = F, opacity = 0.9) %>% 
+  addLayersControl(
+    overlayGroups = names(quakes.df),
+    options = layersControlOptions(collapsed = FALSE))%>%
+  htmlwidgets::onRender("
+        function() {
+            $('.leaflet-control-layers-overlays').prepend('<label style=\"text-align:center\"></label>');
+        }
+    ")
+```
+
+---
+
+
+class: inverse, center, middle
+
+# Comparação entre grupos 
+
+---
+
+# Estatísticas
+
+## Estatística escore médio 
+
+.pull-left[
+
+## Hipóteses
+
+$H_0: \ \ \bar{F_1} = \bar{F_2} = ... =  \bar{F_i}$
+
+onde $\bar{F}_i$ é escore médio para cada subpopulação.
+ 
+\begin{cases}
+H_0 & \text{não há diferença significativa entre os grupos}\\
+H_1 & \text{há diferença significativa entre os grupos}
+\end{cases}
+
+ou
+
+\begin{cases}
+H_0 & \text{não há evidências de associação entre os grupos}\\
+H_1 & \text{há evidências de associação entre os grupos}
+\end{cases}
+]
+
+.pull-right[
+
+## Estatística
+
+$$Q_s=\frac{n-1}{n}\times \frac{\sum_{i=1}^{s}(n_{i+})(\bar{f_i}-\mu_a)^2}{v_a}\sim \chi^2_{(s-1)}$$
+
+## Comparações multiplas 
+
+Se $H_0$ for rejeitado $\to$ Copração dois a dois.
+
+]
+
+---
+
+# Comparação entre grupos.
+
+.pull-left[
+
+## Estatística escore médio<br>Médico por Idade
+
+<br>
+
+
+```{r,echo=FALSE}
+t <- teste.escore(dados=dados, escore=1:6, comp.mult=T, correcao.p="bonferroni")
+t$Global
+t$Fbar
+
+```
+
+
+Como p-value = 0.7 é maior que 5% decide-se por não Rejeitar $H_0$, isto é,
+podemos concluir que não há diferença significativa entre os atendimentos dos médicos referente as idades dos pacientes. 
+
+]
+
+.pull-right[
+
+## Estatística escore médio<br>Médico por Distância
+
+<br>
+
+```{r,echo=FALSE}
+t2 <- teste.escore(dados=dados1, escore=1:6, comp.mult=T, correcao.p="bonferroni")
+t2$Global
+t2$Fbar
+```
+
+Como p-value é menor que 5% decide-se por Rejeitar $H_0$, isto é, podemos concluir que há diferença significativa entre os atendimentos dos médicos referente as distâncias dos pacientes. Logo pedemos fazer a comparações multiplas.
+]
+
+---
+
+# Comparações multiplas.
+
+## Grupos de médicos em relação a distância.
+
+```{r,echo=FALSE}
+DT::datatable(t2$Comp.multiplas, 
+  fillContainer = FALSE,
+              options = list(pageLength = 7,
+                             searching=FALSE,
+                             initComplete = JS(
+    "function(settings, json) {",
+    "$(this.api().table().header()).css({'background-color': 'darkslategrey', 'color': '#fff', 'font-size': '14px', 'text-align':'center'});",
+    "}")))
+```
+
+---
+
+# Conclusão 
+
+.pull-left[
+```{r,echo=FALSE}
+Grupos <- c(rep("a",2),rep("b",5))
+Medicos <- paste0("Médico ",LETTERS[1:7])
+
+DT::datatable(cbind(Medicos,Grupos), 
+  fillContainer = FALSE,
+              options = list(pageLength = 7,
+                             searching=FALSE,
+                             initComplete = JS(
+    "function(settings, json) {",
+    "$(this.api().table().header()).css({'background-color': 'darkslategrey', 'color': '#fff', 'font-size': '14px', 'text-align':'center'});",
+    "}")))
+```
+]
+
+.pull-right[
+
+### Podemos concluir que os médicos A e B não se difere nas distâncias do paciente e os médicos C, D, E, F e G são estatisticamente iguais.
+]
+---
+
+class: inverse, center, middle
+
+# Otimização 
+
+---
+
+# Otimização da distância em linha reta.
+
+
+```{r,echo=FALSE,fig.align='center',out.width="100%",warning=FALSE}
+Paciente_MGA <- as.data.frame(Paciente_MGA)
+quakes.df <- split(Paciente_MGA, Paciente_MGA$MinL)
+medicos$Local <- factor(medicos$Local)
+new <- cor[medicos$Local]
+  
+icons <- awesomeIcons(
+    icon = 'ios-close',
+    iconColor = 'white',
+    library = 'ion',
+    markerColor = new
+  )
+
+l <- leaflet() %>% addTiles()
+
+names(quakes.df) %>%
+  purrr::walk( function(df) {
+    l <<- l %>%
+      addCircleMarkers(data=quakes.df[[df]],
+                 lat=~Latitude,
+                 lng=~Longitude,
+                 group=df,
+                 weight = 3,
+                 radius=4,
+                 stroke = F,
+                 fillOpacity = 0.9,
+                 label=~as.character(Idade),
+                 color=ifelse(df=='A',cor[1],
+                              ifelse(df=='B',cor[2],
+                                     ifelse(df=='C',cor[3],
+                                            ifelse(df=='D',cor[4],
+                                                   ifelse(df=='E',cor[5],
+                                                          ifelse(df=='F',cor[6],
+                                                                 cor[7]))))))) %>% 
+          addCircleMarkers(data=medicos[ifelse(df=='A',1,
+                              ifelse(df=='B',2,
+                                     ifelse(df=='C',3,
+                                            ifelse(df=='D',4,
+                                                   ifelse(df=='E',5,
+                                                          ifelse(df=='F',6,
+                                                                 7)))))),],
+                 lat=~Latitude,
+                 lng=~Longitude,
+                 group=df,
+                 weight = 3,
+                 radius=4,
+                 stroke = F,
+                 fillOpacity = 0.9,
+                 label=~as.character(Local),
+                 color="black")
+  })
+
+l %>%
+  addPolygons(data = MGA_2020$geom, color = 'darkslategrey',fill = F, opacity = 0.9) %>% 
+  addLayersControl(
+    overlayGroups = names(quakes.df),
+    options = layersControlOptions(collapsed = FALSE))%>%
+  htmlwidgets::onRender("
+        function() {
+            $('.leaflet-control-layers-overlays').prepend('<label style=\"text-align:center\">Médico</label>');
+        }
+    ")
+```
+
+<!-- --- -->
+
+<!-- # Otimização da distância de carro. -->
+
+
+```{r,echo=FALSE,fig.align='center',out.width="100%",warning=FALSE,eval=FALSE}
+Paciente_dis_tem <- read.csv("data/Paciente_dis_tem.csv", sep=";")
+Paciente_MGA <- cbind(Paciente_MGA,Paciente_dis_tem)
+Paciente_MGA <- as.data.frame(Paciente_MGA)
+quakes.df <- split(Paciente_MGA, Paciente_MGA$dist)
+medicos$Local <- factor(medicos$Local)
+new <- cor[medicos$Local]
+  
+icons <- awesomeIcons(
+    icon = 'ios-close',
+    iconColor = 'white',
+    library = 'ion',
+    markerColor = new
+  )
+
+l <- leaflet() %>% addTiles()
+
+names(quakes.df) %>%
+  purrr::walk( function(df) {
+    l <<- l %>%
+      addCircleMarkers(data=quakes.df[[df]],
+                 lat=~Latitude,
+                 lng=~Longitude,
+                 group=df,
+                 weight = 3,
+                 radius=4,
+                 stroke = F,
+                 fillOpacity = 0.9,
+                 label=~as.character(Idade),
+                 color=ifelse(df=='A',cor[1],
+                              ifelse(df=='B',cor[2],
+                                     ifelse(df=='C',cor[3],
+                                            ifelse(df=='D',cor[4],
+                                                   ifelse(df=='E',cor[5],
+                                                          ifelse(df=='F',cor[6],
+                                                                 cor[7]))))))) %>% 
+          addCircleMarkers(data=medicos[ifelse(df=='A',1,
+                              ifelse(df=='B',2,
+                                     ifelse(df=='C',3,
+                                            ifelse(df=='D',4,
+                                                   ifelse(df=='E',5,
+                                                          ifelse(df=='F',6,
+                                                                 7)))))),],
+                 lat=~Latitude,
+                 lng=~Longitude,
+                 group=df,
+                 weight = 3,
+                 radius=4,
+                 stroke = F,
+                 fillOpacity = 0.9,
+                 label=~as.character(Local),
+                 color="black")
+  })
+
+l %>%
+  addPolygons(data = MGA_2020$geom, color = 'darkslategrey',fill = F, opacity = 0.9) %>% 
+  addLayersControl(
+    overlayGroups = names(quakes.df),
+    options = layersControlOptions(collapsed = FALSE))%>%
+  htmlwidgets::onRender("
+        function() {
+            $('.leaflet-control-layers-overlays').prepend('<label style=\"text-align:center\">Médico</label>');
+        }
+    ")
+```
+
+---
+
+# Otimização do tempo de carro.
+
+```{r,echo=FALSE,fig.align='center',out.width="100%",warning=FALSE}
+Paciente_dis_tem <- read.csv("data/Paciente_dis_tem.csv", sep=";")
+Paciente_MGA <- cbind(Paciente_MGA,Paciente_dis_tem)
+Paciente_MGA <- as.data.frame(Paciente_MGA)
+quakes.df <- split(Paciente_MGA, Paciente_MGA$tem)
+medicos$Local <- factor(medicos$Local)
+new <- cor[medicos$Local]
+  
+icons <- awesomeIcons(
+    icon = 'ios-close',
+    iconColor = 'white',
+    library = 'ion',
+    markerColor = new
+  )
+
+l <- leaflet() %>% addTiles()
+
+names(quakes.df) %>%
+  purrr::walk( function(df) {
+    l <<- l %>%
+      addCircleMarkers(data=quakes.df[[df]],
+                 lat=~Latitude,
+                 lng=~Longitude,
+                 group=df,
+                 weight = 3,
+                 radius=4,
+                 stroke = F,
+                 fillOpacity = 0.9,
+                 label=~as.character(Idade),
+                 color=ifelse(df=='A',cor[1],
+                              ifelse(df=='B',cor[2],
+                                     ifelse(df=='C',cor[3],
+                                            ifelse(df=='D',cor[4],
+                                                   ifelse(df=='E',cor[5],
+                                                          ifelse(df=='F',cor[6],
+                                                                 cor[7]))))))) %>% 
+          addCircleMarkers(data=medicos[ifelse(df=='A',1,
+                              ifelse(df=='B',2,
+                                     ifelse(df=='C',3,
+                                            ifelse(df=='D',4,
+                                                   ifelse(df=='E',5,
+                                                          ifelse(df=='F',6,
+                                                                 7)))))),],
+                 lat=~Latitude,
+                 lng=~Longitude,
+                 group=df,
+                 weight = 3,
+                 radius=4,
+                 stroke = F,
+                 fillOpacity = 0.9,
+                 label=~as.character(Local),
+                 color="black")
+  })
+
+l %>%
+  addPolygons(data = MGA_2020$geom, color = 'darkslategrey',fill = F, opacity = 0.9) %>% 
+  addLayersControl(
+    overlayGroups = names(quakes.df),
+    options = layersControlOptions(collapsed = FALSE))%>%
+  htmlwidgets::onRender("
+        function() {
+            $('.leaflet-control-layers-overlays').prepend('<label style=\"text-align:center\">Médico</label>');
+        }
+    ")
+```

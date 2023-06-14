@@ -1,0 +1,836 @@
+---
+title: "<b><strong> Seminário — Econometria<br><br><br><br><br><br>"
+subtitle: "<b>Modelos GARCH para séries de retorno"
+author: "Márcio Roger Piagio  --  RA:67384<br><br>"
+date: '\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 28 de abril de 2023'
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts, custom.css]
+    lib_dir: libs
+    nature:
+      highlightStyle: rainbow
+      highlightLines: false
+      highlightSpans: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+      ratio: "16:9"
+---
+
+<head>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
+</head>
+
+```{r xaringan-tile-view, echo=FALSE}
+xaringanExtra::use_tile_view()
+```
+
+```{r xaringan-animate-all, echo=FALSE}
+xaringanExtra::use_animate_all("fade")
+```
+
+```{r xaringan-slide-tone, echo=FALSE}
+xaringanExtra::use_slide_tone()
+```
+
+```{r xaringan-panelset, echo=FALSE}
+xaringanExtra::use_panelset()
+```
+
+```{css echo=FALSE}
+.panelset {
+  --panel-tab-foreground: currentColor;
+  --panel-tab-active-foreground: darkslategrey;
+  --panel-tab-hover-foreground: #d22;
+  --panel-tabs-border-bottom: #ddd;
+  --panel-tab-inactive-opacity: 0.3;
+  --panel-tab-font-family: Roboto, Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;\
+}
+```
+
+```{r, include=FALSE}
+library(dplyr)
+library(viridisLite)
+library(forecast)
+library(highcharter)
+library(ggplot2)
+library(htmltools)
+library(magrittr)
+library(kableExtra)
+library(quantmod)
+library(fGarch)
+library(tseries)
+library(TSA)
+```
+
+
+```{r, include=FALSE}
+thm <- 
+  hc_theme(
+    colors = c("darkslategrey","#ff0000","#00ffff","#00ffff", "#ff6600","#ff6600",
+               "#ffff00","#ffff00","#663300","#663300","#00ff00","#00ff00","#660066","#660066"),
+    chart = list(
+      backgroundColor = "transparent",
+      style = list(fontFamily = "Source Sans Pro")
+    ),
+    xAxis = list(
+      gridLineWidth = 1
+    )
+  )
+
+thm2 <- 
+  hc_theme(
+    colors = c("black","red","red"),
+    chart = list(
+      backgroundColor = "transparent",
+      style = list(fontFamily = "Source Sans Pro")
+    ),
+    xAxis = list(
+      gridLineWidth = 1
+    )
+  )
+```
+
+<center><h1 class="animate__animated  animate__rubberBand">💸Banco do Brasil 💰.A. (BBAS3.💰.A).💸</h1></center>
+
+.panelset[
+.panel[.panel-name[Apresentação]
+
+```{r,echo=FALSE,include=FALSE}
+### Retornos diários BBAS3.SA
+fonte   <- 'yahoo'                  ## fonte dos dados: banco de dados do yahoo
+inicial <- as.Date('2010-01-01')    ## data inicial
+serie   <- new.env()
+getSymbols("BBAS3.SA", env=serie, src=fonte, from=inicial)
+
+```
+
+- Frequência diária.
+
+- Tempo da série: 4 de janeiro de 2010 até 27 de abril de 2023.
+
+- Quatidade de observações: `r length(serie$BBAS3.SA$BBAS3.SA.Close)`.
+
+- Fonte: <https://finance.yahoo.com/>
+]
+
+.panel[.panel-name[Gráfico da Série]
+
+<div class="animate__animated  animate__fadeInTopLeft">
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right',warning=FALSE}
+Cl(serie$BBAS3.SA) %>%
+  hchart(name = "Treino") %>%
+  hc_add_theme(thm)
+  
+```
+
+</div>
+]
+
+.panel[.panel-name[Tendência]
+
+<div class="animate__animated animate__fadeInBottomRight">
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+mstlXt <- mstl(Cl(serie$BBAS3.SA))
+plot(mstlXt[,2],col = "darkslategrey",main = " ",ylab = " ")
+```
+
+</div>
+]
+
+.panel[.panel-name[Log-retorno]
+
+<div class="animate__animated  animate__fadeInTopLeft">
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right',warning=FALSE}
+## Calculo dos retornos
+y <- diff(log(Cl(serie$BBAS3.SA)))
+y <- na.omit(y)
+
+# 1) serie estacionaria com media igual a zero
+y %>%
+  hchart(name = "Retorno") %>%
+  hc_add_theme(thm)
+```
+
+</div>
+]
+
+.panel[.panel-name[Sobre os retornos]
+
+
+1) Possuem media condicional igual a zero: E<sub>t-1</sub> [ y<sub>t</sub> ] = 0.
+
+2) Entao: Var<sub>t-1</sub> [ y<sub>t</sub> ] = E<sub>t-1</sub> [ y<sup>2</sup><sub>t</sub> ].
+
+3) A presença de autocorrelacao em y<sup>2</sup> sugere que a variancia condicional nao constante.
+
+4) Tem curtose > 3 (distribuicao leptocurtica), ou seja, a distribuicao dos retornos apresenta caudas mais pesadas que a distribuicao normal. 
+
+5) Movimentos de baixa no mercado financeiro costumam ser mais rapidos que os movimentos de alta, isto reflete nos retornos, tornando-os assimetricos a esquerda (Coeficiente de assimetria < 0).
+
+]
+
+]
+
+---
+
+<center><h1 class="animate__animated animate__swing">Verificação dos retornos para modelo GARCH</h1></center>
+
+.panelset[
+.panel[.panel-name[Autocorrelações]
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+# 2) aproximadamente sem autocorrelacoes
+par(mfrow=c(2,1)) 
+acf(na.omit(y), main='FAC dos retornos') 
+pacf(na.omit(y), main='FACP dos retornos',ylim=c(-.05,.05)) 
+```
+
+
+]
+
+.panel[.panel-name[Variância autocorrelacionada]
+
+<div class="animate__animated  animate__lightSpeedInRight">
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+# 3) Variancia autocorrelacionada
+par(mfrow=c(2,2)) 
+acf(na.omit(y^2), main='FAC dos retornos²') 
+pacf(na.omit(y^2), main='FACP dos retornos²') 
+acf(abs(y),main='FAC dos retornos absolutos')
+pacf(abs(y),main='FACP dos retornos absolutos')
+```
+
+
+<div>
+]
+
+.panel[.panel-name[Testes Gráficos]
+
+<div class="animate__animated  animate__fadeInTopLeft">
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+# 4) Curtose > 3
+# timeDate::kurtosis( na.omit(y) , method='moment' ) 
+# 5) Assimetricos a esquerda
+par(mfrow=c(1,2))
+ z <- (y-mean(y))/sd(y)
+ # timeDate::skewness(y)
+McLeod.Li.test(y=y,main='McLeod-Li test -- heterocedasticidade condicional')  
+ hist(z, prob=TRUE,main='',ylim = c(0,.5),col = "darkslategrey",border = "white")
+ lines(density(z),col = "red4")
+```
+
+</div>
+]
+
+.panel[.panel-name[Estatísticas dos testes]
+
+```{r,cache=FALSE,include=FALSE}
+## testes estatisticos
+# Estacionaridade
+tseries::kpss.test(y) # hipótese nula: série estacionária
+# independencia
+Box.test(y, lag = 30, type ="Ljung-Box", fitdf = 0) 
+Box.test(y**2, lag = 20, type ="Ljung-Box", fitdf = 0) 
+
+# normalidade
+shapiro.test(as.vector(y))
+tseries::jarque.bera.test(y)
+```
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-6alp{background-color:#EFEFEF;border-color:#efefef;font-size:16px;text-align:center;vertical-align:top}
+.tg .tg-buwd{background-color:#efefef;border-color:#efefef;font-size:16px;text-align:center;vertical-align:top}
+.tg .tg-c26g{background-color:#2f4f4f;border-color:#efefef;color:#ffffff;font-size:24px;font-weight:bold;text-align:center;
+  vertical-align:top}
+.tg .tg-qlrq{background-color:#ffffff;border-color:#efefef;font-size:16px;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-c26g">Teste</th>
+    <th class="tg-c26g">Retornos</th>
+    <th class="tg-c26g">Estatística</th>
+    <th class="tg-c26g">Valor p</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-qlrq">Estacionaridade (KPSS)</td>
+    <td class="tg-qlrq">y</td>
+    <td class="tg-qlrq">0.025469</td>
+    <td class="tg-qlrq">0.1</td>
+  </tr>
+  <tr>
+    <td class="tg-buwd">kurtosis</td>
+    <td class="tg-buwd">y</td>
+    <td class="tg-buwd">10.21437</td>
+    <td class="tg-buwd"></td>
+  </tr>
+  <tr>
+    <td class="tg-qlrq">skewness</td>
+    <td class="tg-qlrq">y</td>
+    <td class="tg-qlrq">-0.2543184</td>
+    <td class="tg-qlrq"></td>
+  </tr>
+  <tr>
+    <td class="tg-buwd">Ljung-Box Q(10)</td>
+    <td class="tg-buwd">y</td>
+    <td class="tg-6alp">13.607</td>
+    <td class="tg-6alp">0.1917</td>
+  </tr>
+  <tr>
+    <td class="tg-qlrq">Ljung-Box Q(20)</td>
+    <td class="tg-qlrq">y</td>
+    <td class="tg-qlrq">23.928</td>
+    <td class="tg-qlrq">0.2456</td>
+  </tr>
+  <tr>
+    <td class="tg-buwd">Ljung-Box Q(10)</td>
+    <td class="tg-buwd">y<sup>2</sup></td>
+    <td class="tg-buwd">1593.7</td>
+    <td class="tg-buwd">&lt;0.001</td>
+  </tr>
+  <tr>
+    <td class="tg-qlrq">Ljung-Box Q(20)</td>
+    <td class="tg-qlrq">y<sup>2</sup></td>
+    <td class="tg-qlrq">2005.6</td>
+    <td class="tg-qlrq">&lt;0.001</td>
+  </tr>
+  <tr>
+    <td class="tg-buwd">Normalidade (Jarque Bera)</td>
+    <td class="tg-buwd">y</td>
+    <td class="tg-buwd">8828</td>
+    <td class="tg-buwd">&lt;0.001</td>
+  </tr>
+  <tr>
+    <td class="tg-qlrq">Normalidade (Shapiro-Wilk)</td>
+    <td class="tg-qlrq">y</td>
+    <td class="tg-qlrq">0.93584</td>
+    <td class="tg-qlrq">&lt;0.001</td>
+  </tr>
+</tbody>
+</table>
+]
+
+]
+
+---
+
+```{r,include=FALSE}
+########### GARCH(1,1) com erros normais #####################
+
+fit <- garchFit(formula = ~garch(1,1), data=y, include.mean = FALSE, cond.dist='norm')
+# summary(fit)
+
+# LM Arch Test para heterocedasticidade residual
+```
+
+
+<center><h1 class="animate__animated animate__wobble">GARCH(1,1) com erros normais</h1></center>
+
+
+
+.panelset[
+.panel[.panel-name[Estimativas]
+
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-91ky{border-color:#c0c0c0;font-size:18px;font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-4f2p{border-color:#c0c0c0;font-size:18px;text-align:center;vertical-align:top}
+.tg .tg-0ve6{background-color:#2f4f4f;border-color:#c0c0c0;color:#ffffff;font-size:26px;font-weight:bold;text-align:center;
+  vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-0ve6"></th>
+    <th class="tg-0ve6">Estimate</th>
+    <th class="tg-0ve6">Std. Error</th>
+    <th class="tg-0ve6">t value </th>
+    <th class="tg-0ve6">Pr(&gt;|t|)</th>
+    <th class="tg-0ve6">Sig</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-91ky">Omega</td>
+    <td class="tg-4f2p">1.871x10<sup>-05</sup></td>
+    <td class="tg-4f2p">3.585x10<sup>-06</sup></td>
+    <td class="tg-4f2p">5.220&nbsp;&nbsp;</td>
+    <td class="tg-4f2p">&lt;0.001</td>
+    <td class="tg-4f2p">***</td>
+  </tr>
+  <tr>
+    <td class="tg-91ky">Alpha<sub>1</sub></td>
+    <td class="tg-4f2p">8.860x10<sup>-02</sup></td>
+    <td class="tg-4f2p">9.914x10<sup>-03</sup></td>
+    <td class="tg-4f2p">8.937</td>
+    <td class="tg-4f2p">&lt;0.001</td>
+    <td class="tg-4f2p">***</td>
+  </tr>
+  <tr>
+    <td class="tg-91ky">Beta<sub>1</sub></td>
+    <td class="tg-4f2p">8.821x10<sup>-01</sup></td>
+    <td class="tg-4f2p">1.284x10<sup>-02</sup></td>
+    <td class="tg-4f2p">68.714</td>
+    <td class="tg-4f2p">&lt;0.001</td>
+    <td class="tg-4f2p">***</td>
+  </tr>
+  <tr>
+    <td class="tg-91ky" colspan="2">AIC</td>
+    <td class="tg-91ky">BIC</td>
+    <td class="tg-91ky">SIC</td>
+    <td class="tg-91ky" colspan="2">HQIC</td>
+  </tr>
+  <tr>
+    <td class="tg-4f2p" colspan="2">-4.712986</td>
+    <td class="tg-4f2p">-4.707444</td>
+    <td class="tg-4f2p">-4.712987</td>
+    <td class="tg-4f2p" colspan="2">-4.711002</td>
+  </tr>
+</tbody>
+</table>
+
+]
+
+.panel[.panel-name[Gráficos dos resíduos]
+<div class="animate__animated  animate__lightSpeedInRight">
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+### resíduos padronizados
+stdResiduals <- fit@residuals/sqrt(fit@h.t)
+par(mfrow=c(2,2))
+plot.ts(stdResiduals)
+acf(stdResiduals^2,main='FAC dos resíduos²')
+pacf(stdResiduals^2,main='FACP dos resíduos²')
+### ader?ncia ###
+qqnorm(stdResiduals,main = " ")
+qqline(stdResiduals)
+```
+
+</div>
+]
+.panel[.panel-name[Estatísticas dos testes]
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-6alp{background-color:#EFEFEF;border-color:#efefef;font-size:16px;text-align:center;vertical-align:top}
+.tg .tg-0cf8{background-color:#FFF;border-color:#efefef;font-size:16px;text-align:center;vertical-align:top}
+.tg .tg-buwd{background-color:#efefef;border-color:#efefef;font-size:16px;text-align:center;vertical-align:top}
+.tg .tg-c26g{background-color:#2f4f4f;border-color:#efefef;color:#ffffff;font-size:24px;font-weight:bold;text-align:center;
+  vertical-align:top}
+.tg .tg-qlrq{background-color:#ffffff;border-color:#efefef;font-size:16px;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-c26g">Teste</th>
+    <th class="tg-c26g">Residuals</th>
+    <th class="tg-c26g">Estatística</th>
+    <th class="tg-c26g">Valor p</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-qlrq">ARCH Engle</td>
+    <td class="tg-qlrq">R</td>
+    <td class="tg-qlrq">3.518</td>
+    <td class="tg-qlrq">0.9906465</td>
+  </tr>
+  <tr>
+    <td class="tg-6alp">Ljung-Box Q(10)</td>
+    <td class="tg-buwd">R</td>
+    <td class="tg-buwd">9.205</td>
+    <td class="tg-buwd">0.513</td>
+  </tr>
+  <tr>
+    <td class="tg-0cf8">Ljung-Box Q(15)</td>
+    <td class="tg-qlrq">R</td>
+    <td class="tg-qlrq">17.01</td>
+    <td class="tg-qlrq">0.318</td>
+  </tr>
+  <tr>
+    <td class="tg-buwd">Ljung-Box Q(20)</td>
+    <td class="tg-buwd">R</td>
+    <td class="tg-6alp">18.547</td>
+    <td class="tg-6alp">0.551</td>
+  </tr>
+  <tr>
+    <td class="tg-qlrq">Ljung-Box Q(10)</td>
+    <td class="tg-qlrq">R<sup>2</sup></td>
+    <td class="tg-qlrq">2.423</td>
+    <td class="tg-qlrq">0.993</td>
+  </tr>
+  <tr>
+    <td class="tg-buwd">Ljung-Box Q(15)</td>
+    <td class="tg-buwd">R<sup>2</sup></td>
+    <td class="tg-buwd">4.304</td>
+    <td class="tg-buwd">0.997</td>
+  </tr>
+  <tr>
+    <td class="tg-qlrq">Ljung-Box Q(20)</td>
+    <td class="tg-0cf8">R<sup>2</sup></td>
+    <td class="tg-qlrq">5.714</td>
+    <td class="tg-qlrq">0.991</td>
+  </tr>
+  <tr>
+    <td class="tg-buwd">Normalidade (Jarque Bera)</td>
+    <td class="tg-buwd">R</td>
+    <td class="tg-buwd">2084.992</td>
+    <td class="tg-buwd">&lt;0.001</td>
+  </tr>
+  <tr>
+    <td class="tg-qlrq">Normalidade (Shapiro-Wilk)</td>
+    <td class="tg-qlrq">R</td>
+    <td class="tg-qlrq">0.976</td>
+    <td class="tg-qlrq">&lt;0.001</td>
+  </tr>
+</tbody>
+</table>
+]
+
+.panel[.panel-name[Retornos e Volatilidade]
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right',warning=FALSE}
+### Gr?fico de Retornos + VaR(95%)
+VaR_95l <- qnorm(0.95,mean=0,sd=sqrt(fit@h.t))
+VaR_95l <- xts(VaR_95l, order.by=index(y))
+VaR_95 <- qnorm(0.05,mean=0,sd=sqrt(fit@h.t))
+VaR_95 <- xts(VaR_95, order.by=index(y))
+
+
+y %>%
+  hchart(name = "Retornos") %>%
+  hc_add_series(VaR_95,name = "VaR(95%)") %>% 
+   hc_add_series(VaR_95l,name = "VaR(5%)") %>% 
+  hc_add_theme(thm2)
+# plot(cbind(y, VaR_95,VaR_95l), main='Retornos e VaR(95%)')
+```
+
+]
+]
+
+---
+
+<center><h1 class="animate__animated animate__wobble">Com erros t-student assimetrica padronizada (sstd)</h1></center>
+
+```{r,include=FALSE}
+###### GARCH(1,1) com erros t-student assimetrica padronizada (sstd) #########
+fit2 <- garchFit(formula = ~garch(1,1) ,data=y, include.mean = FALSE, cond.dist='sstd')
+
+summary(fit2)
+
+EMV <- fit2@fit$par
+```
+
+.panelset[
+.panel[.panel-name[Estimativas]
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-s1h2{background-color:#efefef;border-color:#c0c0c0;font-size:18px;font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-frgn{background-color:#efefef;border-color:#c0c0c0;font-size:18px;text-align:center;vertical-align:top}
+.tg .tg-0ve6{background-color:#2f4f4f;border-color:#c0c0c0;color:#ffffff;font-size:26px;font-weight:bold;text-align:center;
+  vertical-align:top}
+.tg .tg-af71{background-color:#ffffff;border-color:#c0c0c0;font-size:18px;font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-mp7g{background-color:#ffffff;border-color:#c0c0c0;font-size:18px;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-0ve6"></th>
+    <th class="tg-0ve6">Estimate</th>
+    <th class="tg-0ve6">Std. Error</th>
+    <th class="tg-0ve6">t value </th>
+    <th class="tg-0ve6">Pr(&gt;|t|)</th>
+    <th class="tg-0ve6">Sig</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-af71">Omega</td>
+    <td class="tg-mp7g">1.876x10<sup>-05</sup></td>
+    <td class="tg-mp7g">4.499x10<sup>-06</sup></td>
+    <td class="tg-mp7g">4.171</td>
+    <td class="tg-mp7g">&lt;0.001</td>
+    <td class="tg-mp7g">***</td>
+  </tr>
+  <tr>
+    <td class="tg-s1h2">Alpha<sub>1</sub></td>
+    <td class="tg-frgn">9.186x10<sup>-02</sup></td>
+    <td class="tg-frgn">1.324x10<sup>-02</sup></td>
+    <td class="tg-frgn">6.939</td>
+    <td class="tg-frgn">&lt;0.001</td>
+    <td class="tg-frgn">***</td>
+  </tr>
+  <tr>
+    <td class="tg-af71">Beta<sub>1</sub></td>
+    <td class="tg-mp7g">8.783x10<sup>-01</sup></td>
+    <td class="tg-mp7g">1.681x10<sup>-02</sup></td>
+    <td class="tg-mp7g">52.251</td>
+    <td class="tg-mp7g">&lt;0.001</td>
+    <td class="tg-mp7g">***</td>
+  </tr>
+  <tr>
+    <td class="tg-s1h2">Skew</td>
+    <td class="tg-frgn">1.019</td>
+    <td class="tg-frgn">2.306x10<sup>-02</sup></td>
+    <td class="tg-frgn">44.211</td>
+    <td class="tg-frgn">&lt;0.001</td>
+    <td class="tg-frgn">***</td>
+  </tr>
+  <tr>
+    <td class="tg-af71">Shape</td>
+    <td class="tg-mp7g">6.450</td>
+    <td class="tg-mp7g">6.940x10<sup>-01</sup></td>
+    <td class="tg-mp7g">9.293</td>
+    <td class="tg-mp7g">&lt;0.001</td>
+    <td class="tg-mp7g">***</td>
+  </tr>
+  <tr>
+    <td class="tg-s1h2" colspan="2">AIC</td>
+    <td class="tg-s1h2">BIC</td>
+    <td class="tg-s1h2">SIC</td>
+    <td class="tg-s1h2" colspan="2">HQIC</td>
+  </tr>
+  <tr>
+    <td class="tg-mp7g" colspan="2">-4.771243</td>
+    <td class="tg-mp7g">-4.762007</td>
+    <td class="tg-mp7g">-4.771247</td>
+    <td class="tg-mp7g" colspan="2">-4.767937</td>
+  </tr>
+</tbody>
+</table>
+
+]
+
+.panel[.panel-name[Gráficos dos resíduos]
+<div class="animate__animated  animate__lightSpeedInRight">
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+### resíduos padronizados
+stdResiduals2 <- fit2@residuals/sqrt(fit2@h.t)
+par(mfrow=c(2,2))
+plot.ts(stdResiduals2)
+acf(stdResiduals2^2,main='FAC dos resíduos²')
+pacf(stdResiduals2^2,main='FACP dos resíduos²')
+### ader?ncia ###
+x <- rsstd(n=1000, mean=0,sd=1,nu=EMV["shape"], xi=EMV["skew"])
+qqplot(stdResiduals2,  x , main='QQPlot SSTD')
+qqline(stdResiduals2)
+```
+
+</div>
+]
+
+.panel[.panel-name[Estatísticas dos testes]
+
+```{r,include=FALSE}
+### res?duos padronizados
+
+ks.test(stdResiduals2, 'psstd', mean=0,sd=1,nu=EMV["shape"], xi=EMV["skew"] )
+```
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-6alp{background-color:#EFEFEF;border-color:#efefef;font-size:16px;text-align:center;vertical-align:top}
+.tg .tg-0cf8{background-color:#FFF;border-color:#efefef;font-size:16px;text-align:center;vertical-align:top}
+.tg .tg-buwd{background-color:#efefef;border-color:#efefef;font-size:16px;text-align:center;vertical-align:top}
+.tg .tg-c26g{background-color:#2f4f4f;border-color:#efefef;color:#ffffff;font-size:24px;font-weight:bold;text-align:center;
+  vertical-align:top}
+.tg .tg-qlrq{background-color:#ffffff;border-color:#efefef;font-size:16px;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-c26g">Teste</th>
+    <th class="tg-c26g">Residuals</th>
+    <th class="tg-c26g">Estatística</th>
+    <th class="tg-c26g">Valor p</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-qlrq">ARCH Engle</td>
+    <td class="tg-qlrq">R</td>
+    <td class="tg-qlrq">3.570</td>
+    <td class="tg-qlrq">0.990</td>
+  </tr>
+  <tr>
+    <td class="tg-6alp">Ljung-Box Q(10)</td>
+    <td class="tg-buwd">R</td>
+    <td class="tg-buwd">9.291</td>
+    <td class="tg-buwd">0.505</td>
+  </tr>
+  <tr>
+    <td class="tg-0cf8">Ljung-Box Q(15)</td>
+    <td class="tg-qlrq">R</td>
+    <td class="tg-qlrq">17.09</td>
+    <td class="tg-qlrq">0.313</td>
+  </tr>
+  <tr>
+    <td class="tg-buwd">Ljung-Box Q(20)</td>
+    <td class="tg-buwd">R</td>
+    <td class="tg-6alp">18.653</td>
+    <td class="tg-6alp">0.544</td>
+  </tr>
+  <tr>
+    <td class="tg-qlrq">Ljung-Box Q(10)</td>
+    <td class="tg-qlrq">R<sup>2</sup></td>
+    <td class="tg-qlrq">2.353</td>
+    <td class="tg-qlrq">0.993</td>
+  </tr>
+  <tr>
+    <td class="tg-buwd">Ljung-Box Q(15)</td>
+    <td class="tg-buwd">R<sup>2</sup></td>
+    <td class="tg-buwd">4.376</td>
+    <td class="tg-buwd">0.996</td>
+  </tr>
+  <tr>
+    <td class="tg-qlrq">Ljung-Box Q(20)</td>
+    <td class="tg-0cf8">R<sup>2</sup></td>
+    <td class="tg-qlrq">5.798</td>
+    <td class="tg-qlrq">0.999</td>
+  </tr>
+  <tr>
+    <td class="tg-buwd">Normalidade (Jarque Bera)</td>
+    <td class="tg-buwd">R</td>
+    <td class="tg-buwd">2087.838</td>
+    <td class="tg-buwd">&lt;0.001</td>
+  </tr>
+  <tr>
+    <td class="tg-qlrq">Aderência (Kolmogorov-Smirnov)</td>
+    <td class="tg-qlrq">R</td>
+    <td class="tg-qlrq">0.0177</td>
+    <td class="tg-qlrq">0.252</td>
+  </tr>
+</tbody>
+</table>
+]
+
+.panel[.panel-name[Retornos e Volatilidade]
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right',warning=FALSE}
+### Gr?fico de Retornos + VaR(95%)
+VaR_95l2 <-  qsstd(0.95, mean=fit2@fitted, sd = sqrt( fit2@h.t ), nu=EMV["shape"], xi=EMV["skew"])
+VaR_95l2 <- xts(VaR_95l2, order.by=index(y))
+VaR_952 <-  qsstd(0.05, mean=fit2@fitted, sd = sqrt( fit2@h.t ), nu=EMV["shape"], xi=EMV["skew"])
+VaR_952 <- xts(VaR_952, order.by=index(y))
+
+y %>%
+  hchart(name = "Retornos") %>%
+  hc_add_series(VaR_952,name = "VaR(95%)") %>% 
+   hc_add_series(VaR_95l2,name = "VaR(5%)") %>% 
+  hc_add_theme(thm2)
+# plot(cbind(y, VaR_95,VaR_95l), main='Retornos e VaR(95%)')
+```
+
+]
+
+]
+
+---
+
+<center><h1 class="animate__animated animate__wobble">Comparando os Modelos </h1></center>
+
+```{r,include=FALSE}
+# taxa de cobertura
+mean(y < VaR_952)
+mean(y < VaR_95)
+```
+
+.panelset[
+.panel[.panel-name[Previsão da volatilidade]
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right',warning=FALSE}
+### Previs?o da volatilidade
+par(mfrow=c(1,2))
+forec = predict(fit,n.ahead=252)
+plot(forec$standardDeviation^2,main='Previsão da volatilidade (Normal)',ylab = " ")
+forec2 = predict(fit2,n.ahead=252)
+plot(forec2$standardDeviation^2,main='Previsão da volatilidade (SSTD)',ylab = " ")
+```
+
+]
+
+.panel[.panel-name[Taxa de cobertura]
+
+* 0.04267 de taxa de cobertura para o modelo GARCH(1,1) com a componente de erro Normal
+
+* 0.04843 de taxa de cobertura para o modelo GARCH(1,1) com a componente de erro SSTD
+
+]
+
+.panel[.panel-name[VaR - Value at Risk]
+```{r,include=FALSE,echo=FALSE}
+h = predict(fit,n.ahead=22)[,3]^2
+qnorm(0.95,mean=0,sd=sqrt(sum(h[1:5]))) # 1 semana:
+qnorm(0.95,mean=0,sd=sqrt(sum(h))) # 1 mes
+
+h2 = predict(fit2,n.ahead=22)[,3]^2
+qsstd(0.95, mean=0, sd = sqrt(sum(h[1:5])), nu=EMV["shape"], xi=EMV["skew"])
+qsstd(0.95, mean=0, sd = sqrt(sum(h)), nu=EMV["shape"], xi=EMV["skew"])
+```
+
+* A ideia básica do VaR é responder a seguinte pergunta: Em condições normais do mercado, qual a perda máxima esperada dentro de um horizonte de tempo e de uma probabilidade?
+
+<center><h3 class="animate__animated animate__wobble">VaR(95%) para 1 semana e 1 mês  via modelo GARCH(1,1) com erros N(0,1).</h3></center>
+
+* Com 95% de probabilidade, a perda máxima esperada para um semana é de 6,92% do capital investido
+
+* Com 95% de probabilidade, a perda máxima esperada para um mês é de 15,7% do capital investido
+
+<center><h3 class="animate__animated animate__wobble">VaR(95%) para 1 semana e 1 mês  via modelo GARCH(1,1) com erros (SSTD).</h3></center>
+
+* Com 95% de probabilidade, a perda máxima esperada para um semana é de 6,76% do capital investido
+
+* Com 95% de probabilidade, a perda máxima esperada para um mês é de 15,3% do capital investido
+]
+.panel[.panel-name[.]
+
+```{r,collapse=TRUE}
+## perda máxima esperada para um mês de R$ 1.000.000,00 N(0,1)
+(Vn <- 100000*0.1569757)
+
+## perda máxima esperada para um mês de R$ 1.000.000,00 (SSTD)
+(Vt <- 100000*0.1533397)
+
+##  Diferencia
+Vn - Vt
+```
+
+
+]
+
+]
+
+
