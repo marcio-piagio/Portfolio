@@ -1,0 +1,1181 @@
+---
+title: "Seminário — séries temporais<br><br><br><br>"
+subtitle: "Vendas no Varejo em Lojas de Artigos Esportivos."
+author: " Márcio Roger Piagio <br><br><br><br><br>"
+date: '23 de abril de 2023'
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts, custom.css]
+    lib_dir: libs
+    nature:
+      highlightStyle: rainbow
+      highlightLines: false
+      highlightSpans: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+      ratio: "16:9"
+---
+<head>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
+</head>
+
+```{r xaringan-tile-view, echo=FALSE}
+xaringanExtra::use_tile_view()
+```
+
+```{r xaringan-animate-all, echo=FALSE}
+xaringanExtra::use_animate_all("fade")
+```
+
+```{r xaringan-slide-tone, echo=FALSE}
+xaringanExtra::use_slide_tone()
+```
+
+```{r xaringan-panelset, echo=FALSE}
+xaringanExtra::use_panelset()
+```
+
+```{css echo=FALSE}
+.panelset {
+  --panel-tab-foreground: currentColor;
+  --panel-tab-active-foreground: darkslategrey;
+  --panel-tab-hover-foreground: #d22;
+  --panel-tabs-border-bottom: #ddd;
+  --panel-tab-inactive-opacity: 0.3;
+  --panel-tab-font-family: Roboto, Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;\
+}
+```
+
+```{r, include=FALSE}
+library(dplyr)
+library(viridisLite)
+library(forecast)
+# library(treemap)
+library(highcharter)
+library(ggplot2)
+library(htmltools)
+require(magrittr)
+library(kableExtra)
+```
+
+
+```{r, include=FALSE}
+thm <- 
+  hc_theme(
+    colors = c("darkslategrey","#ff0000","#00ffff","#00ffff", "#ff6600","#ff6600",
+               "#ffff00","#ffff00","#663300","#663300","#00ff00","#00ff00","#660066","#660066"),
+    chart = list(
+      backgroundColor = "transparent",
+      style = list(fontFamily = "Source Sans Pro")
+    ),
+    xAxis = list(
+      gridLineWidth = 1
+    )
+  )
+
+thm2 <- 
+  hc_theme(
+    colors = c("#ff0000","steelblue"),
+    chart = list(
+      backgroundColor = "transparent",
+      style = list(fontFamily = "Source Sans Pro")
+    ),
+    xAxis = list(
+      gridLineWidth = 1
+    )
+  )
+```
+
+
+```{r, include=FALSE}
+esport <- readxl::read_excel("arq/esport.xls", 
+                     col_types = c("date", "numeric"))
+
+dados <- esport$`Milhões de dólares`[esport$Data >= "2000-01-01"]
+
+Xt <- ts(dados,start=c(2000, 1), frequency = 12)
+
+Xt_teste  <- window(Xt, start=c(2022, 1))
+Xt_treino <- window(Xt, end=c(2021, 12))
+```
+
+<center><h1 class="animate__animated  animate__rubberBand">Descrição do banco de dados.</h1></center>
+
+.panelset[
+.panel[.panel-name[Apresentação]
+
+- Frequência:  Mensal.
+
+- Tempo da série: janeiro de 2000 até Dezembro de 2022.
+
+- Quatidade de observações: 276.
+
+- Unidades: Milhões de dólares.
+
+- Separado para teste: 12 observações de janeiro de 2022 até Dezembro de 2022
+
+- Fonte: <https://www.census.gov/>
+]
+
+
+.panel[.panel-name[Dados]
+
+<div class="animate__animated  animate__lightSpeedInRight">
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+x1 <- Xt[seq(1, by = 12, length.out = 23)]
+x2 <- Xt[seq(2, by = 12, length.out = 23)]
+x3 <- Xt[seq(3, by = 12, length.out = 23)]
+x4 <- Xt[seq(4, by = 12, length.out = 23)]
+x5 <- Xt[seq(5, by = 12, length.out = 23)]
+x6 <- Xt[seq(6, by = 12, length.out = 23)]
+x7 <- Xt[seq(7, by = 12, length.out = 23)]
+x8 <- Xt[seq(8, by = 12, length.out = 23)]
+x9 <- Xt[seq(9, by = 12, length.out = 23)]
+x10 <- Xt[seq(10, by = 12, length.out = 23)]
+x11 <- Xt[seq(11, by = 12, length.out = 23)]
+x12 <- Xt[seq(12, by = 12, length.out = 23)]
+
+dataXt <- data.frame(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12) 
+
+colnames(dataXt) <- c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct",
+                      "Nov","Dec")
+row.names(dataXt) <- 2000:2022
+
+table_options <- function() {
+  list(
+    dom = 'Bfrtip',
+    #Bfrtip
+    pageLength = 10,
+    buttons = list(
+      c('copy', 'csv', 'excel', 'pdf', 'print'),
+      list(
+        extend = "collection",
+        text = 'Show All',
+        action = DT::JS(
+          "function ( e, dt, node, config ) {
+          dt.page.len(-1);
+          dt.ajax.reload();}"
+        )
+        ),
+      list(
+        extend = "collection",
+        text = 'Show Less',
+        action = DT::JS(
+          "function ( e, dt, node, config ) {
+          dt.page.len(10);
+          dt.ajax.reload();}"
+        )
+        )
+        ),
+    deferRender = TRUE,
+    lengthMenu = list(c(10, 20,-1), c('10', '20', 'All')),
+    searching = FALSE,
+    editable = TRUE,
+    scroller = TRUE,
+    lengthChange = FALSE
+    ,
+    initComplete = JS(
+      "function(settings, json) {",
+    "$(this.api().table().header()).css({'background-color': 'darkslategrey', 'color': '#fff', 'font-size': '15px', 'text-align':'center'});","$(this.api().table().body()).css({'background-color': '#fff', 'color': 'black', 'font-size': '15px', 'text-align':'center'});",
+    "}"
+    )
+      )
+}
+
+DT::datatable(dataXt,class = 'cell-border stripe',
+              fillContainer = FALSE,
+              options = table_options)
+
+```
+
+</div>
+]
+
+.panel[.panel-name[Gráfico da Série]
+
+<div class="animate__animated  animate__fadeInTopLeft">
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+Xt_treino %>%
+  hchart(name = "Treino") %>%
+  hc_add_series(Xt_teste, name = 'Teste') %>% 
+  hc_yAxis(title = list(text = "milhões de dólares")) %>% 
+  hc_add_theme(thm)
+  
+```
+
+</div>
+]
+
+.panel[.panel-name[Tendência e Sazonalidade]
+
+<div class="animate__animated animate__fadeInBottomRight">
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+mstlXt <- mstl(Xt_treino)
+plot(mstlXt[,2:3],col = "darkslategrey",main = "")
+```
+
+</div>
+]
+
+]
+
+---
+
+<center><h1 class="animate__animated animate__swing">Identificando o Modelo</h1></center>
+
+.panelset[
+.panel[.panel-name[FAC]
+
+```{r,include=FALSE}
+a <- Acf(as.vector(Xt_treino), lag.max = 60)
+# b <- Pacf(as.vector(Xt_treino), lag.max = 60)
+```
+
+<div class="animate__animated  animate__fadeInTopRight">
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+hchart(a)%>% 
+  hc_add_theme(thm)%>% 
+    hc_legend(NULL)
+```
+
+</div>
+
+]
+
+.panel[.panel-name[Série(log, dif)]
+
+<div class="animate__animated  animate__fadeInBottomLeft">
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+diff(log(Xt_treino)) %>%
+  hchart(name = "Vendas de Artigos Esportivos (log)") %>%
+  hc_yAxis(title = list(text = "milhões de dólares")) %>% 
+  hc_add_theme(thm)%>% 
+    hc_legend(NULL)
+```
+
+</div>
+]
+
+.panel[.panel-name[FAC(log, dif)]
+```{r,include=FALSE}
+a2 <- Acf(diff(log(as.vector(Xt_treino))), lag.max = 60)
+# b2 <- Pacf(diff(log(as.vector(Xt_treino))), lag.max = 60)
+```
+
+<div class="animate__animated  animate__zoomInUp">
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+hchart(a2)%>% 
+  hc_add_theme(thm)%>% 
+    hc_legend(NULL)
+```
+
+</div>
+
+]
+
+.panel[.panel-name[Série(log, dif, dif[12])]
+
+<div class="animate__animated  animate__zoomInRight">
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+diff(diff(log(Xt_treino)),lag = 12) %>%
+  hchart(name = "Vendas de Artigos Esportivos (log, diff e diff-12)") %>%
+  hc_yAxis(title = list(text = "milhões de dólares")) %>% 
+  hc_add_theme(thm)%>% 
+    hc_legend(NULL)
+```
+
+</div>
+]
+
+.panel[.panel-name[FAC(dif[12])]
+
+```{r,include=FALSE}
+a3 <- Acf(diff(diff(log(as.vector(Xt_treino))), lag = 12), lag.max = 60)
+b3 <- Pacf(diff(diff(log(as.vector(Xt_treino))), lag = 12), lag.max = 60)
+```
+
+<div class="animate__animated animate__zoomInLeft">
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+hchart(a3)%>% 
+  hc_add_theme(thm)%>% 
+    hc_legend(NULL)
+```
+
+</div>
+]
+
+.panel[.panel-name[FACP(dif[12])]
+
+<div class="animate__animated animate__zoomInDown">
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+hchart(b3)%>% 
+  hc_add_theme(thm)%>% 
+    hc_legend(NULL)
+
+```
+
+</div>
+]
+]
+
+---
+
+
+<center><h1 class="animate__animated animate__wobble">SARIMA(0,1,2)(0,1,1)<sub>12</sub></h1></center>
+
+.panelset[
+.panel[.panel-name[Estimativas]
+
+<div class="animate__animated animate__flipInX">
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-a1d7{background-color:#efefef;border-color:#c0c0c0;color:#000000;font-size:18px;text-align:center;vertical-align:top}
+.tg .tg-dzn6{background-color:#2F4F4F;border-color:#c0c0c0;color:#ffffff;font-size:26px;font-weight:bold;text-align:center;
+  vertical-align:top}
+.tg .tg-uxnu{background-color:#ffffff;border-color:#c0c0c0;color:#000000;font-size:18px;text-align:left;vertical-align:top}
+.tg .tg-q854{background-color:#ffffff;border-color:#c0c0c0;color:#000000;font-size:18px;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-dzn6"><span style="font-weight:bold;background-color:darkslategrey">Coef</span></th>
+    <th class="tg-dzn6"><span style="font-weight:bold;background-color:darkslategrey">ma<sub>1</sub></span></th>
+    <th class="tg-dzn6"><span style="font-weight:bold;background-color:darkslategrey">ma<sub>2</sub></span></th>
+    <th class="tg-dzn6"><span style="font-weight:bold;background-color:darkslategrey">sma<sub>1</sub></span></th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-uxnu"></td>
+    <td class="tg-q854">-0.2647</td>
+    <td class="tg-q854">-0.3494</td>
+    <td class="tg-q854">-0.7848</td>
+  </tr>
+  <tr>
+    <td class="tg-a1d7">s.e.</td>
+    <td class="tg-a1d7">0.0580</td>
+    <td class="tg-a1d7">0.0550</td>
+    <td class="tg-a1d7">0.0473</td>
+  </tr>
+  <tr>
+    <td class="tg-q854" colspan="2">sigma<sup>2</sup> = 0.002908:</td>
+    <td class="tg-q854" colspan="2">log likelihood = 372.44</td>
+  </tr>
+  <tr>
+    <td class="tg-a1d7">AIC=-736.8</td>
+    <td class="tg-a1d7" colspan="2">AICc=-736.72</td>
+    <td class="tg-a1d7">BIC=-722.78</td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+
+]
+.panel[.panel-name[Análise de resíduos]
+
+<div class="animate__animated animate__flipInY">
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-a1d7{background-color:#efefef;border-color:#c0c0c0;color:#000000;font-size:18px;text-align:center;vertical-align:top}
+.tg .tg-dzn6{background-color:#2F4F4F;border-color:#c0c0c0;color:#ffffff;font-size:26px;font-weight:bold;text-align:center;
+  vertical-align:top}
+.tg .tg-q854{background-color:#ffffff;border-color:#c0c0c0;color:#000000;font-size:18px;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-dzn6">Teste</th>
+    <th class="tg-dzn6">Estatística</th>
+    <th class="tg-dzn6">Valor P</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-q854">Estacionaridade (KPSS)</td>
+    <td class="tg-q854">0.12144</td>
+    <td class="tg-q854">0.1</td>
+  </tr>
+  <tr>
+    <td class="tg-a1d7">Independência (Box-Pierce)</td>
+    <td class="tg-a1d7">18.972</td>
+    <td class="tg-a1d7">0.124</td>
+  </tr>
+  <tr>
+    <td class="tg-q854">Independência (Ljung-Box)</td>
+    <td class="tg-q854">19.809</td>
+    <td class="tg-q854">0.1001</td>
+  </tr>
+  <tr>
+    <td class="tg-a1d7">Normalidade (Shapiro-Wilk)</td>
+    <td class="tg-a1d7">0.81369</td>
+    <td class="tg-a1d7">&lt;0.001</td>
+  </tr>
+  <tr>
+    <td class="tg-q854">Normalidade (Jarque Bera)</td>
+    <td class="tg-q854">2283.9</td>
+    <td class="tg-q854">&lt;0.001</td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+
+]
+
+.panel[.panel-name[Gráfico de resíduos]
+
+<div class="animate__animated animate__bounceInUp">
+
+```{r,echo=FALSE,fig.width=12,fig.height=8,fig.align='right'}
+
+fit <- Arima(Xt_treino, order = c(0, 1, 2), seasonal=list(order=c(0, 1, 1), period=12),
+                 include.constant = T, lambda = 0)
+
+```
+
+<embed src="arq/3.png" width="1150px" height="500px"/>
+
+</div>
+
+]
+
+.panel[.panel-name[FACP dos resíduos]
+
+<div class="animate__animated animate__bounceInUp">
+
+```{r,include=FALSE}
+br <- Pacf(as.vector(fit$residuals), lag.max = 60)
+```
+
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+hchart(br) %>% 
+  hc_add_theme(thm)%>% 
+    hc_legend(NULL)
+```
+
+</div>
+]
+
+.panel[.panel-name[Série estimada]
+
+<div class="animate__animated animate__lightSpeedInLeft">
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+Xt_treino %>%
+  hchart(name = "Vendas de Artigos Esportivos") %>%
+  hc_add_series(ts(fit$fitted,start = c(2000,1), frequency=12),name = "SARIMA(0,1,2)(0,1,1)[12]") %>% 
+  hc_yAxis(title = list(text = "milhões de dólares")) %>% 
+  hc_add_theme(thm2)
+```
+
+</div>
+
+]
+]
+
+---
+
+
+<center><h1 class="animate__animated animate__wobble">AUTO-ARIMA  --  SARIMA(1,0,2)(1,1,1)<sub>12</sub></h1></center>
+
+.panelset[
+
+.panel[.panel-name[Estimativas]
+
+<div class="animate__animated animate__flipInX">
+
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-a1d7{background-color:#efefef;border-color:#c0c0c0;color:#000000;font-size:18px;text-align:center;vertical-align:top}
+.tg .tg-dzn6{background-color:#2F4F4F;border-color:#c0c0c0;color:#ffffff;font-size:26px;font-weight:bold;text-align:center;
+  vertical-align:top}
+.tg .tg-0ve6{background-color:#2f4f4f;border-color:#c0c0c0;color:#ffffff;font-size:26px;font-weight:bold;text-align:center;
+  vertical-align:top}
+.tg .tg-q854{background-color:#ffffff;border-color:#c0c0c0;color:#000000;font-size:18px;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-dzn6">Coef</th>
+    <th class="tg-dzn6">ar<sub>1</sub></th>
+    <th class="tg-0ve6">ma<sub>1</sub></th>
+    <th class="tg-0ve6">ma<sub>2</sub></th>
+    <th class="tg-0ve6">sar<sub>1</sub></th>
+    <th class="tg-0ve6">sma<sub>1</sub></th>
+    <th class="tg-dzn6">drift</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-q854"></td>
+    <td class="tg-q854">0.9643</td>
+    <td class="tg-q854">-0.2466</td>
+    <td class="tg-q854">-0.3263</td>
+    <td class="tg-q854">-0.0423</td>
+    <td class="tg-q854">-0.7709</td>
+    <td class="tg-q854">0.0666</td>
+  </tr>
+  <tr>
+    <td class="tg-a1d7">s.e.</td>
+    <td class="tg-a1d7">0.0226</td>
+    <td class="tg-a1d7">0.0635</td>
+    <td class="tg-a1d7">0.0986</td>
+    <td class="tg-a1d7">0.0986</td>
+    <td class="tg-a1d7">0.0035</td>
+    <td class="tg-a1d7">0.0008</td>
+  </tr>
+  <tr>
+    <td class="tg-q854" colspan="4">sigma2 = 0.002887:</td>
+    <td class="tg-q854" colspan="3">log likelihood = 376.53</td>
+  </tr>
+  <tr>
+    <td class="tg-a1d7" colspan="3">AIC=-739.06</td>
+    <td class="tg-a1d7" colspan="2">AICc=-738.6</td>
+    <td class="tg-a1d7" colspan="2">BIC=-714.36</td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+]
+.panel[.panel-name[Análise de resíduos]
+
+<div class="animate__animated animate__flipInY">
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-a1d7{background-color:#efefef;border-color:#c0c0c0;color:#000000;font-size:18px;text-align:center;vertical-align:top}
+.tg .tg-dzn6{background-color:#2F4F4F;border-color:#c0c0c0;color:#ffffff;font-size:26px;font-weight:bold;text-align:center;
+  vertical-align:top}
+.tg .tg-q854{background-color:#ffffff;border-color:#c0c0c0;color:#000000;font-size:18px;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-dzn6">Teste</th>
+    <th class="tg-dzn6">Estatística</th>
+    <th class="tg-dzn6">Valor P</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-q854">Estacionaridade (KPSS)</td>
+    <td class="tg-q854">0.099099</td>
+    <td class="tg-q854">0.1</td>
+  </tr>
+  <tr>
+    <td class="tg-a1d7">Independência (Box-Pierce)</td>
+    <td class="tg-a1d7">20.598</td>
+    <td class="tg-a1d7">0.05659</td>
+  </tr>
+  <tr>
+    <td class="tg-q854">Independência (Ljung-Box)</td>
+    <td class="tg-q854">21.501</td>
+    <td class="tg-q854">0.04351</td>
+  </tr>
+  <tr>
+    <td class="tg-a1d7">Normalidade (Shapiro-Wilk)</td>
+    <td class="tg-a1d7">0.81806</td>
+    <td class="tg-a1d7">&lt;0.001</td>
+  </tr>
+  <tr>
+    <td class="tg-q854">Normalidade (Jarque Bera)</td>
+    <td class="tg-q854">2083</td>
+    <td class="tg-q854">&lt;0.001</td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+
+]
+
+.panel[.panel-name[Gráfico de resíduos]
+
+<div class="animate__animated animate__bounceInUp">
+
+```{r,echo=FALSE,fig.width=12,fig.height=8,fig.align='right'}
+
+fit2 <- Arima(Xt_treino, order = c(1, 0, 2),seasonal = list(order = c(1, 1, 1),period = 12),
+                 include.constant = T, lambda = 0)
+```
+
+<embed src="arq/4.png" width="1150px" height="500px"/>
+
+</div>
+]
+
+.panel[.panel-name[FACP dos resíduos]
+
+<div class="animate__animated animate__bounceInUp">
+
+```{r,include=FALSE}
+br <- Pacf(as.vector(fit2$residuals), lag.max = 60)
+```
+
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+hchart(br) %>% 
+  hc_add_theme(thm)%>% 
+    hc_legend(NULL)
+```
+
+</div>
+]
+
+.panel[.panel-name[Série estimada]
+
+<div class="animate__animated animate__lightSpeedInLeft">
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+Xt_treino %>%
+  hchart(name = "Vendas de Artigos Esportivos") %>%
+  hc_add_series(ts(fit2$fitted,start = c(2000,1), frequency=12),name = "SARIMA(1,0,2)(1,1,1)[12]") %>% 
+  hc_yAxis(title = list(text = "milhões de dólares")) %>% 
+  hc_add_theme(thm2)
+```
+
+</div>
+]
+]
+---
+
+<center><h1 class="animate__animated  animate__fadeInBottomRight">Modelos de Suavização Exponencial </h1></center>
+
+
+.panelset[
+
+.panel[.panel-name[ETS(M,Ad,M)]
+
+<div class="animate__animated animate__flipInX">
+
+<center>
+```{r,echo=FALSE}
+fit3.0 <- ets(Xt_treino, model = "ZZZ")
+
+dataFie3.0 <- as.data.frame(fit3.0$par)
+colnames(dataFie3.0) <- "ETS(M,Ad,M)"
+
+
+
+DT::datatable(dataFie3.0,class = 'cell-border stripe',
+              fillContainer = FALSE, width = "570px",
+              options = table_options)
+```
+</center>
+
+</div>
+]
+
+.panel[.panel-name[Série estimada]
+
+<div class="animate__animated animate__lightSpeedInLeft">
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='center'}
+Xt_treino %>%
+  hchart(name = "Vendas de Artigos Esportivos") %>%
+  hc_add_series(fit3.0$fitted,
+                name = "ETS(M,Ad,M)") %>% 
+  hc_yAxis(title = list(text = "milhões de dólares")) %>% 
+  hc_add_theme(thm2)
+```
+
+</div>
+]
+
+.panel[.panel-name[HW Aditivo]
+
+<div class="animate__animated animate__flipInX">
+
+<center>
+```{r,echo=FALSE}
+fit3    <- HoltWinters(x=Xt_treino, seasonal = "additive")
+# knitr::kable((fit3$coefficients),align = "c", booktabs = TRUE)
+
+dataFie3 <- as.data.frame(fit3$coefficients)
+colnames(dataFie3) <- "α = 0.4708, ß = 0.00136, γ = 0.4942"
+
+
+
+DT::datatable(dataFie3,class = 'cell-border stripe',
+              fillContainer = FALSE, width = "570px",
+              options = table_options)
+```
+</center>
+
+</div>
+]
+
+.panel[.panel-name[Série estimada]
+
+<div class="animate__animated animate__lightSpeedInLeft">
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+Xt_treino %>%
+  hchart(name = "Vendas de Artigos Esportivos") %>%
+  hc_add_series(ts(fit3$fitted[,1],start = c(2001,1), frequency=12),
+                name = 'Holt-Winters aditivo') %>% 
+  hc_yAxis(title = list(text = "milhões de dólares")) %>% 
+  hc_add_theme(thm2)
+```
+
+</div>
+]
+
+.panel[.panel-name[HW Multiplicativo]
+
+<div class="animate__animated animate__flipInX">
+
+<center>
+```{r,echo=FALSE}
+fit4 <- HoltWinters(x=Xt_treino, seasonal = "multiplicative")
+
+dataFie4 <- as.data.frame(fit4$coefficients)
+colnames(dataFie4) <- "α = 0.495, ß = 0, γ = 0.324"
+
+
+
+DT::datatable(dataFie4,class = 'cell-border stripe',
+              fillContainer = FALSE, width = "570px",
+              options = table_options)
+```
+</center>
+
+</div>
+]
+
+.panel[.panel-name[Série estimada]
+
+<div class="animate__animated animate__lightSpeedInLeft">
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='center'}
+Xt_treino %>%
+  hchart(name = "Vendas de Artigos Esportivos") %>%
+  hc_add_series(ts(fit4$fitted[,1],start = c(2001,1), frequency=12),
+                name = 'Holt-Winters multiplicativo') %>% 
+  hc_yAxis(title = list(text = "milhões de dólares")) %>% 
+  hc_add_theme(thm2)
+```
+
+</div>
+]
+]
+
+---
+
+<center><h1 class="animate__animated  animate__fadeInUpBig">Série com intervenção</h1></center>
+
+.panelset[
+.panel[.panel-name[Estimativas]
+
+<div class="animate__animated animate__flipInX">
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-color:#93a1a1;border-spacing:0;border-style:solid;border-width:1px;}
+.tg td{background-color:#fdf6e3;border-color:#93a1a1;border-style:solid;border-width:0px;color:#002b36;
+  font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{background-color:darkslategrey;border-color:#93a1a1;border-style:solid;border-width:0px;color:#fdf6e3;
+  font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-e4rb{background-color:#efefef;border-color:#9b9b9b;color:#000000;font-size:18px;text-align:center;vertical-align:top}
+.tg .tg-juur{background-color:#efefef;border-color:#9b9b9b;color:#000000;font-size:18px;text-align:center;vertical-align:top}
+.tg .tg-lw0b{background-color:#ffffff;border-color:#9b9b9b;color:#000000;font-family:Arial, Helvetica, sans-serif !important;
+  font-size:18px;text-align:center;vertical-align:top}
+.tg .tg-xhcn{background-color:darkslategrey;border-color:#9b9b9b;font-family:Arial, Helvetica, sans-serif !important;font-size:26px;
+  font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-i2cn{background-color:#efefef;border-color:#9b9b9b;color:#000000;font-family:Arial, Helvetica, sans-serif !important;
+  font-size:18px;text-align:center;vertical-align:top}
+.tg .tg-huqt{background-color:#ffffff;border-color:#9b9b9b;color:#000000;font-size:18px;text-align:center;vertical-align:top}
+.tg .tg-o9zd{background-color:#ffffff;border-color:#9b9b9b;color:#000000;font-size:18px;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-xhcn"></th>
+    <th class="tg-xhcn">ar<sub>1</sub></th>
+    <th class="tg-xhcn">ar<sub>2</sub></th>
+    <th class="tg-xhcn">ma<sub>1</sub></th>
+    <th class="tg-xhcn">ma<sub>2</sub></th>
+    <th class="tg-xhcn">ma<sub>3</sub></th>
+    <th class="tg-xhcn">sma<sub>1</sub></th>
+    <th class="tg-xhcn">mar<sub>2020</sub></th>
+    <th class="tg-xhcn">abr<sub>2020</sub></th>
+    <th class="tg-xhcn">jun<sub>2020</sub></th>
+    <th class="tg-xhcn">set<sub>2020</sub></th>
+    <th class="tg-xhcn">abr<sub>2021</sub></th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-huqt"></td>
+    <td class="tg-huqt">-1.1563</td>
+    <td class="tg-huqt">-0.9434</td>
+    <td class="tg-huqt">0.8109</td>
+    <td class="tg-lw0b">0.3711</td>
+    <td class="tg-huqt">-0.3548</td>
+    <td class="tg-huqt">-0.6415</td>
+    <td class="tg-huqt">-0.1957</td>
+    <td class="tg-huqt">-0.5318</td>
+    <td class="tg-o9zd">0.1398</td>
+    <td class="tg-o9zd">0.0857</td>
+    <td class="tg-o9zd">0.1464</td>
+  </tr>
+  <tr>
+    <td class="tg-e4rb">s.e.</td>
+    <td class="tg-e4rb">0.0366</td>
+    <td class="tg-e4rb">0.0297</td>
+    <td class="tg-e4rb">0.0758</td>
+    <td class="tg-i2cn">0.0954</td>
+    <td class="tg-e4rb">0.0812</td>
+    <td class="tg-e4rb">0.0613</td>
+    <td class="tg-e4rb">0.0341</td>
+    <td class="tg-e4rb">0.0297</td>
+    <td class="tg-juur">0.0299</td>
+    <td class="tg-juur">0.0287</td>
+    <td class="tg-juur">0.0327</td>
+  </tr>
+  <tr>
+    <td class="tg-huqt" colspan="4">sigma² = 0.001306</td>
+    <td class="tg-lw0b" colspan="4">log likelihood = 473.67</td>
+    <td class="tg-huqt" colspan="4">aic = -923.34</td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+
+]
+
+.panel[.panel-name[Análise de resíduos]
+
+<div class="animate__animated animate__flipInY">
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-a1d7{background-color:#efefef;border-color:#c0c0c0;color:#000000;font-size:18px;text-align:center;vertical-align:top}
+.tg .tg-dzn6{background-color:#2F4F4F;border-color:#c0c0c0;color:#ffffff;font-size:26px;font-weight:bold;text-align:center;
+  vertical-align:top}
+.tg .tg-h0bk{background-color:#FFF;border-color:#c0c0c0;color:#93A1A1;font-size:18px;text-align:center;vertical-align:top}
+.tg .tg-q854{background-color:#ffffff;border-color:#c0c0c0;color:#000000;font-size:18px;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-dzn6">Teste</th>
+    <th class="tg-dzn6">Estatística</th>
+    <th class="tg-dzn6">Valor P</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-q854">Estacionaridade (KPSS)</td>
+    <td class="tg-q854">0.10276</td>
+    <td class="tg-q854">0.1</td>
+  </tr>
+  <tr>
+    <td class="tg-a1d7">Independência (Box-Pierce)</td>
+    <td class="tg-a1d7">11.134</td>
+    <td class="tg-a1d7">0.3472</td>
+  </tr>
+  <tr>
+    <td class="tg-q854">Independência (Ljung-Box)</td>
+    <td class="tg-q854">11.617</td>
+    <td class="tg-q854">0.3115</td>
+  </tr>
+  <tr>
+    <td class="tg-a1d7">Normalidade (Shapiro-Wilk)</td>
+    <td class="tg-a1d7">0.98398</td>
+    <td class="tg-a1d7">0.004663</td>
+  </tr>
+  <tr>
+    <td class="tg-q854">Normalidade (Jarque Bera)</td>
+    <td class="tg-q854">4.0201</td>
+    <td class="tg-q854">0.134</td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+]
+.panel[.panel-name[Gráfico de resíduos]
+
+<div class="animate__animated animate__bounceInUp">
+
+```{r,echo=FALSE,fig.width=10,fig.height=6.5,fig.align='right'}
+fit5 <- arima(log(Xt_treino),order=c(2,1,3), seasonal=list(order=c(0,1,1), period=12),
+          xreg=data.frame(mar2020=seq(Xt_treino)==242,
+                          abr2020=seq(Xt_treino)==243,
+                          jun2020=seq(Xt_treino)==245,
+                          set2020=seq(Xt_treino)==248,
+                          mar2021=seq(Xt_treino)==254))
+```
+
+<embed src="arq/2.png" width="1150px" height="500px"/>
+
+</div>
+]
+
+.panel[.panel-name[FACP dos resíduos]
+
+<div class="animate__animated animate__bounceInUp">
+
+```{r,include=FALSE}
+br <- Pacf(as.vector(fit5$residuals), lag.max = 60)
+```
+
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+hchart(br) %>% 
+  hc_add_theme(thm)%>% 
+    hc_legend(NULL)
+```
+
+</div>
+]
+
+.panel[.panel-name[Série estimada]
+
+<div class="animate__animated animate__lightSpeedInLeft">
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+Xt_treino %>%
+  hchart(name = "Vendas de Artigos Esportivos") %>%
+  hc_add_series(ts(exp(fitted(fit5)),start = c(2000,1), frequency=12), name = "Serie com intervenção") %>% 
+  hc_yAxis(title = list(text = "milhões de dólares")) %>% 
+  hc_add_theme(thm2)
+```
+
+</div>
+]
+]
+
+---
+
+<center><h1 class="animate__animated animate__rubberBand">Comparação de modelos </h1></center>
+
+
+.panelset[
+.panel[.panel-name[Métricas de desempenho]
+
+<div class="animate__animated animate__flipInX">
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-s1h2{background-color:#efefef;border-color:#c0c0c0;font-size:18px;font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-frgn{background-color:#efefef;border-color:#c0c0c0;font-size:18px;text-align:center;vertical-align:top}
+.tg .tg-u9x0{background-color:#2F4F4F;border-color:#c0c0c0;color:#FFF;font-size:26px;font-weight:bold;text-align:center;
+  vertical-align:top}
+.tg .tg-af71{background-color:#ffffff;border-color:#c0c0c0;font-size:18px;font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-mp7g{background-color:#ffffff;border-color:#c0c0c0;font-size:18px;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-u9x0"><span style="font-weight:bold;color:#FFF;background-color:#2F4F4F">Modelo</span></th>
+    <th class="tg-u9x0"><span style="font-weight:bold;color:#FFF;background-color:#2F4F4F">ME</span></th>
+    <th class="tg-u9x0"><span style="font-weight:bold;color:#FFF;background-color:#2F4F4F">RMSE</span></th>
+    <th class="tg-u9x0"><span style="font-weight:bold;color:#FFF;background-color:#2F4F4F">MAE</span></th>
+    <th class="tg-u9x0"><span style="font-weight:bold;color:#FFF;background-color:#2F4F4F">MPE</span></th>
+    <th class="tg-u9x0"><span style="font-weight:bold;color:#FFF;background-color:#2F4F4F">MAPE</span></th>
+    <th class="tg-u9x0"><span style="font-weight:bold;color:#FFF;background-color:#2F4F4F">MASE</span></th>
+    <th class="tg-u9x0"><span style="font-weight:bold;color:#FFF;background-color:#2F4F4F">ACF1</span></th>
+    <th class="tg-u9x0"><span style="font-weight:bold;color:#FFF;background-color:#2F4F4F">Theil’s U</span></th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-af71">SARIMA(0,1,2)(0,1,1)<sub>12</sub></td>
+    <td class="tg-mp7g">-136.02</td>
+    <td class="tg-mp7g">232.2</td>
+    <td class="tg-mp7g">187.2</td>
+    <td class="tg-mp7g">-2.262</td>
+    <td class="tg-mp7g">3.203</td>
+    <td class="tg-mp7g">0.8117</td>
+    <td class="tg-mp7g">0.225</td>
+    <td class="tg-mp7g">0.1997</td>
+  </tr>
+  <tr>
+    <td class="tg-s1h2">SARIMA(1,0,2)(1,1,1)<sub>12</sub></td>
+    <td class="tg-frgn">94.617</td>
+    <td class="tg-frgn">172.6</td>
+    <td class="tg-frgn">109.4</td>
+    <td class="tg-frgn">1.796</td>
+    <td class="tg-frgn">1.986</td>
+    <td class="tg-frgn">0.4744</td>
+    <td class="tg-frgn">-0.016</td>
+    <td class="tg-frgn">0.1546</td>
+  </tr>
+  <tr>
+    <td class="tg-af71">ETS(M,Ad,M)</td>
+    <td class="tg-mp7g">208.31</td>
+    <td class="tg-mp7g">292.8</td>
+    <td class="tg-mp7g">262.0</td>
+    <td class="tg-mp7g">3.932</td>
+    <td class="tg-mp7g">4.624</td>
+    <td class="tg-mp7g">1.1361</td>
+    <td class="tg-mp7g">0.129</td>
+    <td class="tg-mp7g">0.2615</td>
+  </tr>
+  <tr>
+    <td class="tg-s1h2">Holt - Winters Aditivo</td>
+    <td class="tg-frgn">129.11</td>
+    <td class="tg-frgn">252.7</td>
+    <td class="tg-frgn">209.1</td>
+    <td class="tg-frgn">1.847</td>
+    <td class="tg-frgn">3.633</td>
+    <td class="tg-frgn">0.9070</td>
+    <td class="tg-frgn">-0.058</td>
+    <td class="tg-frgn">0.2087</td>
+  </tr>
+  <tr>
+    <td class="tg-af71">Holt - Winters Multiplicativo</td>
+    <td class="tg-mp7g">161.35</td>
+    <td class="tg-mp7g">214.3</td>
+    <td class="tg-mp7g">170.6</td>
+    <td class="tg-mp7g">2.908</td>
+    <td class="tg-mp7g">3.075</td>
+    <td class="tg-mp7g">0.7401</td>
+    <td class="tg-mp7g">-0.006</td>
+    <td class="tg-mp7g">0.1895</td>
+  </tr>
+  <tr>
+    <td class="tg-s1h2">Série com intervenção</td>
+    <td class="tg-frgn">-66.05</td>
+    <td class="tg-frgn">236.5</td>
+    <td class="tg-frgn">175.5</td>
+    <td class="tg-frgn">-0.912</td>
+    <td class="tg-frgn">2.964</td>
+    <td class="tg-frgn">0.7375</td>
+    <td class="tg-frgn">-0.058</td>
+    <td class="tg-frgn">0.2068</td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+
+]
+
+.panel[.panel-name[Gráfico de comparação de modelos]
+
+<div class="animate__animated animate__bounceInUp">
+```{r,echo=FALSE,fig.width=11,fig.height=6,fig.align='right'}
+prev1 <- forecast(fit, h=12,level = 95)
+prev2 <- forecast(fit2, h=12,level = 95)
+prev3.0 <- forecast(fit3.0, h=12,level = 95)
+prev3 <- forecast(fit3, h=12,level = 95)
+prev4 <- forecast(fit4, h=12,level = 95)
+prev5 <- forecast(exp(fitted(fit5)), h=12,level = 95)
+# forecast::accuracy(prev1,Xt_teste)
+```
+
+
+```{r,echo=FALSE,fig.width=16,fig.height=7,fig.align='right'}
+Xt_treino %>% hchart(name = 'Treino') %>%
+  hc_add_series(Xt_teste, name = 'Teste') %>%
+  hc_add_theme(thm)%>% 
+  hc_add_series(prev1, name = "SARIMA(0,1,2)(0,1,1)[12]") %>% 
+  hc_add_series(prev2, name = "SARIMA(1,0,2)(1,1,1)[12]") %>% 
+  hc_add_series(prev3.0, name = 'ETS(M,Ad,M)') %>% 
+  hc_add_series(prev3, name = 'Holt-Winters aditivo') %>% 
+  hc_add_series(prev4, name = 'Holt-Winters multiplicativo') %>% 
+  hc_add_series(prev5, name = "Série com intervenção") 
+```
+
+</div>
+]
+]
+
+---
+
+class: inverse, center, middle
+
+# <center> **Conclusão ** </center>
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+---
+
+class: inverse, center, middle
+
+# <center> **Conclusão ** </center>
+
+<br><br><br><br><br><br><br><br><br>
+
+<center><h1 class="animate__animated animate__lightSpeedInLeft">
+O modelo que deteve as melhores métricas de desempenho foi SARIMA(1,0,2)(1,1,1)<sub>12</sub> proposto por auto-arima, mas contrariando o pressupostos de independência dos resíduos.</h1></center>
+
+<br><br><br><br>
+
+---
+
+class: inverse, center, middle
+
+# <center> **Conclusão** </center>
+
+<br><br><br><br>
+
+<center><h1 class="animate__animated animate__hinge">
+O modelo que deteve as melhores métricas de desempenho foi SARIMA(1,0,2)(1,1,1)<sub>12</sub> proposto por auto-arima, mas contrariando o pressupostos de independência dos resíduos.</h1></center>
+
+<center><h1 class="animate__animated animate__rotateInUpRight">
+O modelo Holt - Winters Multiplicativo tem a segundo melhor desempenho entre os modelos, com RMSE = 214.3 e Theil’s U = 0.1895.</h1></center>
+
+<br><br><br><br><br><br><br><br><br>
+
+---
+
+class: inverse, center, middle
+
+# <center> **Conclusão** </center>
+
+<br><br><br><br>
+
+<center><h1 class="animate__animated animate__hinge">
+O modelo Holt - Winters Multiplicativo tem a segundo melhor desempenho entre os modelos, com RMSE = 214.3 e Theil’s U = 0.1895.</h1></center>
+
+<center><h1 class="animate__animated animate__rotateInUpRight">
+O modelo SARIMA(2,1,3)(0,1,1)<sub>12</sub> com intervenção apresentou adequação favorável não contrariando os pressupostos, com as métricas de desempenho (RMSE = 236.541 e Theil’s U = 0.207) com destaque no AIC=-923.34.</h1></center>
+
+<br><br><br><br><br><br><br><br><br>
+
