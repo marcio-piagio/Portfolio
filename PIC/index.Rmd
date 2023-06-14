@@ -1,0 +1,40 @@
+--- 
+title: "ESTIMAÇÃO POR MÁXIMA VEROSSIMILHANÇA DO TAMANHO POPULACIONAL EM MODELOS DE CAPTURA-RECAPTURA"
+author: "Márcio Roger Piagio"
+date: "Maringá, 30 de Agosto de 2022"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: [book.bib, packages.bib]
+# url: your book url like https://bookdown.org/yihui/bookdown
+# cover-image: path to the social sharing image like images/cover.jpg
+description: |
+  This is a minimal example of using the bookdown package to write a book.
+  The HTML output format for this example is bookdown::gitbook,
+  set in the _output.yml file.
+link-citations: yes
+# github-repo: rstudio/bookdown-demo
+font:
+biblio-style: apalike
+---
+
+# Apresentação
+
+UNIVERSIDADE ESTADUAL DE MARINGÁ
+
+PROGRAMA DE INICIACÃO CIENTÍFICA - PIC
+
+DEPARTAMENTO DE ESTATÍSTICA
+
+Orientador: Prof. Dr. George Lucas Moraes Pezzott
+
+Acadêmico: Márcio Roger Piagio
+
+Acadêmico: Raphael Amaral Luiz
+
+
+## Resulmo
+
+O presente projeto apresenta  dois modelos de captura-recaptura: o modelo $M_t$, que considera probabilidades diferentes no instante de captura dos animais; e  o modelo $M_{tb}$ que leva em consideração possíveis diferenças entre as probabilidades de captura e recaptura. O processo inferencial foi definido por obter as estimativas de máxima verossimilhança dos parâmetros dos modelos e os resultados numéricos deste trabalho se basearam em duas aplicações com dados reais de captura-recaptura de ratos e um estudo de simulação em diferentes cenários para avaliar a performance dos estimadores de máxima verossimilhança. No geral, foi possível concluir que o método de captura-recaptura é extremamente válido como uma técnica de amostragem para se estimar o tamanho da população e também é robusto quando se tem pelo menos 60$\%$ da população observada na amostra pois seus estimadores apresentam baixo viés e erro quadrático médio.
+
+Palavras-chave: modelo de captura-recaptura, heterogeneidade; efeito comportamental; estimativa de máxima verossimilhança
+

@@ -1,0 +1,450 @@
+---
+title: "Trabalho 3 -- Laboratório de Estatística Aplicada <br><br><br>"
+subtitle: "É possível fazer seleção e melhoramento genético em abelhas?"
+author: " Márcio Roger Piagio <br><br><br><br><br>"
+date: '`r format(Sys.time(),"%d de %B de %Y")`'
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts, custom.css]
+    lib_dir: libs
+    nature:
+      highlightStyle: rainbow
+      highlightLines: false
+      highlightSpans: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+      ratio: "16:9"
+---
+
+```{r,echo=FALSE,message=FALSE}
+source("arq/sumario2.R", encoding = 'UTF-8')
+source("arq/theme_blue.R", encoding = 'UTF-8')
+source("arq/01funcoes.R", encoding = 'UTF-8')
+source("arq/00data.R", encoding = 'UTF-8')
+options(warn=-1)
+options(htmltools.dir.version = FALSE)
+```
+
+class: inverse, center, middle
+
+# <center>**Objetivos **</center>
+
+<br>
+
+### **<center>Propor um modelo de regressão para constatar a melhor produção de mel (N° de potes de mel ao mês) entre as 16 colônias de abelhas da espécie Scaptotrigona bipuctata e posteriormente selecionar características em relação as colônias considerando o aperfeiçoamento da produção de mel. <center>**
+
+---
+
+# <center>**Descrição dos dados**</center>
+
+> **16 Colônias de abelhas da espécie Scaptotrigona bipuctata**
+
+> **Os dados foram coletados todos os meses em todas as colônias no ano de 2016**
+
+## <center> As Características analisadas foram:</center>
+
+> **Comp. Canudo (cm) = Comprimento do canudo entrada das colônias;**
+
+> **Diâm. Canudo (cm) = Diâmetro do canudo entrada das colônias;**
+
+> **N° potes Mel = Número de Potes de mel;**
+
+> **N° discos =  Número dos discos de crias;**
+
+> **Tam. Discos (cm) = Média do diâmetro dos discos de crias;**
+
+> **Peso (Kg) = Peso da colônia, já descontado o peso das caixas;**
+
+> **Est. Pop. = Estimativa do número de indivíduos nas colônias de abelhas.**
+
+---
+
+# <center>**Descrição dos dados**</center>
+
+.pull-left[
+<center>
+```{r,echo=FALSE,out.width="100%"}
+visdat::vis_guess(Dados_abelhas)+
+    theme(legend.position = "bottom", legend.background = element_rect(colour = "lightgray", size = .6), axis.text.x = element_text(hjust = 0.03))
+```
+]
+
+.pull-right[
+<center>
+```{r,echo=FALSE,out.width="100%"}
+visdat::vis_expect(Dados_abelhas, ~.x == 0)+
+    theme(legend.position = "bottom", legend.background = element_rect(colour = "lightgray", size = .6))
+```
+]
+
+---
+
+class: inverse, center, middle
+
+# Análise descritiva
+
+---
+
+# <center>**Análise descritiva**</center>
+
+```{r,echo=FALSE,out.width="100%"}
+library(leaflet)
+r <- resumo(numerica)
+DT::datatable(r,class = 'cell-border stripe',
+              fillContainer = FALSE,
+              options = list(pageLength = 7,
+                             searching=FALSE,
+                             initComplete = JS(
+    "function(settings, json) {",
+    "$(this.api().table().header()).css({'background-color': 'darkslategrey', 'color': '#fff', 'font-size': '14px', 'text-align':'center'});",
+    "}")))%>%
+  DT::formatStyle('N° potes Mel',  color = DT::styleEqual(c(111.4562,23.2656,25.931),'red')) 
+
+ 
+```
+
+Superdispersão
+
+---
+
+# <center>**Análise descritiva**</center>
+
+.pull-left[
+**<center>Histograma da distribuição dos números de potes de mel</center>**
+
+```{r,echo=FALSE,message=FALSE}
+ggplot(Dados_abelhas, aes(`N° potes Mel`)) +
+  geom_histogram( aes(y =..density..),
+                  col = 'black',fill='darkslategrey',alpha=0.6,bins= ceiling(sqrt(length(Dados_abelhas$Meses)))) +
+  geom_density() +
+  ylab(' ') +
+  xlab('Número de Potes de mel')+
+  theme_blue()
+
+```
+]
+
+.pull-right[
+**<center>Números de potes de mel</center>**
+
+```{r,echo=FALSE,message=FALSE}
+pct_format = scales::percent_format(accuracy = .1)
+ccc  <- Dados_abelhas %>% dplyr::group_by(`N° potes Mel`) %>% dplyr::summarise(n=n())
+ggplot(ccc,aes(`N° potes Mel`,n)) +
+  geom_col(fill='darkslategrey') + theme_minimal() +
+    ylab('Frequência absoluta') +
+  xlab('Número de Potes de mel')+
+  geom_label(aes(
+    label = sprintf(
+      '%d (%s)',
+      n,
+      pct_format(n / sum(n))
+    )),  fill='white', vjust=1,hjust=ifelse(ccc$n <= 14,-100,-.1))+
+  theme_blue()
+
+```
+]
+
+---
+
+# <center>**Análise descritiva**</center>
+
+.pull-left[
+**<center>Boxplot das colônias por N° potes de Mel</center>**
+
+```{r,echo=FALSE,message=FALSE,fig.align='center'}
+library(highcharter)
+hcboxplot(
+  x = Dados_abelhas$`N° potes Mel`,
+  var = Dados_abelhas$Colônias,
+  name = "Length",
+  color = 'darkslategrey',
+  outliers = TRUE
+) %>%
+  hc_chart(type = "column") %>%
+  hc_title(text = " ") %>%
+  hc_yAxis(title = list(text = "N° potes de Mel")) %>%
+  hc_add_series(
+    data = Dados_abelhas,
+    type = "scatter",
+    hcaes(x = "Colônias", y = "Dados_abelhas$`N° potes Mel`", group = "Colônias")
+  ) %>%
+  hc_plotOptions(scatter = list(
+    color = "red",
+    marker = list(
+      radius = 2,
+      symbol = "circle",
+      lineWidth = 1
+    )
+  ))  %>%
+  hc_plotOptions(scatter = list(jitter = list(x = .2, y = 0)))
+```
+]
+
+.pull-rigth[
+**<center>Frequência do N° potes Mel por côlonia</center>**
+
+```{r,echo=FALSE,message=FALSE,fig.align='center'}
+bar %>% 
+hchart(type = "column", 
+       hcaes(x = Colônias, y = `N° potes Mel`)) %>%
+  hc_title(text = " ") %>%
+  hc_xAxis(title = list(text = "")) %>%
+  hc_yAxis(title = list(text = "Frequência"), stackLabels = list(enabled = TRUE)) %>% 
+  hc_colors('darkslategrey') %>% 
+  hc_plotOptions(series = list(stacking = "normal"))
+```
+]
+
+---
+
+# <center>**Análise descritiva**</center>
+
+.pull-left[
+**<center>Boxplot dos meses por N° potes de Mel</center>**
+
+```{r,echo=FALSE,message=FALSE,fig.align='center'}
+library(highcharter)
+hcboxplot(
+  x = Dados_abelhas$`N° potes Mel`,
+  var = Dados_abelhas$Meses,
+  name = "Length",
+  color = 'darkslategrey',
+  outliers = TRUE
+) %>%
+  hc_chart(type = "column") %>%
+  hc_title(text = " ") %>%
+  hc_yAxis(title = list(text = "N° potes de Mel")) %>%
+  hc_add_series(
+    data = Dados_abelhas,
+    type = "scatter",
+    hcaes(x = "Meses", y = "Dados_abelhas$`N° potes Mel`", group = "Meses")
+  ) %>%
+  hc_plotOptions(scatter = list(
+    color = "red",
+    marker = list(
+      radius = 2,
+      symbol = "circle",
+      lineWidth = 1
+    )
+  ))  %>%
+  hc_plotOptions(scatter = list(jitter = list(x = .2, y = 0)))
+```
+]
+
+.pull-rigth[
+**<center>Frequência do N° potes Mel</center>**
+
+```{r,echo=FALSE,message=FALSE,fig.align='center'}
+bar2 %>% 
+hchart(type = "column", 
+       hcaes(x = Meses, y = `N° potes Mel`)) %>%
+  hc_title(text = " ") %>%
+  hc_xAxis(title = list(text = "")) %>%
+  hc_yAxis(title = list(text = "Frequência"), stackLabels = list(enabled = TRUE)) %>% 
+  hc_colors('darkslategrey') %>% 
+  hc_plotOptions(series = list(stacking = "normal"))
+```
+]
+
+---
+
+# <center>**Análise descritiva**</center>
+**<center>Frequência do N° potes Mel por mês e côlonia</center>**
+
+```{r,echo=FALSE,message=FALSE,out.width="100%"}
+library(plotly)
+bar3 %>% plot_ly(x = ~Meses, y = ~`N° potes Mel`, color = ~Colônias)
+```
+
+---
+
+# <center>**Análise descritiva**</center>
+**<center>Frequência do Est. Pop. por mês e côlonia</center>**
+
+```{r,echo=FALSE,message=FALSE,out.width="100%"}
+bar4 %>% plot_ly(x = ~Meses, y = ~`Est. Pop.`, color = ~Colônias)
+```
+
+---
+
+# <center>**Análise descritiva**</center>
+
+```{r,echo=FALSE,message=FALSE,fig.align='center',fig.width=20,fig.height=10}
+GGally::ggpairs(Dados_abelhas, columns = 3:9,
+                upper = list(continuous = GGally::wrap("cor", size = 7)))+
+  theme(strip.text.x = element_text(size = 15),
+        strip.text.y = element_text(size = 10))
+
+```
+
+---
+
+class: inverse, center, middle
+
+
+# **Modelos Propostos** 
+
+---
+
+# <center>**Modelos Para Dados de Contagem**</center>
+
+### <center>Modelo Poisson com função de ligação log "log-linear"<center>
+
+### <center>Modelo Binomial Negativa com função de ligação log<center> 
+
+##**<center>Modelo de Mistura<center>**
+
+### <center> Poisson com Binomial<center>
+
+### <center>Binomial Negativa com Binomial<center>
+
+##**<center>Modelo Truncado<center>**
+
+### <center> Poisson com Binomial<center>
+
+### <center>Binomial Negativa com Binomial<center>
+
+Equidispersão: $\mathbb{E}(y_i)=\mathbb{V}(y_i)$  Superdispersão: 
+
+
+---
+
+# <center>**Modelos Para Dados de Contagem**</center>
+
+.pull-left[
+**<center>Zero alterado (Truncado)</center>**
+
+```{r,echo=FALSE}
+## ZAP
+idx_zap <- ifelse(Dados_abelhas$`N° potes Mel` == 0, 0, 1)
+all_zap <- table(Dados_abelhas$`N° potes Mel`, idx_zap)
+## ZIP
+idx_zip <- c(rep(1, 150), rep(0, 42))
+all_zip <- table(idx_zip,Dados_abelhas$`N° potes Mel`)
+
+barplot(t(all_zap), las = 1, col=c('darkslategrey',"red"), border ="gray",
+        xlab = "Count", main = " ")
+```
+]
+
+
+
+.pull-rigth[
+**<center>Zero inflado (mistura)</center>**
+
+```{r,echo=FALSE}
+barplot((all_zip), las = 1, col=c('darkslategrey',"red"), border ="gray",
+        xlab = "Count", main = " ")
+```
+]
+
+---
+
+# <center>**Selecionado Modelo**</center>
+
+```{r,echo=FALSE,message=FALSE}
+row.names(tab1) <- c("Modelo Poisson com função de ligação log","Modelo Binomial Negativa com função de ligação log","Mistura Poisson com Binomial", "Mistura Binomial Negativa com Binomial","Truncado Poisson com Binomial",
+                     "Truncado Binomial Negativa com Binomial")
+
+DT::datatable(round(tab1,2),class = 'cell-border stripe',
+              fillContainer = FALSE,
+              options = list(pageLength = 7,
+                             searching=FALSE,
+                             initComplete = JS(
+    "function(settings, json) {",
+    "$(this.api().table().header()).css({'background-color': 'darkslategrey', 'color': '#fff', 'font-size': '25px', 'text-align':'center'});",
+    "}")))
+```
+
+
+---
+
+# <center>**Análise de resíduos**</center>
+
+```{r,echo=FALSE,message=FALSE,fig.align='center',fig.height=7,fig.width=16}
+library(ggformula)
+library(Rmisc)
+p1 <- ggplot(res1, aes(x=pred, y=rq)) + geom_point(size=2) +
+  geom_hline(yintercept=c(-2,2), linetype=2) + xlab("Preditos") +
+  ylab("Resíduo Quant Aleat") + theme_gray(base_size=18) +
+  theme_blue()
+
+p2 <- ggplot(res1, aes(x=id, y=hii)) + geom_point(size=2) +
+  xlab("Índice") + ylab("Medida h") + theme_gray(base_size=18) +
+  geom_text(aes(label=ifelse(hii>quantile(hii, probs=0.95),id,'')), hjust=0, vjust=-0.5)+
+  theme_blue()
+
+p3 <- ggplot(res1, aes(x=id, y=di))   + geom_point(size=2) + xlab("Índice") +
+  ylab("Distância de Cook") + theme_gray(base_size=18) +
+  geom_text(aes(label=ifelse(di>quantile(di, probs=0.95),id,'')),hjust=0,vjust=-0.5) +
+  theme_blue()
+
+p4 <- ggplot(res1, aes(x=eta, y=z)) + geom_point(size=2) + xlab("Preditor Linear") +
+  ylab("Variável z") + geom_spline(size=2, col='blue', df=3) + theme_gray(base_size=18) +
+  theme_blue()
+
+multiplot(p1,p2,p3,p4, cols=2)
+```
+
+---
+
+# <center>**Análise de resíduos**</center>
+
+.pull-rigth[
+```{r,echo=FALSE,message=FALSE,fig.width=16}
+library(hnp)
+hnp(res1$rq, print=F, pch=16, cex=1.2, half=F)
+```
+]
+
+---
+
+
+# <center>**Compreensão do modelo**</center>
+
+
+```{r,echo=FALSE,message=FALSE}
+
+p <- round(summary(modelo.2)$coefficients,3)
+
+DT::datatable(cbind(p,round(glm.TAXA(modelo.2),3)),class = 'cell-border stripe',
+              fillContainer = FALSE,
+              options = list(pageLength = 9,
+                             searching=FALSE,
+                             initComplete = JS(
+    "function(settings, json) {",
+    "$(this.api().table().header()).css({'background-color': 'darkslategrey', 'color': '#fff', 'font-size': '20px', 'text-align':'center'});",
+    "}")))
+
+```
+
+---
+
+class: inverse, center, middle
+
+
+# **Conclusão** 
+
+**A maior taxa de produção de mel foi da colônia 9 que tem uma taxa de 24% maior do que a colônia 2, que por sua vez teve a segunda melhor produção de mel. Em relação ao comprimento do canudo, temos que para cada acréscimo de centímetros diminui-se uma taxa de 2% da produção de mel; o diâmetro do canudo aumenta 4% na taxa de mel para cada centímetro; e o número de disco tem um acréscimo de 6% na taxa de produção de mel a cada unidade. Já o tamanho do disco tem uma taxa de 8% de acréscimo para cada centímetro. Por fim, o peso da colônia teve uma taxa de 40%. **
+
+---
+
+class: inverse, middle
+
+
+# <center>**Conclusão**</center> 
+
+* **A maior taxa de produção de mel foi da colônia 9 que tem uma taxa de 24% maior do que a colônia 2, que por sua vez teve a segunda melhor produção de mel.**
+
+* **Para cada acréscimo do centímetros do comprimento do canudo diminui-se uma taxa de 2% da produção de mel.**
+
+* **O diâmetro do canudo aumenta 4% na taxa de mel para cada centímetro.**
+
+* **O número do disco tem um acréscimo de 6% na taxa de produção de mel a cada unidade.**
+
+* **O disco tem uma taxa de 8% de acréscimo para cada centímetro.**
+
+* **Por fim, o peso da colônia teve uma taxa de 40%. **
+
+
