@@ -1,12 +1,12 @@
 p.caption {
-  color: #09e954;
+  color: #3a09e9;
   margin-top: 10px;
 }
 
-p {
+/* p {
   font-size: 20px;
   font-weight: bold;
-  }
+  } */
 
   
 p code {
@@ -25,7 +25,8 @@ h1, h2, h3, h4, h5, h6, legend {
   color: #6E0000; 
   background-color: white;
   padding: 10px;
-  border: 1px solid #6E0000;
+  border: 2px solid #6E0000;
+  -webkit-filter: drop-shadow(3px 3px 1px #6e000073);
   }
 
 .book .book-body .page-wrapper .page-inner section.normal a {
@@ -46,7 +47,7 @@ h1, h2, h3, h4, h5, h6, legend {
 
 .book .book-body .page-wrapper .page-inner section {
   background: #ffffff;
- width: 110%;
+ /* width: 110%; */
 }
 
 .book .book-body {
@@ -64,13 +65,13 @@ h1, h2, h3, h4, h5, h6, legend {
 }
 
 .book .book-summary ul.summary li a, .book .book-body .page-wrapper .page-inner section.normal a {
-  transition: all 0.5s;
+  transition: all 2s;
   cursor: pointer;
 }
 
 .book .book-summary ul.summary li a:hover, .book .book-body .page-wrapper .page-inner section.normal a:hover{
-  -webkit-filter: drop-shadow(15px 10px 2px #6E0000);
-  filter: drop-shadow(15px 10px 2px #6E0000);
+  -webkit-filter: drop-shadow(3px 3px 1px 6e000070);
+  filter: drop-shadow(3px 3px 1px #6e000070);
 }
 
 
