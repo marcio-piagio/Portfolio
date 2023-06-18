@@ -1,14 +1,7 @@
 p.caption {
-  color: #3a09e9;
+  color: #777;
   margin-top: 10px;
 }
-
-/* p {
-  font-size: 20px;
-  font-weight: bold;
-  } */
-
-  
 p code {
   white-space: inherit;
 }
@@ -19,96 +12,3 @@ pre {
 pre code {
   white-space: inherit;
 }
-
-h1, h2, h3, h4, h5, h6, legend {
-  text-align: center;
-  color: #6E0000; 
-  background-color: white;
-  padding: 10px;
-  border: 2px solid #6E0000;
-  -webkit-filter: drop-shadow(3px 3px 1px #6e000073);
-  }
-
-.book .book-body .page-wrapper .page-inner section.normal a {
-  color: #07439e;
-}
-
-.book .book-header .btn {
-  color: #6E0000;
-}
-
-.book .book-summary ul.summary {
-  color: #6E0000;
-}
-
-.book .book-body .page-wrapper .page-inner section.normal {
-  color: grey;
-}
-
-.book .book-body .page-wrapper .page-inner section {
-  background: #ffffff;
- /* width: 110%; */
-}
-
-.book .book-body {
-  color: #000;
-  background: #ffffff;
-  
-}
-
-.book .book-summary ul.summary li a:hover,.book .book-summary ul.summary li.active>a {
-  color: #07439e;
-}
-
-.book .book-summary ul.summary li a,.book .book-summary ul.summary li span {
-  color: #6E0000;;
-}
-
-.book .book-summary ul.summary li a, .book .book-body .page-wrapper .page-inner section.normal a {
-  transition: all 2s;
-  cursor: pointer;
-}
-
-.book .book-summary ul.summary li a:hover, .book .book-body .page-wrapper .page-inner section.normal a:hover{
-  -webkit-filter: drop-shadow(3px 3px 1px 6e000070);
-  filter: drop-shadow(3px 3px 1px #6e000070);
-}
-
-
-
-.book .book-summary ul.summary li.divider {
-  background: #6E0000;
-  font-weight: bold;
-}
-
-.book .book-summary {
-  background: #ffffff;
-  background-image: url(1.png);
-  background-repeat: no-repeat;
-  background-size: 300px 500px;
-  background-position: center;
-  border: 1px solid #6E0000;
-  font-weight: bold;
-}
-
-
-/* Works on Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #6E0000 #6E0000;
-}
-
-/* Works on Chrome, Edge, and Safari */
-*::-webkit-scrollbar {
-  width: 7px;
-}
-
-*::-webkit-scrollbar-track {
-  background: #ffffff;
-}
-
-*::-webkit-scrollbar-thumb {
-  background-color: #6E0000;
-  border-radius: 20px;
-}
-

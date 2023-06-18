@@ -1,8 +1,10 @@
 fig:nice-fig
 tab:nice-tab
 eq:binom
-apresentação
-resulmo
+about
+usage
+render-book
+preview-book
 hello-bookdown
 a-section
 cross
@@ -20,6 +22,3 @@ sharing-your-book
 publishing
 pages
 metadata-for-sharing
-roger
-r-markdown
-including-plots
