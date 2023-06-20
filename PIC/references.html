@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-br" xml:lang="pt-br">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>References | ESTIMAÇÃO POR MÁXIMA VEROSSIMILHANÇA DO TAMANHO POPULACIONAL EM MODELOS DE CAPTURA-RECAPTURA</title>
+  <meta name="description" content="Relatório contendo os resultados finais do projeto de iniciação científica vinculado ao Programa PIC-UEM." />
+  <meta name="generator" content="bookdown 0.34 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="References | ESTIMAÇÃO POR MÁXIMA VEROSSIMILHANÇA DO TAMANHO POPULACIONAL EM MODELOS DE CAPTURA-RECAPTURA" />
+  <meta property="og:type" content="book" />
+  <meta property="og:image" content="/path to the social sharing image like images/cover.jpg" />
+  <meta property="og:description" content="Relatório contendo os resultados finais do projeto de iniciação científica vinculado ao Programa PIC-UEM." />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="References | ESTIMAÇÃO POR MÁXIMA VEROSSIMILHANÇA DO TAMANHO POPULACIONAL EM MODELOS DE CAPTURA-RECAPTURA" />
+  
+  <meta name="twitter:description" content="Relatório contendo os resultados finais do projeto de iniciação científica vinculado ao Programa PIC-UEM." />
+  <meta name="twitter:image" content="/path to the social sharing image like images/cover.jpg" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="desenvolvimento-materiais-e-métodos.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./"><center>PROGRAMA DE INICIACÃO <br> CIENTÍFICA - PIC</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Apresentação</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#resumo"><i class="fa fa-check"></i><b>1.1</b> Resumo</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="introdução.html"><a href="introdução.html"><i class="fa fa-check"></i><b>2</b> Introdução</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="introdução.html"><a href="introdução.html#objetivos"><i class="fa fa-check"></i><b>2.1</b> Objetivos</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="desenvolvimento-materiais-e-métodos.html"><a href="desenvolvimento-materiais-e-métodos.html"><i class="fa fa-check"></i><b>3</b> Desenvolvimento (Materiais e Métodos)</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="desenvolvimento-materiais-e-métodos.html"><a href="desenvolvimento-materiais-e-métodos.html#modelo-de-captura-recaptura-com-heterogeneidade"><i class="fa fa-check"></i><b>3.1</b> Modelo de captura-recaptura <br>com heterogeneidade</a></li>
+<li class="chapter" data-level="3.2" data-path="desenvolvimento-materiais-e-métodos.html"><a href="desenvolvimento-materiais-e-métodos.html#modelo-de-captura-recaptura-com-heterogeneidade-e-efeito-à-marcação"><i class="fa fa-check"></i><b>3.2</b> Modelo de captura-recaptura com <br> heterogeneidade e efeito à marcação</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Relatório em PDF</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">ESTIMAÇÃO POR MÁXIMA VEROSSIMILHANÇA DO TAMANHO POPULACIONAL EM MODELOS DE CAPTURA-RECAPTURA</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="references" class="section level1 unnumbered hasAnchor">
+<h1>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div class="csl-entry">
+Ashton, John, Tim Burnett, Ivan Diaz-Rainey, e Peter Ormosi. 2021. <span>“Known unknowns: How much financial misconduct is detected and deterred?”</span> <em>Journal of International Financial Markets, Institutions and Money</em> 74: 101389.
+</div>
+<div class="csl-entry">
+Basu, Sanjib, e Nader Ebrahimi. 2001. <span>“Bayesian capture-recapture methods for error detection and estimation of population size: Heterogeneity and dependence”</span>. <em>Biometrika</em> 88 (1): 269–79.
+</div>
+<div class="csl-entry">
+Bird, Sheila M, e Ruth King. 2018. <span>“Multiple systems estimation (or capture-recapture estimation) to inform public policy”</span>. <em>Annual Review of Statistics and Its Application</em> 5: 95.
+</div>
+<div class="csl-entry">
+Böhning, Dankmar, Irene Rocchetti, Antonello Maruotti, e Heinz Holling. 2020. <span>“Estimating the undetected infections in the Covid-19 outbreak by harnessing capture–recapture methods”</span>. <em>International Journal of Infectious Diseases</em> 97: 197–201.
+</div>
+<div class="csl-entry">
+Laplace, P. S. 1783. <em>Sur les naissances, les mariages et les morts.</em> 693. In: Histoire de L Académie Royale des Sciences, Paris.
+</div>
+<div class="csl-entry">
+Lincoln, Frederick Charles. 1930. <span>“Calculating waterfowl abundance on the basis of banding returns”</span>. <em>US Department of Agriculture</em>, nº 118.
+</div>
+<div class="csl-entry">
+McCrea, Rachel S, e Byron JT Morgan. 2014. <em>Analysis of capture-recapture data</em>. CRC Press.
+</div>
+<div class="csl-entry">
+Oliveira, Antônio Wilson Soares de, e Ionizete Garcia da Silva. 2007. <span>“Distribui<span>ç</span><span>ã</span>o geogr<span>á</span>fica e indicadores entomol<span>ó</span>gicos de triatom<span>ı́</span>neos sinantr<span>ó</span>picos capturados no Estado de Goi<span>á</span>s”</span>. <em>Revista da Sociedade Brasileira de Medicina Tropical</em> 40: 204–8.
+</div>
+<div class="csl-entry">
+Otis, David L, Kenneth P Burnham, Gary C White, e David R Anderson. 1978. <span>“Statistical inference from capture data on closed animal populations”</span>. <em>Wildlife monographs</em>, nº 62: 3–135.
+</div>
+<div class="csl-entry">
+Petersen, C. G. J. 1896. <span>“The yearly immigration of young plaice into Limfjord from the German sea, etc”</span>. <em>Rept. Danish Biol. Stn</em> 6 (1-48).
+</div>
+<div class="csl-entry">
+Polonsky, Jonathan A, Dankmar Böhning, Mory Keita, Steve Ahuka-Mundeke, Justus Nsio-Mbeta, Aaron Aruna Abedi, Mathias Mossoko, et al. 2021. <span>“Novel use of capture-recapture methods to estimate completeness of contact tracing during an Ebola outbreak, Democratic Republic of the Congo, 2018–2020”</span>. <em>Emerging infectious diseases</em> 27 (12): 3063.
+</div>
+<div class="csl-entry">
+Rodrigues, Josemar, Heleno Bolfarine, e José Galvão Leite. 1988. <span>“A Bayesian analysis in closed animal populations from capture recapture experiments with trap response”</span>. <em>Communications in Statistics-Simulation and Computation</em> 17 (2): 407–30.
+</div>
+<div class="csl-entry">
+Royle, J Andrew, Richard B Chandler, Rahel Sollmann, e Beth Gardner. 2013. <em>Spatial capture-recapture</em>. Academic Press.
+</div>
+<div class="csl-entry">
+Ryngelblum, Marcelo, e Maria Fernanda Tourinho Peres. 2021. <span>“An<span>á</span>lise da qualidade dos dados das mortes cometidas por policiais no Munic<span>ı́</span>pio de S<span>ã</span>o Paulo, Brasil, 2014-2015”</span>. <em>Cadernos de Sa<span>ú</span>de P<span>ú</span>blica</em> 37.
+</div>
+<div class="csl-entry">
+Salasar, Luis Ernesto Bueno. 2011. <span>“Elimina<span>ç</span><span>ã</span>o de par<span>â</span>metros perturbadores em um modelo de captura-recaptura”</span>.
+</div>
+<div class="csl-entry">
+Seber, George Arthur Frederick et al. 1982. <span>“The estimation of animal abundance and related parameters”</span>.
+</div>
+<div class="csl-entry">
+Wang, Xiaoyin, Zhuoqiong He, Dongchu Sun, et al. 2015. <span>“Bayesian Estimation of Population Size via Capture-Recapture Model with Time Variation and Behavioral Response”</span>. <em>Open Journal of Ecology</em> 5 (01): 1.
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="desenvolvimento-materiais-e-métodos.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/07-references.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

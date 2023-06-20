@@ -1,0 +1,8 @@
+tab:nice-tab
+apresentação
+resumo
+introdução
+objetivos
+desenvolvimento-materiais-e-métodos
+modelo-de-captura-recaptura-com-heterogeneidade
+modelo-de-captura-recaptura-com-heterogeneidade-e-efeito-à-marcação

@@ -1,0 +1,49 @@
+h1, h2, h3, h4, h5, h6, legend {
+  text-align: center;
+  color: #096B72;
+  background-color: white;
+  filter: drop-shadow(#096b7256 0px 0px 5px);
+  padding: 1%;
+  margin: 10%;
+  line-height: initial;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #096b727a;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #096b72ad;
+  border-radius: 10px;
+}
+
+.book .book-body .page-wrapper .page-inner section {
+
+  filter: drop-shadow(#096b7256 0px 0px 5px);
+}
+
+.book .book-summary ul.summary li a {
+  transition: all 0.5s;
+  cursor: pointer;
+}
+
+.book .book-summary ul.summary li a:hover{
+  -webkit-filter: drop-shadow(10px 10px 1.5px #096b7256);
+  filter: drop-shadow(10px 10px 1.5px #096b7256);
+}
+
+.book .book-summary {
+  background: white;
+  filter: drop-shadow(#096b7256 0px 0px 5px);
+
+}
+
