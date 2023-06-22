@@ -1,0 +1,25 @@
+bookdown::gitbook: 
+  css: style.css
+  config:
+    toc:
+      collapse: none
+      scroll_highlight: true
+      before: null
+      after: null
+    toolbar:
+      position: fixed
+    edit : null
+    download: ["pdf"]
+    search: false
+    fontsettings: null
+    sharing:
+      facebook: false
+      github: false
+      twitter: false
+      linkedin: false
+      weibo: false
+      instapaper: false
+      vk: false
+      whatsapp: false
+      all: ['facebook', 'twitter', 'linkedin', 'whatsapp']
+    info: true

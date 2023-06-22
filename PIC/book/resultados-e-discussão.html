@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="pt-br" xml:lang="pt-br">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title> 4 Resultados e Discussão | ESTIMAÇÃO POR MÁXIMA VEROSSIMILHANÇA DO TAMANHO POPULACIONAL EM MODELOS DE CAPTURA-RECAPTURA</title>
+  <meta name="description" content="Relatório contendo os resultados finais do projeto de iniciação científica vinculado ao Programa PIC-UEM." />
+  <meta name="generator" content="bookdown 0.34 and GitBook 2.6.7" />
+
+  <meta property="og:title" content=" 4 Resultados e Discussão | ESTIMAÇÃO POR MÁXIMA VEROSSIMILHANÇA DO TAMANHO POPULACIONAL EM MODELOS DE CAPTURA-RECAPTURA" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Relatório contendo os resultados finais do projeto de iniciação científica vinculado ao Programa PIC-UEM." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content=" 4 Resultados e Discussão | ESTIMAÇÃO POR MÁXIMA VEROSSIMILHANÇA DO TAMANHO POPULACIONAL EM MODELOS DE CAPTURA-RECAPTURA" />
+  
+  <meta name="twitter:description" content="Relatório contendo os resultados finais do projeto de iniciação científica vinculado ao Programa PIC-UEM." />
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="desenvolvimento-materiais-e-métodos.html"/>
+<link rel="next" href="conclusões.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Apresentação</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#resumo"><i class="fa fa-check"></i><b>1.1</b> Resumo</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="introdução.html"><a href="introdução.html"><i class="fa fa-check"></i><b>2</b> Introdução</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="introdução.html"><a href="introdução.html#objetivos"><i class="fa fa-check"></i><b>2.1</b> Objetivos</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="desenvolvimento-materiais-e-métodos.html"><a href="desenvolvimento-materiais-e-métodos.html"><i class="fa fa-check"></i><b>3</b> Desenvolvimento (Materiais e Métodos)</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="desenvolvimento-materiais-e-métodos.html"><a href="desenvolvimento-materiais-e-métodos.html#modelo-de-captura-recaptura-com-heterogeneidade"><i class="fa fa-check"></i><b>3.1</b> Modelo de captura-recaptura <br>com heterogeneidade</a></li>
+<li class="chapter" data-level="3.2" data-path="desenvolvimento-materiais-e-métodos.html"><a href="desenvolvimento-materiais-e-métodos.html#modelo-de-captura-recaptura-com-heterogeneidade-e-efeito-à-marcação"><i class="fa fa-check"></i><b>3.2</b> Modelo de captura-recaptura com <br> heterogeneidade e efeito à marcação</a></li>
+<li class="chapter" data-level="3.3" data-path="desenvolvimento-materiais-e-métodos.html"><a href="desenvolvimento-materiais-e-métodos.html#estimador-de-máxima-verossimilhança"><i class="fa fa-check"></i><b>3.3</b> Estimador de máxima <br> verossimilhança</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="resultados-e-discussão.html"><a href="resultados-e-discussão.html"><i class="fa fa-check"></i><b>4</b> Resultados e Discussão</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="resultados-e-discussão.html"><a href="resultados-e-discussão.html#aplicação-com-dados-reais"><i class="fa fa-check"></i><b>4.1</b> Aplicação com dados reais</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="resultados-e-discussão.html"><a href="resultados-e-discussão.html#primeira-aplicação"><i class="fa fa-check"></i><b>4.1.1</b> Primeira aplicação</a></li>
+<li class="chapter" data-level="4.1.2" data-path="resultados-e-discussão.html"><a href="resultados-e-discussão.html#segunda-aplicação"><i class="fa fa-check"></i><b>4.1.2</b> Segunda aplicação</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="resultados-e-discussão.html"><a href="resultados-e-discussão.html#estudo-de-simulação"><i class="fa fa-check"></i><b>4.2</b> Estudo de simulação</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="resultados-e-discussão.html"><a href="resultados-e-discussão.html#modelo-m_t"><i class="fa fa-check"></i><b>4.2.1</b> Modelo <span class="math inline">\(M_t\)</span></a></li>
+<li class="chapter" data-level="4.2.2" data-path="resultados-e-discussão.html"><a href="resultados-e-discussão.html#modelo-m_tb"><i class="fa fa-check"></i><b>4.2.2</b> Modelo <span class="math inline">\(M_{tb}\)</span></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="conclusões.html"><a href="conclusões.html"><i class="fa fa-check"></i><b>5</b> Conclusões</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">ESTIMAÇÃO POR MÁXIMA VEROSSIMILHANÇA DO TAMANHO POPULACIONAL EM MODELOS DE CAPTURA-RECAPTURA</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="resultados-e-discussão" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number"> 4</span> Resultados e Discussão<a href="resultados-e-discussão.html#resultados-e-discussão" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Neste capítulo apresentaremos resultados numéricos para a metodologia estudada. Dividimos o capítulo em duas partes: na primeira parte, ilustraremos a metodologia em duas aplicações com dados reais de captura-recaptura; e na segunda parte realizaremos um estudo de simulação Monte Carlo para verificar o comportamento dos estimadores de máxima verossimilhança – com foco no estimador do parâmetro <span class="math inline">\(N\)</span> – dos dois modelos apresentados, <span class="math inline">\(M_t\)</span> e <span class="math inline">\(M_{tb}\)</span>.</p>
+<div id="aplicação-com-dados-reais" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> Aplicação com dados reais<a href="resultados-e-discussão.html#aplicação-com-dados-reais" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Nesta seção vamos aplicar os dois modelos de captura-recaptura estudados, <span class="math inline">\(M_t\)</span> e <span class="math inline">\(M_{tb}\)</span>, em dois conjuntos de dados reais da literatura. Para fins comparativos, iremos escolher como melhor ajuste aos dados o modelo que apresentar os menores valores dos critérios de informação AIC (Critério de Informação de Akaike) e BIC (Critério de Informação Bayesiano), definidos respectivamente por</p>
+<p><br></p>
+<p><span class="math display">\[\begin{align*}
+\mathrm{AIC} &amp; = -2\log L(\widehat{\mathbf{\theta}}|\mathbf{x})-2d \\
+\mathrm{BIC} &amp; =-2 \log L(\widehat{\mathbf{\theta}}|\mathbf{x}) - d\log(n)
+\end{align*}\]</span></p>
+<p><br></p>
+<p>onde <span class="math inline">\(\widehat{\mathbf{\theta}}\)</span> é a estimativa de máxima verossimilhança do vetor paramétrico <span class="math inline">\({\mathbf{\theta}}\)</span> de dimensão <span class="math inline">\(d\)</span>, e <span class="math inline">\(\mathbf{x}\)</span> é o conjunto de dados contendo <span class="math inline">\(n\)</span> observações . Em nossos modelos, <span class="math inline">\(n\)</span> é o número total de distintos capturados, denotado neste projeto por <span class="math inline">\(r\)</span>.</p>
+<div id="primeira-aplicação" class="section level3 hasAnchor" number="4.1.1">
+<h3><span class="header-section-number">4.1.1</span> Primeira aplicação<a href="resultados-e-discussão.html#primeira-aplicação" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Como parte de um estudo de ciências populacionais, <span class="citation">Coulombe, Ridgway, e Evans (<a href="#ref-coulombe1965respiratory">1965</a>)</span> conduziram um estudo com armadilhas para ratos domésticos selvagens <em>Mus musculus</em>. Um quadrado <span class="math inline">\(10 \times 10\)</span> foi usado com armadilhas espaçadas de 3 metros entre elas e as armadilhas foram verificadas pelos pesquisadores duas vezes ao dia, de manha e a noite, durante 5 dias, totalizando <span class="math inline">\(k=10\)</span> épocas de captura. Um total de <span class="math inline">\(r=173\)</span> ratos diferentes foram capturados. Os dados estão disponíveis em <span class="citation">Otis et al. (<a href="#ref-otis1978">1978</a>)</span> e são exibidos na Tabela <a href="resultados-e-discussão.html#tb2">4.1</a>.</p>
+<p><br></p>
+<table class="tg">
+<thead>
+<tr id="tb2">
+<h6 class="clt">
+<strong>Tabela: 4.1</strong> Dados reais de captura-recaptura de ratos <span class="citation">Otis et al. (<a href="#ref-otis1978">1978</a>)</span> .
+</h6>
+</tr>
+<tr>
+<th class="tg-64eq">
+</th>
+<th class="tg-64eq">
+<span class="math inline">\(j\)</span>
+</th>
+<th class="tg-64eq">
+1
+</th>
+<th class="tg-64eq">
+2
+</th>
+<th class="tg-64eq">
+3
+</th>
+<th class="tg-64eq">
+4
+</th>
+<th class="tg-64eq">
+5
+</th>
+<th class="tg-64eq">
+6
+</th>
+<th class="tg-64eq">
+7
+</th>
+<th class="tg-64eq">
+8
+</th>
+<th class="tg-64eq">
+9
+</th>
+<th class="tg-64eq">
+10
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tg-xkkm">
+Animais marcados antes da ocasião
+</td>
+<td class="tg-xkkm">
+<span class="math inline">\(M_j\)</span>
+</td>
+<td class="tg-xkkm">
+0
+</td>
+<td class="tg-xkkm">
+68
+</td>
+<td class="tg-xkkm">
+102
+</td>
+<td class="tg-xkkm">
+128
+</td>
+<td class="tg-xkkm">
+140
+</td>
+<td class="tg-xkkm">
+156
+</td>
+<td class="tg-xkkm">
+159
+</td>
+<td class="tg-xkkm">
+171
+</td>
+<td class="tg-xkkm">
+171
+</td>
+<td class="tg-xkkm">
+173
+</td>
+</tr>
+<tr>
+<td class="tg-af47">
+Animais capturados (não marcados)
+</td>
+<td class="tg-af47">
+<span class="math inline">\(u_j\)</span>
+</td>
+<td class="tg-af47">
+68
+</td>
+<td class="tg-af47">
+34
+</td>
+<td class="tg-af47">
+26
+</td>
+<td class="tg-af47">
+12
+</td>
+<td class="tg-af47">
+16
+</td>
+<td class="tg-af47">
+3
+</td>
+<td class="tg-af47">
+12
+</td>
+<td class="tg-af47">
+0
+</td>
+<td class="tg-af47">
+2
+</td>
+<td class="tg-af47">
+0
+</td>
+</tr>
+<tr>
+<td class="tg-xkkm">
+Animais recapturados (marcados)
+</td>
+<td class="tg-xkkm">
+<span class="math inline">\(m_j\)</span>
+</td>
+<td class="tg-xkkm">
+0
+</td>
+<td class="tg-xkkm">
+27
+</td>
+<td class="tg-xkkm">
+36
+</td>
+<td class="tg-xkkm">
+40
+</td>
+<td class="tg-xkkm">
+58
+</td>
+<td class="tg-xkkm">
+38
+</td>
+<td class="tg-xkkm">
+64
+</td>
+<td class="tg-xkkm">
+36
+</td>
+<td class="tg-xkkm">
+74
+</td>
+<td class="tg-xkkm">
+39
+</td>
+</tr>
+<tr>
+<td class="tg-af47">
+Animais selecionados
+</td>
+<td class="tg-af47">
+<span class="math inline">\(n_j\)</span>
+</td>
+<td class="tg-af47">
+68
+</td>
+<td class="tg-af47">
+61
+</td>
+<td class="tg-af47">
+62
+</td>
+<td class="tg-af47">
+52
+</td>
+<td class="tg-af47">
+74
+</td>
+<td class="tg-af47">
+41
+</td>
+<td class="tg-af47">
+76
+</td>
+<td class="tg-af47">
+36
+</td>
+<td class="tg-af47">
+76
+</td>
+<td class="tg-af47">
+39
+</td>
+</tr>
+</tbody>
+</table>
+<p>Observe a baixa frequência de animais não marcados (<span class="math inline">\(u_j)\)</span> nas últimas ocasiões de captura, indicando que poucos animais da população ainda não foram vistos no estudo. Os tamanhos amostrais <span class="math inline">\((n_j)\)</span> diferentes também indicam heterogeneidade ao longo do tempo.</p>
+<p>A Tabela <a href="resultados-e-discussão.html#tb3">4.2</a> a seguir exibe as estimativas dos dois modelos, <span class="math inline">\(M_t\)</span> e <span class="math inline">\(M_{tb}\)</span>.</p>
+<p><br></p>
+<table class="tg">
+<thead>
+<tr id="tb3">
+<h6 class="clt">
+<strong>Tabela: 4.2</strong> Estimativas de máxima verossimilhança dos parâmetros dos modelos <span class="math inline">\(M_t\)</span> e <span class="math inline">\(M_{tb}\)</span> na Aplicação 1.
+</h6>
+</tr>
+<tr>
+<th class="tg-64eq">
+Estimativas
+</th>
+<th class="tg-64eq">
+<span class="math inline">\(M_{t}\)</span>
+</th>
+<th class="tg-64eq">
+<span class="math inline">\(M_{tb}\)</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tg-xkkm">
+<span class="math inline">\(\hat{N}\)</span>
+</td>
+<td class="tg-xkkm">
+175
+</td>
+<td class="tg-xkkm">
+176
+</td>
+</tr>
+<tr>
+<td class="tg-af47">
+<span class="math inline">\(\hat{c}\)</span>
+</td>
+<td class="tg-af47">
+<span class="math inline">\(-\)</span>
+</td>
+<td class="tg-af47">
+0.0858
+</td>
+</tr>
+<tr>
+<td class="tg-xkkm">
+<span class="math inline">\(\hat{p}_1\)</span>
+</td>
+<td class="tg-xkkm">
+0.3886
+</td>
+<td class="tg-xkkm">
+0.3864
+</td>
+</tr>
+<tr>
+<td class="tg-af47">
+<span class="math inline">\(\hat{p}_2\)</span>
+</td>
+<td class="tg-af47">
+0.3486
+</td>
+<td class="tg-af47">
+0.3391
+</td>
+</tr>
+<tr>
+<td class="tg-xkkm">
+<span class="math inline">\(\hat{p}_3\)</span>
+</td>
+<td class="tg-xkkm">
+0.3543
+</td>
+<td class="tg-xkkm">
+0.3410
+</td>
+</tr>
+<tr>
+<td class="tg-af47">
+<span class="math inline">\(\hat{p}_4\)</span>
+</td>
+<td class="tg-af47">
+0.2971
+</td>
+<td class="tg-af47">
+0.2826
+</td>
+</tr>
+<tr>
+<td class="tg-xkkm">
+<span class="math inline">\(\hat{p}_5\)</span>
+</td>
+<td class="tg-xkkm">
+0.4229
+</td>
+<td class="tg-xkkm">
+0.4039
+</td>
+</tr>
+<tr>
+<td class="tg-af47">
+<span class="math inline">\(\hat{p}_6\)</span>
+</td>
+<td class="tg-af47">
+0.2343
+</td>
+<td class="tg-af47">
+0.2196
+</td>
+</tr>
+<tr>
+<td class="tg-xkkm">
+<span class="math inline">\(\hat{p}_7\)</span>
+</td>
+<td class="tg-xkkm">
+0.4343
+</td>
+<td class="tg-xkkm">
+0.4129
+</td>
+</tr>
+<tr>
+<td class="tg-af47">
+<span class="math inline">\(\hat{p}_8\)</span>
+</td>
+<td class="tg-af47">
+0.2057
+</td>
+<td class="tg-af47">
+0.1913
+</td>
+</tr>
+<tr>
+<td class="tg-xkkm">
+<span class="math inline">\(\hat{p}_9\)</span>
+</td>
+<td class="tg-xkkm">
+0.4343
+</td>
+<td class="tg-xkkm">
+0.4115
+</td>
+</tr>
+<tr>
+<td class="tg-af47">
+<span class="math inline">\(\hat{p}_{10}\)</span>
+</td>
+<td class="tg-af47">
+0.2229
+</td>
+<td class="tg-af47">
+0.2074
+</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>Primeiramente, destacamos que as estimativas para o tamanho populacional dos dois modelos foram bem próximas, 175 animais para <span class="math inline">\(M_t\)</span> e 176 para <span class="math inline">\(M_{tb}\)</span>, e não muito superiores ao número total de animais distintos capturados, <span class="math inline">\(r=173\)</span> animais. Isto é, estima-se que apenas dois ou três animais não foram vistos durante o estudo de acordo com os modelos <span class="math inline">\(M_t\)</span> e <span class="math inline">\(M_{tb}\)</span>, respectivamente. A heterogeneidade entre as probabilidades de captura é observada nas estimativas dos parâmetros <span class="math inline">\(p_j\)</span>, que variaram entre 0,2057 e 0,4343 para o modelo <span class="math inline">\(M_{t}\)</span> e de 0,1913 a 0,4129 no modelo <span class="math inline">\(M_{tb}\)</span>.
+O parâmetro de efeito comportamental à marcação foi estimado em <span class="math inline">\(\hat{c}=0,0858\)</span>, bem próximo de zero que indica não efeito da marcação na chance de recapturar o animal. Essa evidência foi confirmada pelos critérios AIC e BIC exibidos na Tabela <a href="resultados-e-discussão.html#tb4">4.3</a> onde escolhemos o modelo <span class="math inline">\(M_t\)</span> como sendo de melhor ajuste por apresentar menores valores dos critérios.</p>
+<p><br></p>
+<table class="tg">
+<thead>
+<tr id="tb4">
+<h6 class="clt">
+<strong>Tabela: 4.3</strong> Critérios AIC e BIC para os modelos <span class="math inline">\(M_t\)</span> e <span class="math inline">\(M_{tb}\)</span> na Aplicação 1.
+</h6>
+</tr>
+<tr>
+<th class="tg-64eq">
+Critério
+</th>
+<th class="tg-64eq">
+<span class="math inline">\(M_{t}\)</span>
+</th>
+<th class="tg-64eq">
+<span class="math inline">\(M_{tb}\)</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tg-xkkm">
+AIC
+</td>
+<td class="tg-xkkm">
+<strong>112.74</strong>
+</td>
+<td class="tg-xkkm">
+114.55
+</td>
+</tr>
+<tr>
+<td class="tg-af47">
+BIC
+</td>
+<td class="tg-af47">
+<strong>147.42</strong>
+</td>
+<td class="tg-af47">
+152.39
+</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>Para fins ilustrativos, reajustamos os dados considerando somente as <span class="math inline">\(k=5\)</span> primeiras épocas de captura, o que totaliza <span class="math inline">\(r=156\)</span> animais capturados. A
+Tabela <a href="resultados-e-discussão.html#tb5">4.4</a> exibe as novas estimativas dos dois modelos, <span class="math inline">\(M_t\)</span> e <span class="math inline">\(M_{tb}\)</span>, de acordo com esses dados restritos. Observe que a estimativa de <span class="math inline">\(N\)</span> para o modelo <span class="math inline">\(M_t\)</span> se manteve consistente com <span class="math inline">\(\hat{N}=173\)</span>, enquanto que o modeo <span class="math inline">\(M_{tb}\)</span> elevou a estimativa para <span class="math inline">\(\hat{N} = 184\)</span>. Os critérios AIC e BIC neste caso foram de 57.20 e 75.50 para o modelo <span class="math inline">\(M_t\)</span> e 58.55 e 79.90 para o modelo <span class="math inline">\(M_{tb}\)</span>, ainda favorecendo o modelo <span class="math inline">\(M_t\)</span> para ajuste.</p>
+<p><br></p>
+<table class="tg">
+<thead>
+<tr id="tb5">
+<h6 class="clt">
+<strong>Tabela: 4.4</strong> Estimativas de máxima verossimilhança dos parâmetros dos modelos <span class="math inline">\(M_t\)</span> e <span class="math inline">\(M_{tb}\)</span> na Aplicação 1 (<span class="math inline">\(k=5\)</span>).
+</h6>
+</tr>
+<tr>
+<th class="tg-64eq">
+Estimativas
+</th>
+<th class="tg-64eq">
+<span class="math inline">\(M_{t}\)</span>
+</th>
+<th class="tg-64eq">
+<span class="math inline">\(M_{tb}\)</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tg-xkkm">
+<span class="math inline">\(N\)</span>
+</td>
+<td class="tg-xkkm">
+173
+</td>
+<td class="tg-xkkm">
+184
+</td>
+</tr>
+<tr>
+<td class="tg-af47">
+<span class="math inline">\(c\)</span>
+</td>
+<td class="tg-af47">
+<span class="math inline">\(-\)</span>
+</td>
+<td class="tg-af47">
+0.3298
+</td>
+</tr>
+<tr>
+<td class="tg-xkkm">
+<span class="math inline">\(p_1\)</span>
+</td>
+<td class="tg-xkkm">
+0.3886
+</td>
+<td class="tg-xkkm">
+0.3864
+</td>
+</tr>
+<tr>
+<td class="tg-af47">
+<span class="math inline">\(p_2\)</span>
+</td>
+<td class="tg-af47">
+0.3526
+</td>
+<td class="tg-af47">
+0.3042
+</td>
+</tr>
+<tr>
+<td class="tg-xkkm">
+<span class="math inline">\(p_3\)</span>
+</td>
+<td class="tg-xkkm">
+0.3584
+</td>
+<td class="tg-xkkm">
+0.2965
+</td>
+</tr>
+<tr>
+<td class="tg-af47">
+<span class="math inline">\(p_4\)</span>
+</td>
+<td class="tg-af47">
+0.3006
+</td>
+<td class="tg-af47">
+0.2376
+</td>
+</tr>
+<tr>
+<td class="tg-xkkm">
+<span class="math inline">\(p_5\)</span>
+</td>
+<td class="tg-xkkm">
+0.4277
+</td>
+<td class="tg-xkkm">
+0.3431
+</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+</div>
+<div id="segunda-aplicação" class="section level3 hasAnchor" number="4.1.2">
+<h3><span class="header-section-number">4.1.2</span> Segunda aplicação<a href="resultados-e-discussão.html#segunda-aplicação" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Nesta seção vamos utilizar dados reais de captura-recaptura de ratos veados que foram coletados por S. Hoffman em meados de julho de 1974, inicialmente utilizado por <span class="citation">Otis et al. (<a href="#ref-otis1978">1978</a>)</span> e discutidos no contexto bayesiano por <span class="citation">Wang et al. (<a href="#ref-wang2015">2015</a>)</span>. Os dados foram coletados da seguinte forma: a captura foi em 5 manhãs consecutivas e 110 ratos distintos foram capturados, onde presumiu-se que exista resposta comportamental à marcação. Os resultados são apresentados na Tabela <a href="resultados-e-discussão.html#tb6">4.5</a>.</p>
+<p><br></p>
+<table class="tg">
+<thead>
+<tr id="tb6">
+<h6 class="clt">
+<strong>Tabela: 4.5</strong> Dados reais de captura-recaptura de ratos veados <span class="citation">Wang et al. (<a href="#ref-wang2015">2015</a>)</span>.
+</h6>
+</tr>
+<tr>
+<th class="tg-64eq">
+</th>
+<th class="tg-64eq">
+<span class="math inline">\(j\)</span>
+</th>
+<th class="tg-64eq">
+1
+</th>
+<th class="tg-64eq">
+2
+</th>
+<th class="tg-64eq">
+3
+</th>
+<th class="tg-64eq">
+4
+</th>
+<th class="tg-64eq">
+5
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tg-xkkm">
+Animais marcados antes da ocasião
+</td>
+<td class="tg-xkkm">
+<span class="math inline">\(M_j\)</span>
+</td>
+<td class="tg-xkkm">
+0
+</td>
+<td class="tg-xkkm">
+37
+</td>
+<td class="tg-xkkm">
+68
+</td>
+<td class="tg-xkkm">
+77
+</td>
+<td class="tg-xkkm">
+98
+</td>
+</tr>
+<tr>
+<td class="tg-af47">
+Animais capturados (não marcados)
+</td>
+<td class="tg-af47">
+<span class="math inline">\(u_j\)</span>
+</td>
+<td class="tg-af47">
+37
+</td>
+<td class="tg-af47">
+31
+</td>
+<td class="tg-af47">
+9
+</td>
+<td class="tg-af47">
+21
+</td>
+<td class="tg-af47">
+12
+</td>
+</tr>
+<tr>
+<td class="tg-xkkm">
+Animais recapturados (marcados)
+</td>
+<td class="tg-xkkm">
+<span class="math inline">\(m_j\)</span>
+</td>
+<td class="tg-xkkm">
+0
+</td>
+<td class="tg-xkkm">
+23
+</td>
+<td class="tg-xkkm">
+49
+</td>
+<td class="tg-xkkm">
+44
+</td>
+<td class="tg-xkkm">
+57
+</td>
+</tr>
+<tr>
+<td class="tg-af47">
+Animais selecionados
+</td>
+<td class="tg-af47">
+<span class="math inline">\(n_j\)</span>
+</td>
+<td class="tg-af47">
+37
+</td>
+<td class="tg-af47">
+54
+</td>
+<td class="tg-af47">
+58
+</td>
+<td class="tg-af47">
+65
+</td>
+<td class="tg-af47">
+69
+</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>A <a href="resultados-e-discussão.html#tb7">4.6</a> exibe as estimativas de máxima verossimilhança dos parâmetros, onde nota-se a diferença significativa entre as estimativas para <span class="math inline">\(\hat{N}=113\)</span> para o modelo <span class="math inline">\(M_t\)</span> e de <span class="math inline">\(\hat{N}=215\)</span> para o modelo <span class="math inline">\(M_{tb}\)</span>. De fato, o efeito comportamental à marcação nesta aplicação foi de <span class="math inline">\(\hat{c}=2,5195\)</span>, considerada alta, o que pode estar influenciando as estimativas dos demais parâmetros entre os dois ajustes.</p>
+<p><br></p>
+<table class="tg">
+<thead>
+<tr id="tb7">
+<h6 class="clt">
+<strong>Tabela: 4.6</strong> Estimativas de máxima verossimilhança dos parâmetros dos modelos <span class="math inline">\(M_t\)</span> e <span class="math inline">\(M_{tb}\)</span> na Aplicação 2.
+</h6>
+</tr>
+<tr>
+<th class="tg-64eq">
+Estimativas
+</th>
+<th class="tg-64eq">
+<span class="math inline">\(M_t\)</span>
+</th>
+<th class="tg-64eq">
+<span class="math inline">\(M_{tb}\)</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tg-xkkm">
+<span class="math inline">\(N\)</span>
+</td>
+<td class="tg-xkkm">
+113
+</td>
+<td class="tg-xkkm">
+215
+</td>
+</tr>
+<tr>
+<td class="tg-af47">
+<span class="math inline">\(c\)</span>
+</td>
+<td class="tg-af47">
+<span class="math inline">\(-\)</span>
+</td>
+<td class="tg-af47">
+2.5196
+</td>
+</tr>
+<tr>
+<td class="tg-xkkm">
+<span class="math inline">\(p_1\)</span>
+</td>
+<td class="tg-xkkm">
+0.3274
+</td>
+<td class="tg-xkkm">
+0.1721
+</td>
+</tr>
+<tr>
+<td class="tg-af47">
+<span class="math inline">\(p_2\)</span>
+</td>
+<td class="tg-af47">
+0.4779
+</td>
+<td class="tg-af47">
+0.1579
+</td>
+</tr>
+<tr>
+<td class="tg-xkkm">
+<span class="math inline">\(p_3\)</span>
+</td>
+<td class="tg-xkkm">
+0.5133
+</td>
+<td class="tg-xkkm">
+0.1121
+</td>
+</tr>
+<tr>
+<td class="tg-af47">
+<span class="math inline">\(p_4\)</span>
+</td>
+<td class="tg-af47">
+0.5752
+</td>
+<td class="tg-af47">
+0.1201
+</td>
+</tr>
+<tr>
+<td class="tg-xkkm">
+<span class="math inline">\(p_5\)</span>
+</td>
+<td class="tg-xkkm">
+0.6106
+</td>
+<td class="tg-xkkm">
+0.1012
+</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>De fato, temos que a probabilidade de capturar um animal não marcado (sendo a mesma para o animal marcado no modelo <span class="math inline">\(M_t\)</span>) na <span class="math inline">\(j\)</span>-ésima ocasião é:
+<span class="math display">\[p_j = \dfrac{e^{\eta_j}}{1+e^{\eta_j}},  ~~~ j=1,2,\ldots,k\]</span>
+e que a probabilidade de capturar um animal marcado pelo modelo <span class="math inline">\(M_{tb}\)</span> na <span class="math inline">\(j\)</span>-ésima ocasião é:
+<span class="math display">\[c_j = \dfrac{e^{c+\eta_j}}{1+e^{c+\eta_j}}, ~~~j=2,3,\ldots,k.\]</span></p>
+<p>Logo, pela propriedade da invariância dos estimadores de máxima verossimilhança, temos pelo modelo <span class="math inline">\(M_{tb}\)</span> que as probabilidades estimadas de recapturas são <span class="math inline">\(\hat{c}_2 =\)</span> 0.6996, <span class="math inline">\(\hat{c}_3 =\)</span> 0.6106, <span class="math inline">\(\hat{c}_4 =\)</span> 0.6290 e
+<span class="math inline">\(\hat{c}_5 =\)</span> 0.5831, muito superiores que os <span class="math inline">\(\hat{p}_j\)</span> exibidos na tabela anterior. De fato, temos que a razão de chances está de <span class="math inline">\(\hat{w} = \exp(\hat{c}) = \exp(2.5196) = 12,4236\)</span> de recaptura para a probabilidade de captura, evidenciando um forte efeito (``feliz’’) no comportamento do animal devido à marcação. Isso é consistente com os dados, uma vez que há mais recapturas do que as capturas iniciais na maioria das ocasiões de amostragem.</p>
+<p>O efeito significativo no parâmetro comportamental no ajuste final é descatado também pelos critérios AIC e BIC apresentados na Tabela <a href="resultados-e-discussão.html#tb8">4.7</a>, onde observados menores valores de ambos critérios para o modelo <span class="math inline">\(M_{tb}\)</span> e, assim, sendo escolhido como melhor ajuste aos dados da Tabela <a href="resultados-e-discussão.html#tb6">4.5</a>.</p>
+<p><br></p>
+<table class="tg">
+<thead>
+<tr id="tb8">
+<h6 class="clt">
+<strong>Tabela: 4.7</strong>Estimativas de máxima verossimilhança dos parâmetros dos modelos <span class="math inline">\(M_t\)</span> e <span class="math inline">\(M_{tb}\)</span> na Aplicação 2.
+</h6>
+</tr>
+<tr>
+<th class="tg-64eq">
+Critério
+</th>
+<th class="tg-64eq">
+<span class="math inline">\(M_{t}\)</span>
+</th>
+<th class="tg-64eq">
+<span class="math inline">\(M_{tb}\)</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tg-xkkm">
+AIC
+</td>
+<td class="tg-xkkm">
+89.10
+</td>
+<td class="tg-xkkm">
+<strong>67.37</strong>
+</td>
+</tr>
+<tr>
+<td class="tg-af47">
+BIC
+</td>
+<td class="tg-af47">
+105.31
+</td>
+<td class="tg-af47">
+<strong>86.28</strong>
+</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+</div>
+</div>
+<div id="estudo-de-simulação" class="section level2 hasAnchor" number="4.2">
+<h2><span class="header-section-number">4.2</span> Estudo de simulação<a href="resultados-e-discussão.html#estudo-de-simulação" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="modelo-m_t" class="section level3 hasAnchor" number="4.2.1">
+<h3><span class="header-section-number">4.2.1</span> Modelo <span class="math inline">\(M_t\)</span><a href="resultados-e-discussão.html#modelo-m_t" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</div>
+<div id="modelo-m_tb" class="section level3 hasAnchor" number="4.2.2">
+<h3><span class="header-section-number">4.2.2</span> Modelo <span class="math inline">\(M_{tb}\)</span><a href="resultados-e-discussão.html#modelo-m_tb" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+
+</div>
+</div>
+</div>
+<h3>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-coulombe1965respiratory" class="csl-entry">
+Coulombe, Harry N, Sam H Ridgway, e William E Evans. 1965. <span>“Respiratory water exchange in two species of porpoise”</span>. <em>Science</em> 149 (3679): 86–88.
+</div>
+<div id="ref-otis1978" class="csl-entry">
+Otis, David L, Kenneth P Burnham, Gary C White, e David R Anderson. 1978. <span>“Statistical inference from capture data on closed animal populations”</span>. <em>Wildlife monographs</em>, nº 62: 3–135.
+</div>
+<div id="ref-wang2015" class="csl-entry">
+Wang, Xiaoyin, Zhuoqiong He, Dongchu Sun, et al. 2015. <span>“Bayesian Estimation of Population Size via Capture-Recapture Model with Time Variation and Behavioral Response”</span>. <em>Open Journal of Ecology</em> 5 (01): 1.
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="desenvolvimento-materiais-e-métodos.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="conclusões.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": false,
+"twitter": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "whatsapp"]
+},
+"fontsettings": null,
+"edit": null,
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf"],
+"search": false,
+"toc": {
+"collapse": "none",
+"scroll_highlight": true
+},
+"toolbar": {
+"position": "fixed"
+},
+"info": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

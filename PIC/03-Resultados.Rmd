@@ -1,0 +1,464 @@
+# Resultados e Discussão
+
+Neste capítulo apresentaremos resultados numéricos para a metodologia estudada. Dividimos o capítulo em duas partes:  na primeira parte, ilustraremos a metodologia em duas aplicações com dados reais de captura-recaptura; e  na segunda parte realizaremos um estudo de simulação Monte Carlo para verificar o comportamento dos estimadores de máxima verossimilhança  -- com foco no estimador do parâmetro $N$  -- dos dois modelos apresentados, $M_t$ e $M_{tb}$.
+
+## Aplicação com dados reais
+
+Nesta seção vamos aplicar os dois modelos de captura-recaptura estudados, $M_t$ e $M_{tb}$, em dois conjuntos de dados reais da literatura. Para fins comparativos, iremos escolher como melhor ajuste aos dados o modelo que apresentar os menores valores dos critérios de informação AIC (Critério de Informação de Akaike) e BIC (Critério de Informação Bayesiano), definidos respectivamente por
+
+<br>
+
+\begin{align*}
+\mathrm{AIC} & = -2\log L(\widehat{\mathbf{\theta}}|\mathbf{x})-2d \\
+\mathrm{BIC} & =-2 \log L(\widehat{\mathbf{\theta}}|\mathbf{x}) - d\log(n)
+\end{align*}
+
+<br>
+
+onde $\widehat{\mathbf{\theta}}$ é a estimativa de máxima verossimilhança do vetor paramétrico ${\mathbf{\theta}}$ de dimensão $d$, e $\mathbf{x}$ é o conjunto de dados  contendo $n$ observações \cite{burnham1995model}. Em nossos modelos, $n$ é o número total de distintos capturados, denotado neste projeto por $r$.
+
+
+### Primeira aplicação
+
+Como parte de um estudo de ciências populacionais, @coulombe1965respiratory conduziram um estudo com armadilhas para ratos domésticos selvagens *Mus musculus*. Um quadrado $10 \times 10$ foi usado com armadilhas espaçadas de 3 metros entre elas e  as armadilhas foram verificadas pelos pesquisadores duas vezes ao dia, de manha e a noite, durante 5 dias, totalizando $k=10$ épocas de captura. Um total de $r=173$ ratos diferentes foram capturados. Os dados estão disponíveis em @otis1978 e são exibidos na Tabela <a href="#tb2">4.1</a>.
+
+<br>
+
+<table class="tg">
+<thead>
+  <tr id="tb2">
+    <h6 class="clt">
+      <strong>Tabela: 4.1</strong> Dados reais de captura-recaptura de  ratos @otis1978 .
+    </h6>
+  </tr>
+  <tr>
+    <th class="tg-64eq"></th>
+    <th class="tg-64eq">$j$</th>
+    <th class="tg-64eq">1</th>
+    <th class="tg-64eq">2</th>
+    <th class="tg-64eq">3</th>
+    <th class="tg-64eq">4</th>
+    <th class="tg-64eq">5</th>
+    <th class="tg-64eq">6</th>
+    <th class="tg-64eq">7</th>
+    <th class="tg-64eq">8</th>
+    <th class="tg-64eq">9</th>
+    <th class="tg-64eq">10</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-xkkm">Animais marcados antes da ocasião</td>
+    <td class="tg-xkkm">$M_j$</td>
+    <td class="tg-xkkm">0</td>
+    <td class="tg-xkkm">68</td>
+    <td class="tg-xkkm">102</td>
+    <td class="tg-xkkm">128</td>
+    <td class="tg-xkkm">140</td>
+    <td class="tg-xkkm">156</td>
+    <td class="tg-xkkm">159</td>
+    <td class="tg-xkkm">171</td>
+    <td class="tg-xkkm">171</td>
+    <td class="tg-xkkm">173</td>
+  </tr>
+  <tr>
+    <td class="tg-af47">Animais capturados (não marcados)</td>
+    <td class="tg-af47">$u_j$</td>
+    <td class="tg-af47">68</td>
+    <td class="tg-af47">34</td>
+    <td class="tg-af47">26</td>
+    <td class="tg-af47">12</td>
+    <td class="tg-af47">16</td>
+    <td class="tg-af47">3</td>
+    <td class="tg-af47">12</td>
+    <td class="tg-af47">0</td>
+    <td class="tg-af47">2</td>
+    <td class="tg-af47">0</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">Animais recapturados (marcados)</td>
+    <td class="tg-xkkm">$m_j$</td>
+    <td class="tg-xkkm">0</td>
+    <td class="tg-xkkm">27</td>
+    <td class="tg-xkkm">36</td>
+    <td class="tg-xkkm">40</td>
+    <td class="tg-xkkm">58</td>
+    <td class="tg-xkkm">38</td>
+    <td class="tg-xkkm">64</td>
+    <td class="tg-xkkm">36</td>
+    <td class="tg-xkkm">74</td>
+    <td class="tg-xkkm">39</td>
+  </tr>
+  <tr>
+    <td class="tg-af47">Animais selecionados</td>
+    <td class="tg-af47">$n_j$</td>
+    <td class="tg-af47">68</td>
+    <td class="tg-af47">61</td>
+    <td class="tg-af47">62</td>
+    <td class="tg-af47">52</td>
+    <td class="tg-af47">74</td>
+    <td class="tg-af47">41</td>
+    <td class="tg-af47">76</td>
+    <td class="tg-af47">36</td>
+    <td class="tg-af47">76</td>
+    <td class="tg-af47">39</td>
+  </tr>
+</tbody>
+</table>
+
+Observe a baixa frequência de animais não marcados ($u_j)$   nas últimas ocasiões de captura, indicando que poucos animais  da população ainda não foram vistos no estudo. Os tamanhos amostrais $(n_j)$ diferentes também indicam heterogeneidade ao longo do tempo.
+
+A Tabela <a href="#tb3">4.2</a> a seguir exibe as estimativas dos dois modelos, $M_t$ e $M_{tb}$.
+
+<br>
+
+
+<table class="tg">
+<thead>
+  <tr id="tb3">
+    <h6 class="clt">
+      <strong>Tabela: 4.2</strong> Estimativas de máxima verossimilhança dos parâmetros dos modelos $M_t$ e $M_{tb}$ na Aplicação 1.
+    </h6>
+  </tr>
+  <tr>
+    <th class="tg-64eq">Estimativas</th>
+    <th class="tg-64eq">$M_{t}$</th>
+    <th class="tg-64eq">$M_{tb}$</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-xkkm">$\hat{N}$</td>
+    <td class="tg-xkkm">175</td>
+    <td class="tg-xkkm">176</td>
+  </tr>
+  <tr>
+    <td class="tg-af47">$\hat{c}$</td>
+    <td class="tg-af47"> $-$ </td>
+    <td class="tg-af47">0.0858</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">$\hat{p}_1$</td>
+    <td class="tg-xkkm">0.3886</td>
+    <td class="tg-xkkm">0.3864</td>
+  </tr>
+  <tr>
+    <td class="tg-af47">$\hat{p}_2$</td>
+    <td class="tg-af47">0.3486</td>
+    <td class="tg-af47">0.3391</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">$\hat{p}_3$</td>
+    <td class="tg-xkkm">0.3543</td>
+    <td class="tg-xkkm">0.3410</td>
+  </tr>
+  <tr>
+    <td class="tg-af47">$\hat{p}_4$</td>
+    <td class="tg-af47">0.2971</td>
+    <td class="tg-af47">0.2826</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">$\hat{p}_5$</td>
+    <td class="tg-xkkm">0.4229</td>
+    <td class="tg-xkkm">0.4039</td>
+  </tr>
+  <tr>
+    <td class="tg-af47">$\hat{p}_6$</td>
+    <td class="tg-af47">0.2343</td>
+    <td class="tg-af47">0.2196</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">$\hat{p}_7$</td>
+    <td class="tg-xkkm">0.4343</td>
+    <td class="tg-xkkm">0.4129</td>
+  </tr>
+  <tr>
+    <td class="tg-af47">$\hat{p}_8$</td>
+    <td class="tg-af47">0.2057</td>
+    <td class="tg-af47">0.1913</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">$\hat{p}_9$</td>
+    <td class="tg-xkkm">0.4343</td>
+    <td class="tg-xkkm">0.4115</td>
+  </tr>
+  <tr>
+    <td class="tg-af47">$\hat{p}_{10}$</td>
+    <td class="tg-af47">0.2229</td>
+    <td class="tg-af47">0.2074</td>
+  </tr>
+</tbody>
+</table>
+
+<br>
+
+
+Primeiramente, destacamos que as estimativas para o tamanho populacional dos dois modelos foram bem próximas, 175 animais para $M_t$ e 176 para $M_{tb}$, e não muito superiores ao número total de animais distintos capturados, $r=173$ animais. Isto é, estima-se que apenas dois ou três animais não foram vistos durante o estudo de acordo com os modelos $M_t$ e $M_{tb}$, respectivamente. A heterogeneidade entre as probabilidades de captura é observada nas estimativas dos parâmetros $p_j$, que variaram entre 0,2057 e 0,4343 para o modelo $M_{t}$ e de 0,1913 a 0,4129 no modelo $M_{tb}$. 
+O parâmetro de efeito comportamental à marcação foi estimado em $\hat{c}=0,0858$, bem próximo de zero que indica não efeito da marcação na chance de recapturar o animal. Essa evidência foi confirmada pelos critérios AIC e BIC exibidos na Tabela <a href="#tb4">4.3</a> onde escolhemos o modelo $M_t$ como sendo de melhor ajuste por apresentar menores valores dos critérios.
+
+<br>
+
+<table class="tg">
+<thead>
+  <tr id="tb4">
+    <h6 class="clt">
+      <strong>Tabela: 4.3</strong> Critérios AIC e BIC para os modelos $M_t$ e $M_{tb}$ na Aplicação 1.
+    </h6>
+  </tr>
+  <tr>
+    <th class="tg-64eq">Critério</th>
+    <th class="tg-64eq">$M_{t}$</th>
+    <th class="tg-64eq">$M_{tb}$</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-xkkm">AIC</td>
+    <td class="tg-xkkm"><strong>112.74</strong></td>
+    <td class="tg-xkkm">114.55</td>
+  </tr>
+  <tr>
+    <td class="tg-af47">BIC</td>
+    <td class="tg-af47"><strong>147.42</strong></td>
+    <td class="tg-af47">152.39</td>
+  </tr>
+</tbody>
+</table>
+
+<br>
+
+Para fins ilustrativos, reajustamos os dados considerando somente as $k=5$ primeiras épocas de captura, o que totaliza $r=156$ animais capturados. A
+Tabela <a href="#tb5">4.4</a> exibe as novas estimativas dos dois modelos, $M_t$ e $M_{tb}$, de acordo com esses dados restritos. Observe que a estimativa de $N$ para o modelo $M_t$ se manteve consistente com $\hat{N}=173$, enquanto que o modeo $M_{tb}$ elevou a estimativa para $\hat{N} = 184$. Os critérios AIC e BIC neste caso foram de 57.20 e  75.50 para o modelo $M_t$ e 58.55 e 79.90 para o modelo $M_{tb}$, ainda favorecendo o modelo $M_t$ para ajuste.
+
+<br>
+
+
+<table class="tg">
+<thead>
+  <tr id="tb5">
+    <h6 class="clt">
+      <strong>Tabela: 4.4</strong> Estimativas de máxima verossimilhança dos parâmetros dos modelos $M_t$ e $M_{tb}$ na Aplicação 1 ($k=5$).
+    </h6>
+  </tr>
+  <tr>
+    <th class="tg-64eq">Estimativas</th>
+    <th class="tg-64eq">$M_{t}$</th>
+    <th class="tg-64eq">$M_{tb}$</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-xkkm">$N$</td>
+    <td class="tg-xkkm">173</td>
+    <td class="tg-xkkm">184</td>
+  </tr>
+  <tr>
+    <td class="tg-af47">$c$</td>
+    <td class="tg-af47">$-$</td>
+    <td class="tg-af47">0.3298</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">$p_1$</td>
+    <td class="tg-xkkm">0.3886</td>
+    <td class="tg-xkkm">0.3864</td>
+  </tr>
+  <tr>
+    <td class="tg-af47">$p_2$</td>
+    <td class="tg-af47">0.3526</td>
+    <td class="tg-af47">0.3042</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">$p_3$</td>
+    <td class="tg-xkkm">0.3584</td>
+    <td class="tg-xkkm">0.2965</td>
+  </tr>
+  <tr>
+    <td class="tg-af47">$p_4$</td>
+    <td class="tg-af47">0.3006</td>
+    <td class="tg-af47">0.2376</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">$p_5$</td>
+    <td class="tg-xkkm">0.4277</td>
+    <td class="tg-xkkm">0.3431</td>
+  </tr>
+</tbody>
+</table>
+
+<br>
+
+### Segunda aplicação
+
+Nesta  seção  vamos utilizar dados reais de captura-recaptura de ratos veados que foram coletados por  S. Hoffman em meados de julho de 1974, inicialmente utilizado  por @otis1978 e discutidos no contexto bayesiano por @wang2015. Os dados foram coletados da seguinte forma:  a captura foi em 5 manhãs consecutivas e 110 ratos distintos foram capturados, onde presumiu-se que exista resposta  comportamental à marcação. Os resultados  são apresentados na Tabela <a href="#tb6">4.5</a>.
+
+<br>
+
+<table class="tg">
+<thead>
+  <tr id="tb6">
+    <h6 class="clt">
+      <strong>Tabela: 4.5</strong> Dados reais de captura-recaptura de ratos veados @wang2015.
+    </h6>
+  </tr>
+  <tr>
+    <th class="tg-64eq"></th>
+    <th class="tg-64eq">$j$</th>
+    <th class="tg-64eq">1</th>
+    <th class="tg-64eq">2</th>
+    <th class="tg-64eq">3</th>
+    <th class="tg-64eq">4</th>
+    <th class="tg-64eq">5</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-xkkm">Animais marcados antes da ocasião</td>
+    <td class="tg-xkkm">$M_j$</td>
+    <td class="tg-xkkm">0</td>
+    <td class="tg-xkkm">37</td>
+    <td class="tg-xkkm">68</td>
+    <td class="tg-xkkm">77</td>
+    <td class="tg-xkkm">98</td>
+  </tr>
+  <tr>
+    <td class="tg-af47">Animais capturados (não marcados)</td>
+    <td class="tg-af47">$u_j$</td>
+    <td class="tg-af47">37</td>
+    <td class="tg-af47">31</td>
+    <td class="tg-af47">9</td>
+    <td class="tg-af47">21</td>
+    <td class="tg-af47">12</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">Animais recapturados (marcados)</td>
+    <td class="tg-xkkm">$m_j$</td>
+    <td class="tg-xkkm">0</td>
+    <td class="tg-xkkm">23</td>
+    <td class="tg-xkkm">49</td>
+    <td class="tg-xkkm">44</td>
+    <td class="tg-xkkm">57</td>
+  </tr>
+  <tr>
+    <td class="tg-af47">Animais selecionados</td>
+    <td class="tg-af47">$n_j$</td>
+    <td class="tg-af47">37</td>
+    <td class="tg-af47">54</td>
+    <td class="tg-af47">58</td>
+    <td class="tg-af47">65</td>
+    <td class="tg-af47">69</td>
+  </tr>
+</tbody>
+</table>
+
+<br>
+
+A <a href="#tb7">4.6</a> exibe as estimativas de máxima verossimilhança dos parâmetros, onde nota-se a diferença significativa entre as estimativas para $\hat{N}=113$ para o modelo $M_t$ e de $\hat{N}=215$ para o modelo $M_{tb}$. De fato, o efeito comportamental à marcação nesta aplicação foi de $\hat{c}=2,5195$, considerada alta, o que pode estar influenciando as estimativas dos demais parâmetros entre os dois ajustes.
+
+<br>
+
+<table class="tg">
+<thead>
+  <tr id="tb7">
+    <h6 class="clt">
+      <strong>Tabela: 4.6</strong> Estimativas de máxima verossimilhança dos parâmetros dos modelos $M_t$ e $M_{tb}$ na Aplicação 2.
+    </h6>
+  </tr>
+  <tr>
+    <th class="tg-64eq">Estimativas</th>
+    <th class="tg-64eq">$M_t$</th>
+    <th class="tg-64eq">$M_{tb}$</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-xkkm">$N$</td>
+    <td class="tg-xkkm">113</td>
+    <td class="tg-xkkm">215</td>
+  </tr>
+  <tr>
+    <td class="tg-af47">$c$</td>
+    <td class="tg-af47">$-$</td>
+    <td class="tg-af47">2.5196</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">$p_1$</td>
+    <td class="tg-xkkm">0.3274</td>
+    <td class="tg-xkkm">0.1721</td>
+  </tr>
+  <tr>
+    <td class="tg-af47">$p_2$</td>
+    <td class="tg-af47">0.4779</td>
+    <td class="tg-af47">0.1579</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">$p_3$</td>
+    <td class="tg-xkkm">0.5133</td>
+    <td class="tg-xkkm">0.1121</td>
+  </tr>
+  <tr>
+    <td class="tg-af47">$p_4$</td>
+    <td class="tg-af47">0.5752</td>
+    <td class="tg-af47">0.1201</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">$p_5$</td>
+    <td class="tg-xkkm">0.6106</td>
+    <td class="tg-xkkm">0.1012</td>
+  </tr>
+</tbody>
+</table>
+
+
+<br>
+
+De fato, temos que a  probabilidade de capturar um animal não marcado (sendo a mesma para o animal marcado no modelo $M_t$) na $j$-ésima ocasião é:
+$$p_j = \dfrac{e^{\eta_j}}{1+e^{\eta_j}},  ~~~ j=1,2,\ldots,k$$
+e que a probabilidade de capturar um animal marcado pelo modelo $M_{tb}$ na $j$-ésima ocasião é:
+$$c_j = \dfrac{e^{c+\eta_j}}{1+e^{c+\eta_j}}, ~~~j=2,3,\ldots,k.$$
+
+Logo, pela propriedade da invariância dos estimadores de máxima verossimilhança, temos pelo modelo $M_{tb}$ que as probabilidades estimadas de recapturas são  $\hat{c}_2 =$ 0.6996, $\hat{c}_3 =$ 0.6106, $\hat{c}_4 =$ 0.6290 e 
+$\hat{c}_5 =$ 0.5831, muito superiores que os $\hat{p}_j$ exibidos na tabela anterior. De fato, temos que a razão de chances está de $\hat{w} = \exp(\hat{c}) = \exp(2.5196) = 12,4236$ de recaptura para a probabilidade de captura, evidenciando um forte efeito (``feliz'') no comportamento do animal devido à marcação. Isso é consistente com os dados, uma vez que há mais recapturas do que as capturas iniciais na maioria das ocasiões de amostragem. 
+
+O efeito significativo no parâmetro comportamental no ajuste final é descatado também pelos critérios AIC e BIC apresentados na Tabela  <a href="#tb8">4.7</a>, onde observados menores valores de ambos critérios para  o modelo $M_{tb}$ e, assim, sendo escolhido como melhor ajuste aos dados da Tabela <a href="#tb6">4.5</a>. 
+
+
+<br>
+
+
+<table class="tg">
+<thead>
+  <tr id="tb8">
+    <h6 class="clt">
+      <strong>Tabela: 4.7</strong>Estimativas de máxima verossimilhança dos parâmetros dos modelos $M_t$ e $M_{tb}$ na Aplicação 2.
+    </h6>
+  </tr>
+  <tr>
+    <th class="tg-64eq">Critério</th>
+    <th class="tg-64eq">$M_{t}$</th>
+    <th class="tg-64eq">$M_{tb}$</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-xkkm">AIC</td>
+    <td class="tg-xkkm">89.10</td>
+    <td class="tg-xkkm"><strong>67.37</strong></td>
+  </tr>
+  <tr>
+    <td class="tg-af47">BIC</td>
+    <td class="tg-af47">105.31</td>
+    <td class="tg-af47"><strong>86.28</strong></td>
+  </tr>
+</tbody>
+</table>
+
+<br>
+
+## Estudo de simulação
+
+
+
+### Modelo $M_t$
+
+
+### Modelo $M_{tb}$

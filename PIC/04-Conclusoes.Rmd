@@ -1,0 +1,8 @@
+# Conclusões
+
+O presente projeto buscou estudar dois modelos tradicionais de captura-recaptura, o modelo $M_t$ de heterogeneidade das probabilidades de captura entre as épocas de amostragem e o modelo $M_{tb}$ que considera um parâmetro adicional no modelo $M_t$ que leva em conta a possível diferença entre as probabilidades de captura de um animal marcado para um não marcado. 
+O presente relatório buscou apontar as principais características destes dois modelos e obter as estimativas de máxima verossimilhança dos parâmetros. 
+
+nOs exemplos numéricos apresentados foram baseados em dados reais e dados simulados. Nos dados reais, dois conjuntos de dados foram utilizados para estimar a população de ratos. Pôde-se observar nos resultados que as estimativa do tamanho da população sempre foram acima do número de animais observados, indicando ganho inferencial à população pelos modelos de captura-recaptura. Por fim, concluímos que os resultados do estudo de simulação indicaram boas propriedades dos estimadores de máxima verossimilhança no sentido que quanto mais épocas de captura mais precisas são as estimativas (diminuição de viés e erro quadrático médio). Contudo, estudos mais aprofundados devem ser dirigidos para apontar a dependência entre os estimadores dos parâmetros do modelo $M_{tb}$.
+
+Por fim, ressaltamos que pesquisas complementares podem ser direcionadas para os modelos como, por exemplo, obtenção de intervalos de confiança, principalmente para o parâmetro $N$. Adicionalmente, um estudo de simulação para verificar o comportamento da seleção correta de modelos via critérios AIC e BIC poderia ser proposto futuramente junto com outros critérios como o teste de razão de verossimilhanças, por exemplo.

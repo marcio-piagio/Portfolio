@@ -1,0 +1,43 @@
+# Introdução
+
+
+Diversas áreas do conhecimento buscam conhecer o número de elementos em uma dada população. 
+Na ecologia, por exemplo,  o monitoramento do número de animais em uma determinada região é de suma importância no estudo e conservação da espécie @seber1982,@mccrea2014.
+Na área da saúde, é necessário avaliar a quantidade de indivíduos com uma determinada característica (doença, usuários de droga, ...) em uma cidade para promover políticas públicas e sociais @bird2018multiple,@bohning2020estimating.
+Por outro lado, a confiabilidade de um **software** está relacionada ao  número de erros (falhas) que ele apresenta @basu2001bayesian.
+
+Entretanto, na maioria das aplicações é impraticável observar todos os elementos
+da população devido à dificuldade operacional como, dentre outros fatores,  populações esquivas, excessivo  tempo para execução ou alto custo financeiro.
+Nestes casos, procedimentos estatísticos inferenciais são necessários para obter estimativas para
+os parâmetros populacionais e o método de captura-recaptura (CR) mostra-se
+uma técnica de amostragem útil e robusta.
+
+Resumidamente, o método  de captura-recaptura consiste em selecionar elementos desta população  em diferentes ocasiões de amostragem. 
+Na primeira ocasião, uma amostra é retirada, os elementos capturados recebem uma marca e, em seguida, todos são devolvidos à população. 
+Após um certo período de tempo, é selecionada uma segunda amostra e realizada a contagem dos elementos marcados (recapturas), e aqueles não marcados recebem uma marca, e todos são devolvidos à população. 
+Este procedimento é repetido em $k$ $(k\geq2)$ ocasiões de amostragem, e em cada ocasião é realizada a contagem do número de elementos selecionados e daqueles previamente marcados, feita a marcação dos elementos não marcados e todos são devolvidos à população.
+No final do processo faz-se a inferência sobre os parâmetros populacionais baseada no número de elementos capturados e recapturados @otis1978,@rodrigues1988bayesian,@oliveira2007,@salasar2011eliminaccao,@wang2015}. 
+
+A utilização  da técnica de captura-recaptura para estimar o tamanho de uma população pode ser melhor compreendida com um exemplo simples. Considere que ${N}$ é o tamanho da população a ser estimada e $n_1$ é o total de animais capturados na primeira época de captura, sendo todos marcados e devolvidos à população. Logo, nesta população, temos uma proporção $n_1/N$ de animais marcados. Considere que na segunda época de captura tenhamos $n_2$ animais capturados, dos quais $m$ estejam marcados. A ideia é estimar a proporção de marcados da população ($n_1/N$) pela proporção de marcados na segunda amostra ($m/n_2$), isto é,
+$$\widehat{\left(\dfrac{n_1}{N}\right)} = \dfrac{m}{n_2}$$
+onde, resolvendo-se em $N$, tem-se um estimador $\hat{N}$ para o tamanho populacional, dado por
+
+$$\hat{N} = \dfrac{n_1 n_2}{m}$$
+
+
+Na literatura, este estimador é conhecido como estimador de Lincoln-Petersen, em referência aos primeiros pesquisadores a empregarem este método na ecologia, o dinamarquês @PETERSEN1896, em seu estudo sobre  o fluxo migratório de peixes do mar Báltico e @lincoln1930, ao estimar o tamanho da população de patos selvagens na América do Norte.  Contudo, este método foi proposto inicialmente por @LAPLACE1783 para estimar o tamanho da população francesa.
+
+Atualmente, diversos modelos de captura-recaptura são encontrados na literatura para as mais diversas aplicações. Embora tenha-se  maior volume de trabalhos com aplicação na ecologia para a estimação de abundâncias de populações animais @mccrea2014,@royle2013, o método pode ser aplicado em outras áreas do conhecimento. Citamos o trabalho de @polonsky2021 como um exemplo de aplicação na epidemiologia, onde se buscou estimar a prevalência de Ebola via integridade do rastreamento de contatos durante o surto  na República Democrática do Congo, entre os anos de 2018 e 2020. Nas àreas de políticas públicas e sociais, @ryngelblum2021 empregaram um estudo sobre a análise da qualidade dos dados das mortes cometidas por policiais no município de São  Paulo, Brasil, entre os anos de 2014 e 2015.  Outro exemplo é um estudo onde foi possível identificar a má conduta das instituições financeiras e seus funcionários no Reino Unido entre 2004 e 2016 apresentado por @ashton2021.
+
+## Objetivos
+
+O método de captura-recaptura   vêm sendo aplicado nas mais diversas áreas do conhecimento e, por isso, o objetivo principal deste projeto é estudar essa metodologia de amostragem e a modelagem estatística para os dados provenientes desta técnica.
+Com relação à modelagem, temos os seguintes objetivos específicos para o projeto:
+
+* estudar dois tradicionais modelos estatísticos de captura-recaptura da literatura: $M_t$ e $M_{tb}$ @otis1978;
+
+* discutir métodos de estimação dos parâmetros desses modelos e aplicá-los em dados reais da literatura para exemplificar a metodologia;
+
+* apresentar um estudo de simulação para avaliar a performance dos estimadores.
+
+

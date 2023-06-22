@@ -1,0 +1,299 @@
+# Desenvolvimento (Materiais e Métodos)
+
+Considere uma população com $N$ indivíduos. Neste projeto, supomos que a população é "fechada" (demográfica e geograficamente), isto é, não há mortes (saídas ou perdas) nem nascimentos (entradas) de indivíduos na população ao longo do processo de captura-recaptura. Em outras palavras, assumimos que a população de estudo é composta pelos mesmos $N$ indivíduos  desde o início da primeira ocasião de captura até o final da última.
+
+O processo de captura-marcação-recaptura 
+de animais da população é aplicado da maneira tradicional: em cada ocasião de amostragem, observa-se um número aleatório (não fixado previamente) de animais desta população, registra-se o número de animais marcados e não marcados na amostra, marcando todos  os não marcados e devolve-se todos (marcados e não marcados) à população. O processo é repetido em $k$ ocasiões de amostragem. Supomos que  não há animais marcados na população antes da primeira ocasião de amostragem, e  que os animais não perdem suas marcas durante o processo. 
+
+Diante do exposto, definimos
+
+
+* $u_j$: número de animais não marcados na $j$-ésima ocasião de amostragem, $j = 1, 2, . . . , k;$ com $\mathbf{u}=(u_1, u_2, . . . , u_k)$
+
+<br>
+
+* $m_j$ : número de animais marcados (recapturas) na $j$-ésima ocasião de amostragem, $j =  2, . . . , k$ com $\mathbf{m} = (m_2, m_3, . . . , m_k)$.
+
+<br>
+
+* $n_j$: número de animais selecionados (marcados e não marcados) na $j$-ésima ocasião de amostragem, isto é, $n_j = u_j + m_j, ~j = 1 , 2, . . . , k;$
+
+<br>
+
+* $M_j:$ número de animais marcados na população imediatamente antes da $j$-ésima ocasião de amostragem, $j = 1, . . . , k,$ com $M_1 = 0$ e $M_{j+1} = M_j + u_j$, para $j =2, 3, . . . , k.$
+
+<br>
+
+A seguir, apresentamos um exemplo.
+
+*Suponha uma população de tamanho $N = 100$. De fato,  temos $M_1 = 0$ pois não temos animais marcados na população antes da primeira época de captura.*
+
+
+**Primeira ocasião:** *Suponha que capturamos $n_1 = 10$ animais. Consequentemente, temos $u_1=10$ animais não marcados na amostra e um total de $m_1=0$ animais marcados observados, isto é, nenhuma recaptura na primeira ocasião. Marcamos esses 10 animais e devolvemos à população. Observa-se que agora temos  $M_2 = M_1+u_1$ = $0+10 = 10$ animais marcados na população.*
+
+**Segunda ocasião:** *Após certo tempo para que os animais devolvidos na primeira ocasião possam se misturar aos demais, colhemos uma segunda amostra. Suponha que agora observamos $n_2 = 15$ animais, dos quais $u_2=12$ não são marcados e $m_2=3$ são marcados, isto é temos três animais recapturados. Então marca-se os 12 não marcados, e todos são devolvidos à população. Neste momento, temos $M_3 = 10+12=22$ animais marcados na população.*
+
+**Terceira ocasião:**  *Na terceira ocasião de captura, suponha  um total de $n_3=17$ animais capturados, sendo $u_3 = 8$ animais não marcados  e $m_3 = 9$ marcados (observa-se que a marcação não permite identificar se o animal recapturado foi marcado na primeira ou segunda época de captura, embora poderia realizar uma marcação específica em cada animal para registrar tal histórico). Por fim, marcando os 8 animais e devolvendo todos à população, temos $M_3=22 + 8 = 30$ animais observados até o momento.* 
+
+As quantidades estão apresentadas na <a href="#tb1">3.1</a> abaixo.
+
+<br>
+
+<table class="tg">
+<thead>
+  <tr id="tb1">
+    <h6 class="clt">
+      <strong>Tabela: 3.1</strong> Exemplo de quantidades observadas em um processo de captura-recaptura.
+    </h6>
+  </tr>
+  <tr>
+    <th class="tg-64eq"></th>
+    <th class="tg-64eq">$j$</th>
+    <th class="tg-64eq">1</th>
+    <th class="tg-64eq">2</th>
+    <th class="tg-64eq">3</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-xkkm">Animais capturados (não marcados)</td>
+    <td class="tg-xkkm">$u_j$</td>
+    <td class="tg-xkkm">10</td>
+    <td class="tg-xkkm">12</td>
+    <td class="tg-xkkm">8</td>
+  </tr>
+  <tr>
+    <td class="tg-af47">Animais recapturados (marcados)</td>
+    <td class="tg-af47">$m_j$</td>
+    <td class="tg-af47">0</td>
+    <td class="tg-af47">3</td>
+    <td class="tg-af47">9</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">Animais selecionados</td>
+    <td class="tg-xkkm">$n_j$</td>
+    <td class="tg-xkkm">10</td>
+    <td class="tg-xkkm">15</td>
+    <td class="tg-xkkm">17</td>
+  </tr>
+</tbody>
+</table>
+
+<br>
+
+*Em três épocas de captura, foi possível observar 30 animais distintos, de um total de $N=100$ animais. O presente exemplo se encerra comentando que o processo de captura-recaptura poderia ser estendido para mais épocas de captura.*
+
+A seguir, apresentamos dois modelos estatísticos  para estimação do tamanho populacional utilizando as informações de capturas definidas acima.
+
+<br><br>
+
+
+## Modelo de captura-recaptura <br>com heterogeneidade
+
+Nesta seção vamos apresentar o modelo de captura-recaptura com heterogeneidade temporal das probabilidades de captura, comumente denotado por $M_t$.  Definimos  $p_j$ sendo a probabilidade de um animal (marcado ou não)  ser capturado na $j$-ésima ocasião de amostragem, $j = 1 , 2, . . . ,k$ com $\mathbf{p}= (p_1, p_2, . . . , p_k)$.
+
+Supomos que os animais comportam-se independente uns dos outros, isto é, a captura (ou não) de
+um animal não altera a probabilidade de captura de qualquer outro. Adicionalmente, supomos que a captura (ou não) de um animal não altera sua probabilidade de recaptura, ou seja, animais marcados e não marcados tem a mesma probabilidade $p_j$ de serem capturados na ocasião $j$.
+
+Note que, por se tratar de uma sequência de sucessos ou fracassos (captura o não captura) e independência das capturas e mesma probabilidade de sucesso (captura) para as quantidades $u_j$ e $m_j$,  temos as seguintes distribuições:
+
+<br>
+
+\begin{equation} 
+u_j|N,p_j, M_j \sim \mathrm{Binomial}(N-M_j,p_j), ~~ j = 1,2,...,k  
+\end{equation} 
+
+<br>
+
+e
+\begin{equation} 
+m_j|p_j,M_j \sim \mathrm{Binomial}(M_j, p_j),   ~~   j = 2,...,k  
+\end{equation} 
+
+<br>
+
+Logo, a função de verossimilhança do modelo $M_t$ para os parâmetros $N$ e $\mathbf{p} = (p_1,\ldots,p_k)$, dada uma amostra de captura-marcação-recaptura $\mathbf{u}=(u_1,u_2,\ldots,u_k)$ e $\mathbf{m} = (m_2,m_3,\ldots,m_k)$, é definida por
+
+<br>
+
+\begin{align*}
+L(N,\textbf{p}|\textbf{u,m}) &= \mathrm{p}(\textbf{u,m}|N, \textbf{p})\\
+ &= p(u_1|N,p_1)\prod^k_{j=2}p(u_j|N,p_j,M_j)p(m_j|M_j,p_j)\\
+ &= \prod^k_{j=1}\binom{N-M_j}{u_j}p^{u_j}_j(1-p_j)^{N-M_j-u_j}\times \prod^k_{j=2}\binom{M_j}{m_j}p^{m_j}_j(1-p_j)^{M_j-m_j}\\
+ &= \prod^k_{j=2}\binom{M_j}{m_j}\times \prod^k_{j=1}\binom{N-M_j}{n_j-M_j}p_j^{n_j}(1-p_j)^{N-n_j}
+ \end{align*}
+ 
+ <br>
+ 
+para $N\geq r$, onde $r = M_k+u_k$ é o número de animais distintos observados no estudo, e $0<p_j<1$, para $j=1,2,,\ldots,k$, sendo $n_j = u_j+m_j$.
+
+Observe que, como $M_{j+1} = M_j+u_j$, temos
+
+<br>
+
+ \begin{align*}
+  \prod^k_{j=1}\binom{N-M_j}{u_j} &= \prod^k_{j=1}\frac{(N-M_j)!}{u_j!(N-M_j - u_j)!} \\
+ &= \prod_{j=1}^k\dfrac{1}{u_j!}\prod_{j=1}^k\dfrac{(N-M_j)!}{(N-M_{j+1})!}\\
+ &= \prod^k_{j=1}\dfrac{1}{u_j!}\times \dfrac{N!}{(N-r)!}
+\end{align*}
+
+<br>
+
+Logo, a função de verossimilhança pode ser reescrita em termos proporcionais à
+
+<br>
+
+
+\begin{align*}
+L(N,\textbf{p}|\textbf{u,m}) &\propto  \dfrac{N!}{(N-r)!}\prod^{k}_{j=1}p_j^{n_j}(1-p_j)^{N-n_j}
+\end{align*}
+
+para $N\geq r$ e $0<p_j<1$, para $j=1,2,,\ldots,k$,
+
+<br><br>
+
+## Modelo de captura-recaptura com <br> heterogeneidade e efeito à marcação
+
+Nesta seção apresentamos o modelo captura-recaptura com heterogeneidade temporal das probabilidades de captura e com efeito da marcação. O modelo foi originalmente proposto por @pollock1980, e na literatura é referido como o modelo $M_{tb}$  (ver @otis1978). O modelo $M_{tb}$ pressupõe, para cada ocasião de amostragem, que todos os animais não marcados têm uma probabilidade de captura e todos os animais marcados têm outra probabilidade de captura, e assume que essas probabilidades variam de uma ocasião de amostragem para outra.
+
+Seja $c_j$  a probabilidade de recapturar na ocasião $j$ um animal marcado. Neste caso, as seguintes distribuições condicionais são definidas para as quantidades $m_j$ com essa nova probabilidade: 
+
+<br>
+
+\begin{equation}
+    m_j | c_j,M_j \sim \text{Binomial}\big(M_j,c_j\big), \ \ \ \ \ j = 2, 3, ..., k \tag{3.2.1}
+\end{equation}
+
+<br>
+
+enquanto que as distribuições para $u_j$ permanecem como previamente definidas na equação? Observe que a modelagem permite probabilidades diferentes entre marcados ($p_j$) e não marcados ($c_j$) em uma determinada ocasião $j$.
+
+De maneira similar ao modelo $M_t$, temos a função de verossimilhança para $N$, $\mathbf{p} = (p_1,p_2,\ldots,p_k)$ e $\mathbf{c} = (c_2,\ldots,c_k)$ dada por 
+
+<br>
+
+\begin{align*}
+L(N, \mathbf{p} , \mathbf{c} |\mathbf{u},\mathbf{m}) &= \mathrm{p}(\mathbf{u},\mathbf{m}|N,\mathbf{p},\mathbf{c})\\
+ &= \prod_{j=1}^{k}\binom{N-M_j}{u_j}p_j^{u_j}(1-p_j)^{N-M_j-u_j} \times \prod_{j=2}^{k}\binom{M_j}{m_j}c_j^{m_j}(1-c_j)^{M_j-m_j}\\
+  &\propto \frac{N!}{(N-r)!}\prod_{j=1}^{k}p_j^{u_j}(1-p_j)^{N-M_{j+1}}\prod_{j=2}^{k}c_j^{m_j}(1-c_j)^{M_j-m_j} \\ 
+\end{align*}
+
+<br>
+
+para:
+
+<br>
+
+*  $N\geq r$, $0<p_j<1$  para  $j=1,\ldots,k$
+
+*  $0<c_j<1$ para $j=2,\ldots,k$
+
+<br>
+
+
+Contudo, o modelo acima não é identificável pois temos $2k-1$ estatísticas suficientes em $\mathbf{u}=(u_1,u_2,\ldots,u_k)$ e $\mathbf{m}=(m_2,m_3,\ldots,m_k)$ para $2K$ parâmetros ($N,\textbf{p},\textbf{c}$), isto é, tem-se mais parâmetros que dados. Portanto, restrições no espaço paramétrico são necessárias.
+
+
+A restrição proposta por @wang2002 considera a razão da chance de capturas e recapturas da seguinte forma:
+
+<br>
+
+\begin{equation}
+    \frac{c_j}{1-c_j}=w\times\frac{p_j}{1-p_j}, \ \ \ \ j=2,3,...,k  \tag{3.2.3}
+\end{equation}
+
+<br>
+
+onde existe três situações para a razão de chances $w$:
+
+$w>1$: probabilidade de capturar um animal marcado  é maior que a probabilidade de capturar um animal não marcado (efeito ``feliz'' da marcação);
+
+$w=1$: probabilidade de capturar um animal marcado  é igual  à probabilidade de capturar um animal não marcado, (sem efeito à marcação);
+
+$w<1$: probabilidade de capturar um animal marcado  é menor que a probabilidade de capturar um animal não marcado,  (efeito ``triste'' à marcação).
+
+
+O efeito "feliz" à marcação pode ser gerado por agrados durante a captura, como petiscos. O efeito "triste" pode ser derivado por possíveis situações de desconforto durante a marcação como, por exemplo, *tags* e pulseiras apertadas.
+
+<br>
+
+Conseguinte, consideramos as seguintes transformações:
+\begin{align*}
+ c &= \log(w)  \tag{3.2.4}\\
+ \eta_{j0}&= \log\left ( \frac{p_j}{1-p_j} \right ), \ \ \ \ j=1,2,...,k \tag{3.2.5}\\
+ \eta_{j1}&= \log\left ( \frac{c_j}{1-c_j} \right ), \ \ \ \ j=2,3,...,k \tag{3.2.6}
+\end{align*}
+com $\eta_{j0}\in(-\infty,\infty),$  $\eta_{j1}\in(-\infty,\infty)$ e $c \in(-\infty,\infty)$. 
+<br>
+
+Logo, temos a seguinte relação entre os parâmetros:
+
+<br>
+
+
+$$\eta_{j1}=c+\eta_{j0}, \ \ \ \ j=2,3,...,k$$
+
+<br>
+
+
+diminuindo o espaço paramétrico para $k+2$ parâmetros: ($N,\mathbf{\eta} = (\eta_{10},\eta_{20},\ldots,\eta_{k0}),c)$. Portanto, se $k\geq3$, temos que a quantidade de estatísticas suficientes será pelo menos igual ao número de parâmetros e, consequentemente, garantimos a identificabilidade do modelo.
+
+
+Como $p_j = e^{\eta_{j0}}/(1+e^{\eta_{j0}})$ e $c_j = e^{c+\eta_{j0}}/(1+e^{c+\eta_{j0}})$, podemos reescrever a função de verossimilhança para os novos parâmetros da seguinte forma:
+
+<br>
+
+\begin{align*}
+L(N,\mathbf{\eta}, c|\mathbf{u}, \mathbf{m})  
+ &\propto \frac{N!}{(N-r)!}\prod_{j=1}^{k} \frac{e^{\eta_{j0} n_j + cm_j}}{\left ( 1+e^{\eta_{j0}} \right )^{N-M_j} \left ( 1+ e^{c+\eta_{j0}} \right )^{M_j}}
+\end{align*}
+para $N\geq r$, $\eta_{j0}\in(-\infty,\infty),$ $j=1,2,\ldots,k$, e  $c \in(-\infty,\infty)$. 
+
+<br>
+
+## Estimador de máxima <br> verossimilhança
+
+Seja $\mathbf{\theta}$  um vetor de $d\geq1$ parâmetros desconhecidos presentes em uma função de verossimilhança $L({\mathbf{\theta}}|\mathbf{x})$ relacionado a uma amostra observada $\mathbf{x}$. A estimativa de máxima verossimilhança de $\mathbf{\theta}$, denotada por $\hat{\mathbf{\theta}}$, é o valor de $\mathbf{\theta}$ que maximiza a função de verossimilhança $L$, isto é,
+
+<br>
+
+
+$$\hat{\mathbf{\theta}} = \arg \max L({\mathbf{\theta}}|\mathbf{x})$$
+
+<br>
+
+onde a maximização é feita sobre todo o espaço paramétrico de ${\mathbf{\theta}}$ @casella2021statistical.
+
+Em problemas envolvendo mais de um parâmetro e/ou funções de verossimilhanças complexas, em geral, não se obtém uma forma analítica para os estimadores de máxima verossimilhança,  recorrendo-se a métodos iterativos de otimização/maximização como, por exemplo, o algoritmo  de Newton–Raphson. Neste trabalho, utilizamos a função <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/optim" target="_blank">optim</a> que emprega o algoritmo <a href="https://dl.acm.org/doi/pdf/10.1145/279232.279236" target="_blank">L-BFGS-B</a> do software  @R2022 como auxílio computacional para encontrar as estimativas de máxima verossimilhança dos modelos apresentados. 
+O L-BFGS-B é um algoritmo de memória limitada para resolver grandes problemas de otimização não linear sujeitos a limites simples nas variáveis.  Como o parâmetro $N$ é um valor inteiro, aproximamos a estimativa dada pela função optim para o inteiro mais próximo.
+
+A função de verossimilhança utilizada para maximização segundo o modelo $M_t$ é exibida abaixo:
+
+```{r, eval=FALSE}
+# --- Funcao de verossimilhanca: Modelo Mt
+Likelihood_function_Mt <- function(parameters){
+  N = parameters[1]
+  eta = parameters[2:(K+1)]
+  log.like = lgamma(N+1) - lgamma(N - r+1) + sum(eta*n)  -
+    sum((N-M)*log(1 + exp(eta))) - sum(M*log(1 + exp(eta)))
+  return(-log.like)
+}
+```
+
+A função de verossimilhança utilizada para maximização segundo o modelo $M_{tb}$ é exibida a seguir. Observa-se que a função de verossimilhança de $M_t$ foi reparametrizada nos parâmetros $\eta_j$ do modelo $M_{tb}$ pois tais parâmetros não possuem restrições no espaço paramétrico sendo que, com a propriedade da invariância dos estimadores de máxima verossimilhança, podemos sem problemas obter posteriormente as estimativas das probabilidades de captura $p_j$, assim como feito para o modelo $M_{tb}$.
+
+```{r, eval=FALSE}
+# --- Funcao de verossimilhanca: Modelo Mtb
+Likelihood_function_Mtb <- function(parameters){
+  N = parameters[1]
+  eta = parameters[2:(K+1)]
+  c = parameters[K+2]
+  log.like = lgamma(N+1) - lgamma(N - r+1) + sum(eta*n) + c*sum(m) -
+    sum((N-M)*log(1 + exp(eta))) - 
+    sum(M*log(1 + exp(c + eta)))
+  return(-log.like)
+
+```
+
+
+

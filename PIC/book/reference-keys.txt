@@ -1,4 +1,3 @@
-tab:nice-tab
 apresentação
 resumo
 introdução
@@ -6,3 +5,12 @@ objetivos
 desenvolvimento-materiais-e-métodos
 modelo-de-captura-recaptura-com-heterogeneidade
 modelo-de-captura-recaptura-com-heterogeneidade-e-efeito-à-marcação
+estimador-de-máxima-verossimilhança
+resultados-e-discussão
+aplicação-com-dados-reais
+primeira-aplicação
+segunda-aplicação
+estudo-de-simulação
+modelo-m_t
+modelo-m_tb
+conclusões

@@ -1,0 +1,39 @@
+--- 
+title: "ESTIMAÇÃO POR MÁXIMA VEROSSIMILHANÇA DO TAMANHO POPULACIONAL EM MODELOS DE CAPTURA-RECAPTURA"
+# author: "John Doe"
+date: "<h5>Maringá, 30 de Agosto de 2022</h5>"
+lang: pt-br
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: [book.bib, packages.bib]
+# url: "https://marcio-piagio.github.io/Portfolio/PIC/Relatório_PIC.pdf"
+# cover-image: path to the social sharing image like images/cover.jpg
+description: |
+  Relatório contendo os resultados finais do projeto de iniciação científica vinculado ao Programa PIC-UEM.
+link-citations: yes
+# github-repo: rstudio/bookdown-demo
+---
+
+# Apresentação
+
+<h4><strong>UNIVERSIDADE ESTADUAL DE MARINGÁ <br>
+  
+PROGRAMA DE INICIAÇÃO CIENTÍFICA - PIC <br>
+  
+DEPARTAMENTO DE ESTATÍSTICA</strong> </h4>
+  
+<h5><strong>Orientador:</strong> <a href="http://www.des.uem.br/docentes/glmpezzott" target="_blank" rel="external">Prof. Dr. George Lucas Moraes Pezzott</a> </h5>
+
+<h5><strong>Acadêmico:</strong> <a href="https://marcio-piagio.github.io/" target="_blank" rel="external">Márcio Roger Piagio</a> </h5>
+
+<h5><strong>Acadêmico:</strong> <a href="https://www.linkedin.com/in/raphaelamaraldatascience/" target="_blank" rel="external">Raphael Amaral Luiz</a></h5>
+
+<h5>Relatório contendo os resultados finais do projeto de iniciação científica vinculado ao Programa PIC-UEM</h5>
+
+## Resumo
+
+O presente projeto apresenta  dois modelos de captura-recaptura: o modelo $M_t$, que considera probabilidades diferentes no instante de captura dos animais; e  o modelo $M_{tb}$ que leva em consideração possíveis diferenças entre as probabilidades de captura e recaptura. O processo inferencial foi definido por obter as estimativas de máxima verossimilhança dos parâmetros dos modelos e os resultados numéricos deste trabalho se basearam em duas aplicações com dados reais de captura-recaptura de ratos e um estudo de simulação em diferentes cenários para avaliar a performance dos estimadores de máxima verossimilhança. No geral, foi possível concluir que o método de captura-recaptura é extremamente válido como uma técnica de amostragem para se estimar o tamanho da população e também é robusto quando se tem pelo menos 60 \% da população observada na amostra pois seus estimadores apresentam baixo viés e erro quadrático médio.
+
+**Palavras-chave:** modelo de captura-recaptura, heterogeneidade; efeito comportamental; estimativa de máxima verossimilhançaca
+
+

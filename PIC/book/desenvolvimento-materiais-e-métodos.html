@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt-br" xml:lang="pt-br">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title> 3 Desenvolvimento (Materiais e Métodos) | ESTIMAÇÃO POR MÁXIMA VEROSSIMILHANÇA DO TAMANHO POPULACIONAL EM MODELOS DE CAPTURA-RECAPTURA</title>
+  <meta name="description" content="Relatório contendo os resultados finais do projeto de iniciação científica vinculado ao Programa PIC-UEM." />
+  <meta name="generator" content="bookdown 0.34 and GitBook 2.6.7" />
+
+  <meta property="og:title" content=" 3 Desenvolvimento (Materiais e Métodos) | ESTIMAÇÃO POR MÁXIMA VEROSSIMILHANÇA DO TAMANHO POPULACIONAL EM MODELOS DE CAPTURA-RECAPTURA" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Relatório contendo os resultados finais do projeto de iniciação científica vinculado ao Programa PIC-UEM." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content=" 3 Desenvolvimento (Materiais e Métodos) | ESTIMAÇÃO POR MÁXIMA VEROSSIMILHANÇA DO TAMANHO POPULACIONAL EM MODELOS DE CAPTURA-RECAPTURA" />
+  
+  <meta name="twitter:description" content="Relatório contendo os resultados finais do projeto de iniciação científica vinculado ao Programa PIC-UEM." />
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="introdução.html"/>
+<link rel="next" href="resultados-e-discussão.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Apresentação</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#resumo"><i class="fa fa-check"></i><b>1.1</b> Resumo</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="introdução.html"><a href="introdução.html"><i class="fa fa-check"></i><b>2</b> Introdução</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="introdução.html"><a href="introdução.html#objetivos"><i class="fa fa-check"></i><b>2.1</b> Objetivos</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="desenvolvimento-materiais-e-métodos.html"><a href="desenvolvimento-materiais-e-métodos.html"><i class="fa fa-check"></i><b>3</b> Desenvolvimento (Materiais e Métodos)</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="desenvolvimento-materiais-e-métodos.html"><a href="desenvolvimento-materiais-e-métodos.html#modelo-de-captura-recaptura-com-heterogeneidade"><i class="fa fa-check"></i><b>3.1</b> Modelo de captura-recaptura <br>com heterogeneidade</a></li>
+<li class="chapter" data-level="3.2" data-path="desenvolvimento-materiais-e-métodos.html"><a href="desenvolvimento-materiais-e-métodos.html#modelo-de-captura-recaptura-com-heterogeneidade-e-efeito-à-marcação"><i class="fa fa-check"></i><b>3.2</b> Modelo de captura-recaptura com <br> heterogeneidade e efeito à marcação</a></li>
+<li class="chapter" data-level="3.3" data-path="desenvolvimento-materiais-e-métodos.html"><a href="desenvolvimento-materiais-e-métodos.html#estimador-de-máxima-verossimilhança"><i class="fa fa-check"></i><b>3.3</b> Estimador de máxima <br> verossimilhança</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="resultados-e-discussão.html"><a href="resultados-e-discussão.html"><i class="fa fa-check"></i><b>4</b> Resultados e Discussão</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="resultados-e-discussão.html"><a href="resultados-e-discussão.html#aplicação-com-dados-reais"><i class="fa fa-check"></i><b>4.1</b> Aplicação com dados reais</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="resultados-e-discussão.html"><a href="resultados-e-discussão.html#primeira-aplicação"><i class="fa fa-check"></i><b>4.1.1</b> Primeira aplicação</a></li>
+<li class="chapter" data-level="4.1.2" data-path="resultados-e-discussão.html"><a href="resultados-e-discussão.html#segunda-aplicação"><i class="fa fa-check"></i><b>4.1.2</b> Segunda aplicação</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="resultados-e-discussão.html"><a href="resultados-e-discussão.html#estudo-de-simulação"><i class="fa fa-check"></i><b>4.2</b> Estudo de simulação</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="resultados-e-discussão.html"><a href="resultados-e-discussão.html#modelo-m_t"><i class="fa fa-check"></i><b>4.2.1</b> Modelo <span class="math inline">\(M_t\)</span></a></li>
+<li class="chapter" data-level="4.2.2" data-path="resultados-e-discussão.html"><a href="resultados-e-discussão.html#modelo-m_tb"><i class="fa fa-check"></i><b>4.2.2</b> Modelo <span class="math inline">\(M_{tb}\)</span></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="conclusões.html"><a href="conclusões.html"><i class="fa fa-check"></i><b>5</b> Conclusões</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">ESTIMAÇÃO POR MÁXIMA VEROSSIMILHANÇA DO TAMANHO POPULACIONAL EM MODELOS DE CAPTURA-RECAPTURA</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="desenvolvimento-materiais-e-métodos" class="section level1 hasAnchor" number="3">
+<h1><span class="header-section-number"> 3</span> Desenvolvimento (Materiais e Métodos)<a href="desenvolvimento-materiais-e-métodos.html#desenvolvimento-materiais-e-métodos" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Considere uma população com <span class="math inline">\(N\)</span> indivíduos. Neste projeto, supomos que a população é “fechada” (demográfica e geograficamente), isto é, não há mortes (saídas ou perdas) nem nascimentos (entradas) de indivíduos na população ao longo do processo de captura-recaptura. Em outras palavras, assumimos que a população de estudo é composta pelos mesmos <span class="math inline">\(N\)</span> indivíduos desde o início da primeira ocasião de captura até o final da última.</p>
+<p>O processo de captura-marcação-recaptura
+de animais da população é aplicado da maneira tradicional: em cada ocasião de amostragem, observa-se um número aleatório (não fixado previamente) de animais desta população, registra-se o número de animais marcados e não marcados na amostra, marcando todos os não marcados e devolve-se todos (marcados e não marcados) à população. O processo é repetido em <span class="math inline">\(k\)</span> ocasiões de amostragem. Supomos que não há animais marcados na população antes da primeira ocasião de amostragem, e que os animais não perdem suas marcas durante o processo.</p>
+<p>Diante do exposto, definimos</p>
+<ul>
+<li><span class="math inline">\(u_j\)</span>: número de animais não marcados na <span class="math inline">\(j\)</span>-ésima ocasião de amostragem, <span class="math inline">\(j = 1, 2, . . . , k;\)</span> com <span class="math inline">\(\mathbf{u}=(u_1, u_2, . . . , u_k)\)</span></li>
+</ul>
+<p><br></p>
+<ul>
+<li><span class="math inline">\(m_j\)</span> : número de animais marcados (recapturas) na <span class="math inline">\(j\)</span>-ésima ocasião de amostragem, <span class="math inline">\(j = 2, . . . , k\)</span> com <span class="math inline">\(\mathbf{m} = (m_2, m_3, . . . , m_k)\)</span>.</li>
+</ul>
+<p><br></p>
+<ul>
+<li><span class="math inline">\(n_j\)</span>: número de animais selecionados (marcados e não marcados) na <span class="math inline">\(j\)</span>-ésima ocasião de amostragem, isto é, <span class="math inline">\(n_j = u_j + m_j, ~j = 1 , 2, . . . , k;\)</span></li>
+</ul>
+<p><br></p>
+<ul>
+<li><span class="math inline">\(M_j:\)</span> número de animais marcados na população imediatamente antes da <span class="math inline">\(j\)</span>-ésima ocasião de amostragem, <span class="math inline">\(j = 1, . . . , k,\)</span> com <span class="math inline">\(M_1 = 0\)</span> e <span class="math inline">\(M_{j+1} = M_j + u_j\)</span>, para <span class="math inline">\(j =2, 3, . . . , k.\)</span></li>
+</ul>
+<p><br></p>
+<p>A seguir, apresentamos um exemplo.</p>
+<p><em>Suponha uma população de tamanho <span class="math inline">\(N = 100\)</span>. De fato, temos <span class="math inline">\(M_1 = 0\)</span> pois não temos animais marcados na população antes da primeira época de captura.</em></p>
+<p><strong>Primeira ocasião:</strong> <em>Suponha que capturamos <span class="math inline">\(n_1 = 10\)</span> animais. Consequentemente, temos <span class="math inline">\(u_1=10\)</span> animais não marcados na amostra e um total de <span class="math inline">\(m_1=0\)</span> animais marcados observados, isto é, nenhuma recaptura na primeira ocasião. Marcamos esses 10 animais e devolvemos à população. Observa-se que agora temos <span class="math inline">\(M_2 = M_1+u_1\)</span> = <span class="math inline">\(0+10 = 10\)</span> animais marcados na população.</em></p>
+<p><strong>Segunda ocasião:</strong> <em>Após certo tempo para que os animais devolvidos na primeira ocasião possam se misturar aos demais, colhemos uma segunda amostra. Suponha que agora observamos <span class="math inline">\(n_2 = 15\)</span> animais, dos quais <span class="math inline">\(u_2=12\)</span> não são marcados e <span class="math inline">\(m_2=3\)</span> são marcados, isto é temos três animais recapturados. Então marca-se os 12 não marcados, e todos são devolvidos à população. Neste momento, temos <span class="math inline">\(M_3 = 10+12=22\)</span> animais marcados na população.</em></p>
+<p><strong>Terceira ocasião:</strong> <em>Na terceira ocasião de captura, suponha um total de <span class="math inline">\(n_3=17\)</span> animais capturados, sendo <span class="math inline">\(u_3 = 8\)</span> animais não marcados e <span class="math inline">\(m_3 = 9\)</span> marcados (observa-se que a marcação não permite identificar se o animal recapturado foi marcado na primeira ou segunda época de captura, embora poderia realizar uma marcação específica em cada animal para registrar tal histórico). Por fim, marcando os 8 animais e devolvendo todos à população, temos <span class="math inline">\(M_3=22 + 8 = 30\)</span> animais observados até o momento.</em></p>
+<p>As quantidades estão apresentadas na <a href="desenvolvimento-materiais-e-métodos.html#tb1">3.1</a> abaixo.</p>
+<p><br></p>
+<table class="tg">
+<thead>
+<tr id="tb1">
+<h6 class="clt">
+<strong>Tabela: 3.1</strong> Exemplo de quantidades observadas em um processo de captura-recaptura.
+</h6>
+</tr>
+<tr>
+<th class="tg-64eq">
+</th>
+<th class="tg-64eq">
+<span class="math inline">\(j\)</span>
+</th>
+<th class="tg-64eq">
+1
+</th>
+<th class="tg-64eq">
+2
+</th>
+<th class="tg-64eq">
+3
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tg-xkkm">
+Animais capturados (não marcados)
+</td>
+<td class="tg-xkkm">
+<span class="math inline">\(u_j\)</span>
+</td>
+<td class="tg-xkkm">
+10
+</td>
+<td class="tg-xkkm">
+12
+</td>
+<td class="tg-xkkm">
+8
+</td>
+</tr>
+<tr>
+<td class="tg-af47">
+Animais recapturados (marcados)
+</td>
+<td class="tg-af47">
+<span class="math inline">\(m_j\)</span>
+</td>
+<td class="tg-af47">
+0
+</td>
+<td class="tg-af47">
+3
+</td>
+<td class="tg-af47">
+9
+</td>
+</tr>
+<tr>
+<td class="tg-xkkm">
+Animais selecionados
+</td>
+<td class="tg-xkkm">
+<span class="math inline">\(n_j\)</span>
+</td>
+<td class="tg-xkkm">
+10
+</td>
+<td class="tg-xkkm">
+15
+</td>
+<td class="tg-xkkm">
+17
+</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><em>Em três épocas de captura, foi possível observar 30 animais distintos, de um total de <span class="math inline">\(N=100\)</span> animais. O presente exemplo se encerra comentando que o processo de captura-recaptura poderia ser estendido para mais épocas de captura.</em></p>
+<p>A seguir, apresentamos dois modelos estatísticos para estimação do tamanho populacional utilizando as informações de capturas definidas acima.</p>
+<p><br><br></p>
+<div id="modelo-de-captura-recaptura-com-heterogeneidade" class="section level2 hasAnchor" number="3.1">
+<h2><span class="header-section-number">3.1</span> Modelo de captura-recaptura <br>com heterogeneidade<a href="desenvolvimento-materiais-e-métodos.html#modelo-de-captura-recaptura-com-heterogeneidade" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Nesta seção vamos apresentar o modelo de captura-recaptura com heterogeneidade temporal das probabilidades de captura, comumente denotado por <span class="math inline">\(M_t\)</span>. Definimos <span class="math inline">\(p_j\)</span> sendo a probabilidade de um animal (marcado ou não) ser capturado na <span class="math inline">\(j\)</span>-ésima ocasião de amostragem, <span class="math inline">\(j = 1 , 2, . . . ,k\)</span> com <span class="math inline">\(\mathbf{p}= (p_1, p_2, . . . , p_k)\)</span>.</p>
+<p>Supomos que os animais comportam-se independente uns dos outros, isto é, a captura (ou não) de
+um animal não altera a probabilidade de captura de qualquer outro. Adicionalmente, supomos que a captura (ou não) de um animal não altera sua probabilidade de recaptura, ou seja, animais marcados e não marcados tem a mesma probabilidade <span class="math inline">\(p_j\)</span> de serem capturados na ocasião <span class="math inline">\(j\)</span>.</p>
+<p>Note que, por se tratar de uma sequência de sucessos ou fracassos (captura o não captura) e independência das capturas e mesma probabilidade de sucesso (captura) para as quantidades <span class="math inline">\(u_j\)</span> e <span class="math inline">\(m_j\)</span>, temos as seguintes distribuições:</p>
+<p><br></p>
+<p><span class="math display">\[\begin{equation}
+u_j|N,p_j, M_j \sim \mathrm{Binomial}(N-M_j,p_j), ~~ j = 1,2,...,k  
+\end{equation}\]</span></p>
+<p><br></p>
+<p>e
+<span class="math display">\[\begin{equation}
+m_j|p_j,M_j \sim \mathrm{Binomial}(M_j, p_j),   ~~   j = 2,...,k  
+\end{equation}\]</span></p>
+<p><br></p>
+<p>Logo, a função de verossimilhança do modelo <span class="math inline">\(M_t\)</span> para os parâmetros <span class="math inline">\(N\)</span> e <span class="math inline">\(\mathbf{p} = (p_1,\ldots,p_k)\)</span>, dada uma amostra de captura-marcação-recaptura <span class="math inline">\(\mathbf{u}=(u_1,u_2,\ldots,u_k)\)</span> e <span class="math inline">\(\mathbf{m} = (m_2,m_3,\ldots,m_k)\)</span>, é definida por</p>
+<p><br></p>
+<p><span class="math display">\[\begin{align*}
+L(N,\textbf{p}|\textbf{u,m}) &amp;= \mathrm{p}(\textbf{u,m}|N, \textbf{p})\\
+&amp;= p(u_1|N,p_1)\prod^k_{j=2}p(u_j|N,p_j,M_j)p(m_j|M_j,p_j)\\
+&amp;= \prod^k_{j=1}\binom{N-M_j}{u_j}p^{u_j}_j(1-p_j)^{N-M_j-u_j}\times \prod^k_{j=2}\binom{M_j}{m_j}p^{m_j}_j(1-p_j)^{M_j-m_j}\\
+&amp;= \prod^k_{j=2}\binom{M_j}{m_j}\times \prod^k_{j=1}\binom{N-M_j}{n_j-M_j}p_j^{n_j}(1-p_j)^{N-n_j}
+\end{align*}\]</span></p>
+<p><br></p>
+<p>para <span class="math inline">\(N\geq r\)</span>, onde <span class="math inline">\(r = M_k+u_k\)</span> é o número de animais distintos observados no estudo, e <span class="math inline">\(0&lt;p_j&lt;1\)</span>, para <span class="math inline">\(j=1,2,,\ldots,k\)</span>, sendo <span class="math inline">\(n_j = u_j+m_j\)</span>.</p>
+<p>Observe que, como <span class="math inline">\(M_{j+1} = M_j+u_j\)</span>, temos</p>
+<p><br></p>
+<p><span class="math display">\[\begin{align*}
+  \prod^k_{j=1}\binom{N-M_j}{u_j} &amp;= \prod^k_{j=1}\frac{(N-M_j)!}{u_j!(N-M_j - u_j)!} \\
+&amp;= \prod_{j=1}^k\dfrac{1}{u_j!}\prod_{j=1}^k\dfrac{(N-M_j)!}{(N-M_{j+1})!}\\
+&amp;= \prod^k_{j=1}\dfrac{1}{u_j!}\times \dfrac{N!}{(N-r)!}
+\end{align*}\]</span></p>
+<p><br></p>
+<p>Logo, a função de verossimilhança pode ser reescrita em termos proporcionais à</p>
+<p><br></p>
+<p><span class="math display">\[\begin{align*}
+L(N,\textbf{p}|\textbf{u,m}) &amp;\propto  \dfrac{N!}{(N-r)!}\prod^{k}_{j=1}p_j^{n_j}(1-p_j)^{N-n_j}
+\end{align*}\]</span></p>
+<p>para <span class="math inline">\(N\geq r\)</span> e <span class="math inline">\(0&lt;p_j&lt;1\)</span>, para <span class="math inline">\(j=1,2,,\ldots,k\)</span>,</p>
+<p><br><br></p>
+</div>
+<div id="modelo-de-captura-recaptura-com-heterogeneidade-e-efeito-à-marcação" class="section level2 hasAnchor" number="3.2">
+<h2><span class="header-section-number">3.2</span> Modelo de captura-recaptura com <br> heterogeneidade e efeito à marcação<a href="desenvolvimento-materiais-e-métodos.html#modelo-de-captura-recaptura-com-heterogeneidade-e-efeito-à-marcação" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Nesta seção apresentamos o modelo captura-recaptura com heterogeneidade temporal das probabilidades de captura e com efeito da marcação. O modelo foi originalmente proposto por <span class="citation">Pollock (<a href="#ref-pollock1980">1980</a>)</span>, e na literatura é referido como o modelo <span class="math inline">\(M_{tb}\)</span> (ver <span class="citation">Otis et al. (<a href="#ref-otis1978">1978</a>)</span>). O modelo <span class="math inline">\(M_{tb}\)</span> pressupõe, para cada ocasião de amostragem, que todos os animais não marcados têm uma probabilidade de captura e todos os animais marcados têm outra probabilidade de captura, e assume que essas probabilidades variam de uma ocasião de amostragem para outra.</p>
+<p>Seja <span class="math inline">\(c_j\)</span> a probabilidade de recapturar na ocasião <span class="math inline">\(j\)</span> um animal marcado. Neste caso, as seguintes distribuições condicionais são definidas para as quantidades <span class="math inline">\(m_j\)</span> com essa nova probabilidade:</p>
+<p><br></p>
+<p><span class="math display">\[\begin{equation}
+    m_j | c_j,M_j \sim \text{Binomial}\big(M_j,c_j\big), \ \ \ \ \ j = 2, 3, ..., k \tag{3.2.1}
+\end{equation}\]</span></p>
+<p><br></p>
+<p>enquanto que as distribuições para <span class="math inline">\(u_j\)</span> permanecem como previamente definidas na equação? Observe que a modelagem permite probabilidades diferentes entre marcados (<span class="math inline">\(p_j\)</span>) e não marcados (<span class="math inline">\(c_j\)</span>) em uma determinada ocasião <span class="math inline">\(j\)</span>.</p>
+<p>De maneira similar ao modelo <span class="math inline">\(M_t\)</span>, temos a função de verossimilhança para <span class="math inline">\(N\)</span>, <span class="math inline">\(\mathbf{p} = (p_1,p_2,\ldots,p_k)\)</span> e <span class="math inline">\(\mathbf{c} = (c_2,\ldots,c_k)\)</span> dada por</p>
+<p><br></p>
+<p><span class="math display">\[\begin{align*}
+L(N, \mathbf{p} , \mathbf{c} |\mathbf{u},\mathbf{m}) &amp;= \mathrm{p}(\mathbf{u},\mathbf{m}|N,\mathbf{p},\mathbf{c})\\
+&amp;= \prod_{j=1}^{k}\binom{N-M_j}{u_j}p_j^{u_j}(1-p_j)^{N-M_j-u_j} \times \prod_{j=2}^{k}\binom{M_j}{m_j}c_j^{m_j}(1-c_j)^{M_j-m_j}\\
+  &amp;\propto \frac{N!}{(N-r)!}\prod_{j=1}^{k}p_j^{u_j}(1-p_j)^{N-M_{j+1}}\prod_{j=2}^{k}c_j^{m_j}(1-c_j)^{M_j-m_j} \\
+\end{align*}\]</span></p>
+<p><br></p>
+<p>para:</p>
+<p><br></p>
+<ul>
+<li><p><span class="math inline">\(N\geq r\)</span>, <span class="math inline">\(0&lt;p_j&lt;1\)</span> para <span class="math inline">\(j=1,\ldots,k\)</span></p></li>
+<li><p><span class="math inline">\(0&lt;c_j&lt;1\)</span> para <span class="math inline">\(j=2,\ldots,k\)</span></p></li>
+</ul>
+<p><br></p>
+<p>Contudo, o modelo acima não é identificável pois temos <span class="math inline">\(2k-1\)</span> estatísticas suficientes em <span class="math inline">\(\mathbf{u}=(u_1,u_2,\ldots,u_k)\)</span> e <span class="math inline">\(\mathbf{m}=(m_2,m_3,\ldots,m_k)\)</span> para <span class="math inline">\(2K\)</span> parâmetros (<span class="math inline">\(N,\textbf{p},\textbf{c}\)</span>), isto é, tem-se mais parâmetros que dados. Portanto, restrições no espaço paramétrico são necessárias.</p>
+<p>A restrição proposta por <span class="citation">Wang (<a href="#ref-wang2002">2002</a>)</span> considera a razão da chance de capturas e recapturas da seguinte forma:</p>
+<p><br></p>
+<p><span class="math display">\[\begin{equation}
+    \frac{c_j}{1-c_j}=w\times\frac{p_j}{1-p_j}, \ \ \ \ j=2,3,...,k  \tag{3.2.3}
+\end{equation}\]</span></p>
+<p><br></p>
+<p>onde existe três situações para a razão de chances <span class="math inline">\(w\)</span>:</p>
+<p><span class="math inline">\(w&gt;1\)</span>: probabilidade de capturar um animal marcado é maior que a probabilidade de capturar um animal não marcado (efeito ``feliz’’ da marcação);</p>
+<p><span class="math inline">\(w=1\)</span>: probabilidade de capturar um animal marcado é igual à probabilidade de capturar um animal não marcado, (sem efeito à marcação);</p>
+<p><span class="math inline">\(w&lt;1\)</span>: probabilidade de capturar um animal marcado é menor que a probabilidade de capturar um animal não marcado, (efeito ``triste’’ à marcação).</p>
+<p>O efeito “feliz” à marcação pode ser gerado por agrados durante a captura, como petiscos. O efeito “triste” pode ser derivado por possíveis situações de desconforto durante a marcação como, por exemplo, <em>tags</em> e pulseiras apertadas.</p>
+<p><br></p>
+<p>Conseguinte, consideramos as seguintes transformações:
+<span class="math display">\[\begin{align*}
+c &amp;= \log(w)  \tag{3.2.4}\\
+\eta_{j0}&amp;= \log\left ( \frac{p_j}{1-p_j} \right ), \ \ \ \ j=1,2,...,k \tag{3.2.5}\\
+\eta_{j1}&amp;= \log\left ( \frac{c_j}{1-c_j} \right ), \ \ \ \ j=2,3,...,k \tag{3.2.6}
+\end{align*}\]</span>
+com <span class="math inline">\(\eta_{j0}\in(-\infty,\infty),\)</span> <span class="math inline">\(\eta_{j1}\in(-\infty,\infty)\)</span> e <span class="math inline">\(c \in(-\infty,\infty)\)</span>.
+<br></p>
+<p>Logo, temos a seguinte relação entre os parâmetros:</p>
+<p><br></p>
+<p><span class="math display">\[\eta_{j1}=c+\eta_{j0}, \ \ \ \ j=2,3,...,k\]</span></p>
+<p><br></p>
+<p>diminuindo o espaço paramétrico para <span class="math inline">\(k+2\)</span> parâmetros: (<span class="math inline">\(N,\mathbf{\eta} = (\eta_{10},\eta_{20},\ldots,\eta_{k0}),c)\)</span>. Portanto, se <span class="math inline">\(k\geq3\)</span>, temos que a quantidade de estatísticas suficientes será pelo menos igual ao número de parâmetros e, consequentemente, garantimos a identificabilidade do modelo.</p>
+<p>Como <span class="math inline">\(p_j = e^{\eta_{j0}}/(1+e^{\eta_{j0}})\)</span> e <span class="math inline">\(c_j = e^{c+\eta_{j0}}/(1+e^{c+\eta_{j0}})\)</span>, podemos reescrever a função de verossimilhança para os novos parâmetros da seguinte forma:</p>
+<p><br></p>
+<p><span class="math display">\[\begin{align*}
+L(N,\mathbf{\eta}, c|\mathbf{u}, \mathbf{m})  
+&amp;\propto \frac{N!}{(N-r)!}\prod_{j=1}^{k} \frac{e^{\eta_{j0} n_j + cm_j}}{\left ( 1+e^{\eta_{j0}} \right )^{N-M_j} \left ( 1+ e^{c+\eta_{j0}} \right )^{M_j}}
+\end{align*}\]</span>
+para <span class="math inline">\(N\geq r\)</span>, <span class="math inline">\(\eta_{j0}\in(-\infty,\infty),\)</span> <span class="math inline">\(j=1,2,\ldots,k\)</span>, e <span class="math inline">\(c \in(-\infty,\infty)\)</span>.</p>
+<p><br></p>
+</div>
+<div id="estimador-de-máxima-verossimilhança" class="section level2 hasAnchor" number="3.3">
+<h2><span class="header-section-number">3.3</span> Estimador de máxima <br> verossimilhança<a href="desenvolvimento-materiais-e-métodos.html#estimador-de-máxima-verossimilhança" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Seja <span class="math inline">\(\mathbf{\theta}\)</span> um vetor de <span class="math inline">\(d\geq1\)</span> parâmetros desconhecidos presentes em uma função de verossimilhança <span class="math inline">\(L({\mathbf{\theta}}|\mathbf{x})\)</span> relacionado a uma amostra observada <span class="math inline">\(\mathbf{x}\)</span>. A estimativa de máxima verossimilhança de <span class="math inline">\(\mathbf{\theta}\)</span>, denotada por <span class="math inline">\(\hat{\mathbf{\theta}}\)</span>, é o valor de <span class="math inline">\(\mathbf{\theta}\)</span> que maximiza a função de verossimilhança <span class="math inline">\(L\)</span>, isto é,</p>
+<p><br></p>
+<p><span class="math display">\[\hat{\mathbf{\theta}} = \arg \max L({\mathbf{\theta}}|\mathbf{x})\]</span></p>
+<p><br></p>
+<p>onde a maximização é feita sobre todo o espaço paramétrico de <span class="math inline">\({\mathbf{\theta}}\)</span> <span class="citation">Casella e Berger (<a href="#ref-casella2021statistical">2021</a>)</span>.</p>
+<p>Em problemas envolvendo mais de um parâmetro e/ou funções de verossimilhanças complexas, em geral, não se obtém uma forma analítica para os estimadores de máxima verossimilhança, recorrendo-se a métodos iterativos de otimização/maximização como, por exemplo, o algoritmo de Newton–Raphson. Neste trabalho, utilizamos a função <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/optim" target="_blank">optim</a> que emprega o algoritmo <a href="https://dl.acm.org/doi/pdf/10.1145/279232.279236" target="_blank">L-BFGS-B</a> do software <span class="citation">R Core Team (<a href="#ref-R2022">2022</a>)</span> como auxílio computacional para encontrar as estimativas de máxima verossimilhança dos modelos apresentados.
+O L-BFGS-B é um algoritmo de memória limitada para resolver grandes problemas de otimização não linear sujeitos a limites simples nas variáveis. Como o parâmetro <span class="math inline">\(N\)</span> é um valor inteiro, aproximamos a estimativa dada pela função optim para o inteiro mais próximo.</p>
+<p>A função de verossimilhança utilizada para maximização segundo o modelo <span class="math inline">\(M_t\)</span> é exibida abaixo:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="desenvolvimento-materiais-e-métodos.html#cb1-1" tabindex="-1"></a><span class="co"># --- Funcao de verossimilhanca: Modelo Mt</span></span>
+<span id="cb1-2"><a href="desenvolvimento-materiais-e-métodos.html#cb1-2" tabindex="-1"></a>Likelihood_function_Mt <span class="ot">&lt;-</span> <span class="cf">function</span>(parameters){</span>
+<span id="cb1-3"><a href="desenvolvimento-materiais-e-métodos.html#cb1-3" tabindex="-1"></a>  N <span class="ot">=</span> parameters[<span class="dv">1</span>]</span>
+<span id="cb1-4"><a href="desenvolvimento-materiais-e-métodos.html#cb1-4" tabindex="-1"></a>  eta <span class="ot">=</span> parameters[<span class="dv">2</span><span class="sc">:</span>(K<span class="sc">+</span><span class="dv">1</span>)]</span>
+<span id="cb1-5"><a href="desenvolvimento-materiais-e-métodos.html#cb1-5" tabindex="-1"></a>  log.like <span class="ot">=</span> <span class="fu">lgamma</span>(N<span class="sc">+</span><span class="dv">1</span>) <span class="sc">-</span> <span class="fu">lgamma</span>(N <span class="sc">-</span> r<span class="sc">+</span><span class="dv">1</span>) <span class="sc">+</span> <span class="fu">sum</span>(eta<span class="sc">*</span>n)  <span class="sc">-</span></span>
+<span id="cb1-6"><a href="desenvolvimento-materiais-e-métodos.html#cb1-6" tabindex="-1"></a>    <span class="fu">sum</span>((N<span class="sc">-</span>M)<span class="sc">*</span><span class="fu">log</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(eta))) <span class="sc">-</span> <span class="fu">sum</span>(M<span class="sc">*</span><span class="fu">log</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(eta)))</span>
+<span id="cb1-7"><a href="desenvolvimento-materiais-e-métodos.html#cb1-7" tabindex="-1"></a>  <span class="fu">return</span>(<span class="sc">-</span>log.like)</span>
+<span id="cb1-8"><a href="desenvolvimento-materiais-e-métodos.html#cb1-8" tabindex="-1"></a>}</span></code></pre></div>
+<p>A função de verossimilhança utilizada para maximização segundo o modelo <span class="math inline">\(M_{tb}\)</span> é exibida a seguir. Observa-se que a função de verossimilhança de <span class="math inline">\(M_t\)</span> foi reparametrizada nos parâmetros <span class="math inline">\(\eta_j\)</span> do modelo <span class="math inline">\(M_{tb}\)</span> pois tais parâmetros não possuem restrições no espaço paramétrico sendo que, com a propriedade da invariância dos estimadores de máxima verossimilhança, podemos sem problemas obter posteriormente as estimativas das probabilidades de captura <span class="math inline">\(p_j\)</span>, assim como feito para o modelo <span class="math inline">\(M_{tb}\)</span>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="desenvolvimento-materiais-e-métodos.html#cb2-1" tabindex="-1"></a><span class="co"># --- Funcao de verossimilhanca: Modelo Mtb</span></span>
+<span id="cb2-2"><a href="desenvolvimento-materiais-e-métodos.html#cb2-2" tabindex="-1"></a>Likelihood_function_Mtb <span class="ot">&lt;-</span> <span class="cf">function</span>(parameters){</span>
+<span id="cb2-3"><a href="desenvolvimento-materiais-e-métodos.html#cb2-3" tabindex="-1"></a>  N <span class="ot">=</span> parameters[<span class="dv">1</span>]</span>
+<span id="cb2-4"><a href="desenvolvimento-materiais-e-métodos.html#cb2-4" tabindex="-1"></a>  eta <span class="ot">=</span> parameters[<span class="dv">2</span><span class="sc">:</span>(K<span class="sc">+</span><span class="dv">1</span>)]</span>
+<span id="cb2-5"><a href="desenvolvimento-materiais-e-métodos.html#cb2-5" tabindex="-1"></a>  c <span class="ot">=</span> parameters[K<span class="sc">+</span><span class="dv">2</span>]</span>
+<span id="cb2-6"><a href="desenvolvimento-materiais-e-métodos.html#cb2-6" tabindex="-1"></a>  log.like <span class="ot">=</span> <span class="fu">lgamma</span>(N<span class="sc">+</span><span class="dv">1</span>) <span class="sc">-</span> <span class="fu">lgamma</span>(N <span class="sc">-</span> r<span class="sc">+</span><span class="dv">1</span>) <span class="sc">+</span> <span class="fu">sum</span>(eta<span class="sc">*</span>n) <span class="sc">+</span> c<span class="sc">*</span><span class="fu">sum</span>(m) <span class="sc">-</span></span>
+<span id="cb2-7"><a href="desenvolvimento-materiais-e-métodos.html#cb2-7" tabindex="-1"></a>    <span class="fu">sum</span>((N<span class="sc">-</span>M)<span class="sc">*</span><span class="fu">log</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(eta))) <span class="sc">-</span> </span>
+<span id="cb2-8"><a href="desenvolvimento-materiais-e-métodos.html#cb2-8" tabindex="-1"></a>    <span class="fu">sum</span>(M<span class="sc">*</span><span class="fu">log</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(c <span class="sc">+</span> eta)))</span>
+<span id="cb2-9"><a href="desenvolvimento-materiais-e-métodos.html#cb2-9" tabindex="-1"></a>  <span class="fu">return</span>(<span class="sc">-</span>log.like)</span></code></pre></div>
+
+</div>
+</div>
+<h3>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-casella2021statistical" class="csl-entry">
+Casella, George, e Roger L Berger. 2021. <em>Statistical inference</em>. Cengage Learning.
+</div>
+<div id="ref-otis1978" class="csl-entry">
+Otis, David L, Kenneth P Burnham, Gary C White, e David R Anderson. 1978. <span>“Statistical inference from capture data on closed animal populations”</span>. <em>Wildlife monographs</em>, nº 62: 3–135.
+</div>
+<div id="ref-pollock1980" class="csl-entry">
+Pollock, Kenneth H. 1980. <span>“Capture-recapture models: a review of current methods, assumptions and experimental design”</span>.
+</div>
+<div id="ref-R2022" class="csl-entry">
+R Core Team. 2022. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
+</div>
+<div id="ref-wang2002" class="csl-entry">
+Wang, Xiaoyin. 2002. <em>Bayesian analysis of capture-recapture models</em>. University of Missouri-Columbia.
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="introdução.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="resultados-e-discussão.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": false,
+"twitter": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "whatsapp"]
+},
+"fontsettings": null,
+"edit": null,
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf"],
+"search": false,
+"toc": {
+"collapse": "none",
+"scroll_highlight": true
+},
+"toolbar": {
+"position": "fixed"
+},
+"info": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
