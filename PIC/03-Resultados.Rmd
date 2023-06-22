@@ -429,7 +429,7 @@ O efeito significativo no parâmetro comportamental no ajuste final é descatado
 <thead>
   <tr id="tb8">
     <h6 class="clt">
-      <strong>Tabela: 4.7</strong>Estimativas de máxima verossimilhança dos parâmetros dos modelos $M_t$ e $M_{tb}$ na Aplicação 2.
+      <strong>Tabela: 4.7</strong> Estimativas de máxima verossimilhança dos parâmetros dos modelos $M_t$ e $M_{tb}$ na Aplicação 2.
     </h6>
   </tr>
   <tr>
@@ -447,7 +447,7 @@ O efeito significativo no parâmetro comportamental no ajuste final é descatado
   <tr>
     <td class="tg-af47">BIC</td>
     <td class="tg-af47">105.31</td>
-    <td class="tg-af47"><strong>86.28</strong></td>
+    <td  class="tg-af47"><strong>86.28</strong></td>
   </tr>
 </tbody>
 </table>
@@ -456,9 +456,553 @@ O efeito significativo no parâmetro comportamental no ajuste final é descatado
 
 ## Estudo de simulação
 
+Para estudar o comportamento dos estimadores de máxima verossimilhança, utilizaremos as medidas de desempenho: Viés, Viés Relativo  e Erro Quadrático Médio das estimativas obtidas dos parâmetros para um número $M$ de amostras de captura-recaptura simuladas.
 
+Genericamente, suponha que temos um parâmetro $\theta$ e para cada uma das $M$ amostras geradas, temos uma estimativa de máxima verossimilhança $\hat{\theta}_m$ para $\theta$,  $m=1,2,\ldots,M$. Suponha que o verdadeiro valor de $\theta$ usado na geração das amostras seja $\theta_{\mathrm{verd.}}$
+Assim, definimos o Viés, Viés Relativo e Erro Quadrático Médio, respectivamente, por
+
+\begin{align*}
+\text{Viés} &=\frac{1}{M} \sum_{m=1}^{M}{\hat{\theta}_m-\theta_{\mathrm{verd.}}} \tag{4.1.1}\\
+\text{ViésR} &=\frac{1}{M}  \sum_{m=1}^{M}\dfrac{\hat{\theta}_m-\theta_{\mathrm{verd.}}}{\theta_{\mathrm{verd.}}}\tag{4.1.2}\\
+\text{EQM} &=\frac{1}{M} \sum_{m=1}^{M}\Big(\hat{\theta}_m-\theta_{\mathrm{verd.}} \Big)^2 \tag{4.1.3}
+\end{align*}
 
 ### Modelo $M_t$
 
+Para o estudo do comportamento do estimador de máxima verossimilhança do parâmetro $N$ no  modelo $M_t$, fixamos o verdadeiro tamanho populacional nas simulações   em  $N = 100, 300$ e $500$ e consideramos números diferentes de épocas de capturas, sendo $k=5,6,\ldots,15.$ Para os parâmetros $p_j$, consideramos quatro cenários diferentes na geração destes valores, ilustrados na Tabela <a href="#tb9">4.8</a>. A ideia é avaliar as estimativas variando cenários onde a probabilidade de captura é baixa (P1) até uma probabilidade de captura relativamente alta (P4).
+
+<br>
+
+<table class="tg">
+<thead>
+  <tr id="tb9">
+    <h6 class="clt">
+      <strong>Tabela: 4.8</strong> Cenários para geração das probabilidades de captura $p_j$.
+    </h6>
+  </tr>
+  <tr>
+    <th class="tg-64eq">Cenário</th>
+    <th class="tg-64eq">Distribuição</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-xkkm">$P_1$</td>
+    <td class="tg-xkkm">$p_1 ,...,p_k \sim \text{Uniforme}(0,05;0,15)$</td>
+  </tr>
+  <tr>
+    <td class="tg-af47">$P_2$</td>
+    <td class="tg-af47">$p_2, ...,p_k \sim \text{Uniforme}(0,10;0,20)$</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">$P_3$</td>
+    <td  class="tg-xkkm">$p_3,...,p_k \sim \text{Uniforme}(0,15;0,25)$</td>
+  </tr>
+  <tr>
+    <td class="tg-af47">$P_4$</td>
+    <td class="tg-af47">$p_3,...,p_k \sim \text{Uniforme}(0,20;0,30)$</td>
+  </tr>
+</tbody>
+</table>
+
+<br>
+
+Observe que, com a combinação dos diferentes tamanhos populacionais $N$, épocas de capturas $k$ e probabilidades de captura $p_j$'s, temos um total de $3\times 11\times 4 = 132$ diferentes cenários para avaliarmos no estudo de simulação. Para cada um dos 132 cenários, foram geradas 10.000 amostras de captura-recaptura.
+
+A função implementada em código R para geração dos dados é exibida a seguir. Observe que a função é genérica para ambos os modelos ($M_t$ e $M_{tb}$) sendo que, quando estivermos gerando dados do modelo $M_t$, basta fixar $c=0$ durante a geração dos dados.
+
+```{r, eval=FALSE}
+# --- Funcao para gerar as amostras : 
+
+gera_dados <- function(N,K,pj,c,seed){
+  set.seed(seed)
+  u = m = n = M = c()
+  etaj = log(pj/(1-pj))
+  cj   = exp(etaj+c)/(1+exp(etaj+c))  # probabilidade de recaptura
+  u[1] = rbinom(1,N,pj[1])            # numero de animais capturados 
+  m[1] = 0                            # numero de animais marcados
+  n[1] = u[1]+m[1]                    # numero de animais selecionados
+  M[1] = 0                            # numero de animais marcados na populacao
+  # segunda ocasiao em diante:
+  for(i in 2:K){
+    M[i] = M[i-1] + u[i-1]
+    u[i] = rbinom(1,N-M[i],pj[i])
+    m[i] = rbinom(1,M[i],cj[i])
+    n[i] = u[i] + m[i]
+  }
+  r = M[K] + u[K]
+  return(list(u,m,M,n,r))
+}
+```
+
+Na Tabela <a href="#tb10">4.9</a> temos a relação em porcentagem do número médio de animais distintos observados dividido pelo tamanho da população em cada  um dos cenários. 
+Por exemplo, no cenário com $k=5$, $N=100$ e Cenário $P_1$, temos que, em média,  o número de animais distintos observados nas 10.000 amostras está em torno de 41,4\% do total da população, isto é, 41,4 animais em $N=100$. Já para o caso de $k=15$, $N=500$ e Cenário $P_4$, captura-se em torno de 98,7\% dos animais (média de 493,5 animais), isto é, quase todos eles são vistos durante o estudo.
+Em geral, observamos que com o crescimento de $k$ ou cenários onde a probabilidade de captura é maior, tem-se em média mais animais capturados, como esperado.
+
+
+<br>
+
+<table class="tg">
+<thead>
+  <tr id="tb10">
+    <h6 class="clt">
+      <strong>Tabela: 4.9</strong> Relação em porcentagem do número médio de animais distintos observados dividido pelo tamanho da população no primeiro estudo de.
+    </h6>
+  </tr>
+    <th class="tg-64eq"></th>
+    <th colspan="3" class="tg-64eq">Cenário $P_1$</th>
+    <th colspan="3" class="tg-64eq">Cenário $P_2$</th>
+    <th colspan="3" class="tg-64eq">Cenário $P_3$</th>
+    <th colspan="3" class="tg-64eq">Cenário $P_4$</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-64eq2">$k$</td>
+    <td class="tg-64eq2">$N=100$</td>
+    <td class="tg-64eq2">$300$</td>
+    <td class="tg-64eq2">$500$</td>
+    <td class="tg-64eq2">$100$</td>
+    <td class="tg-64eq2">$300$</td>
+    <td class="tg-64eq2">$500$</td>
+    <td class="tg-64eq2">$100$</td>
+    <td class="tg-64eq2">$300$</td>
+    <td class="tg-64eq2">$500$</td>
+    <td class="tg-64eq2">$100$</td>
+    <td class="tg-64eq2">$300$</td>
+    <td class="tg-64eq2">$500$</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">5</td>
+    <td class="tg-xkkm">41.4</td>
+    <td class="tg-xkkm">40.5</td>
+    <td class="tg-xkkm">40.9</td>
+    <td class="tg-xkkm">55.8</td>
+    <td class="tg-xkkm">55.6</td>
+    <td class="tg-xkkm">55.6</td>
+    <td class="tg-xkkm">67.3</td>
+    <td class="tg-xkkm">67.3</td>
+    <td class="tg-xkkm">67.3</td>
+    <td class="tg-xkkm">76.3</td>
+    <td class="tg-xkkm">76.3</td>
+    <td class="tg-xkkm">76.3</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">6</td>
+    <td class="tg-xkkm">47.2</td>
+    <td class="tg-xkkm">46.5</td>
+    <td class="tg-xkkm">46.8</td>
+    <td class="tg-xkkm">62.4</td>
+    <td class="tg-xkkm">62.3</td>
+    <td class="tg-xkkm">62.3</td>
+    <td class="tg-xkkm">73.8</td>
+    <td class="tg-xkkm">73.8</td>
+    <td class="tg-xkkm">73.8</td>
+    <td class="tg-xkkm">82.1</td>
+    <td class="tg-xkkm">82.2</td>
+    <td class="tg-xkkm">82.2</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">7</td>
+    <td class="tg-xkkm">52.5</td>
+    <td class="tg-xkkm">51.8</td>
+    <td class="tg-xkkm">52.1</td>
+    <td class="tg-xkkm">68.0</td>
+    <td class="tg-xkkm">67.9</td>
+    <td class="tg-xkkm">67.9</td>
+    <td class="tg-xkkm">79.0</td>
+    <td class="tg-xkkm">79.0</td>
+    <td class="tg-xkkm">79.1</td>
+    <td class="tg-xkkm">86.6</td>
+    <td class="tg-xkkm">86.7</td>
+    <td class="tg-xkkm">86.7</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">8</td>
+    <td class="tg-xkkm">57.1</td>
+    <td class="tg-xkkm">56.7</td>
+    <td class="tg-xkkm">56.9</td>
+    <td class="tg-xkkm">72.8</td>
+    <td class="tg-xkkm">72.7</td>
+    <td class="tg-xkkm">72.7</td>
+    <td class="tg-xkkm">83.2</td>
+    <td class="tg-xkkm">83.2</td>
+    <td class="tg-xkkm">83.2</td>
+    <td class="tg-xkkm">89.9</td>
+    <td class="tg-xkkm">90.0</td>
+    <td class="tg-xkkm">90.0</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">9</td>
+    <td class="tg-xkkm">61.4</td>
+    <td class="tg-xkkm">61.0</td>
+    <td class="tg-xkkm">61.2</td>
+    <td class="tg-xkkm">76.9</td>
+    <td class="tg-xkkm">76.8</td>
+    <td class="tg-xkkm">76.8</td>
+    <td class="tg-xkkm">86.5</td>
+    <td class="tg-xkkm">86.6</td>
+    <td class="tg-xkkm">86.6</td>
+    <td class="tg-xkkm">92.4</td>
+    <td class="tg-xkkm">92.5</td>
+    <td class="tg-xkkm">92.5</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm" class="tg-xkkm">10</td>
+    <td class="tg-xkkm" class="tg-xkkm">65.2</td>
+    <td class="tg-xkkm" class="tg-xkkm">64.9</td>
+    <td class="tg-xkkm" class="tg-xkkm">65.0</td>
+    <td class="tg-xkkm" class="tg-xkkm">80.3</td>
+    <td class="tg-xkkm" class="tg-xkkm">80.3</td>
+    <td class="tg-xkkm" class="tg-xkkm">80.3</td>
+    <td class="tg-xkkm" class="tg-xkkm">89.2</td>
+    <td class="tg-xkkm" class="tg-xkkm">89.3</td>
+    <td class="tg-xkkm" class="tg-xkkm">89.3</td>
+    <td class="tg-xkkm" class="tg-xkkm">94.3</td>
+    <td class="tg-xkkm" class="tg-xkkm">94.4</td>
+    <td class="tg-xkkm" class="tg-xkkm">94.4</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm" class="tg-xkkm">11</td>
+    <td class="tg-xkkm" class="tg-xkkm">68.7</td>
+    <td class="tg-xkkm" class="tg-xkkm">68.4</td>
+    <td class="tg-xkkm" class="tg-xkkm">68.5</td>
+    <td class="tg-xkkm" class="tg-xkkm">83.2</td>
+    <td class="tg-xkkm" class="tg-xkkm">83.3</td>
+    <td class="tg-xkkm" class="tg-xkkm">83.3</td>
+    <td class="tg-xkkm" class="tg-xkkm">91.4</td>
+    <td class="tg-xkkm" class="tg-xkkm">91.4</td>
+    <td class="tg-xkkm" class="tg-xkkm">91.4</td>
+    <td class="tg-xkkm" class="tg-xkkm">95.7</td>
+    <td class="tg-xkkm" class="tg-xkkm">95.8</td>
+    <td class="tg-xkkm" class="tg-xkkm">95.8</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">12</td>
+    <td class="tg-xkkm">71.8</td>
+    <td class="tg-xkkm">71.5</td>
+    <td class="tg-xkkm">71.7</td>
+    <td class="tg-xkkm">85.7</td>
+    <td class="tg-xkkm">85.8</td>
+    <td class="tg-xkkm">85.8</td>
+    <td class="tg-xkkm">93.1</td>
+    <td class="tg-xkkm">93.1</td>
+    <td class="tg-xkkm">93.1</td>
+    <td class="tg-xkkm">96.8</td>
+    <td class="tg-xkkm">96.8</td>
+    <td class="tg-xkkm">96.8</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">13</td>
+    <td class="tg-xkkm">74.6</td>
+    <td class="tg-xkkm">74.3</td>
+    <td class="tg-xkkm">74.5</td>
+    <td class="tg-xkkm">87.9</td>
+    <td class="tg-xkkm">87.9</td>
+    <td class="tg-xkkm">87.9</td>
+    <td class="tg-xkkm">94.4</td>
+    <td class="tg-xkkm">94.5</td>
+    <td class="tg-xkkm">94.5</td>
+    <td class="tg-xkkm">97.6</td>
+    <td class="tg-xkkm">97.6</td>
+    <td class="tg-xkkm">97.6</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">14</td>
+    <td class="tg-xkkm">77.1</td>
+    <td class="tg-xkkm">76.9</td>
+    <td class="tg-xkkm">77.0</td>
+    <td class="tg-xkkm">89.7</td>
+    <td class="tg-xkkm">89.7</td>
+    <td class="tg-xkkm">89.7</td>
+    <td class="tg-xkkm">95.5</td>
+    <td class="tg-xkkm">95.6</td>
+    <td class="tg-xkkm">95.6</td>
+    <td class="tg-xkkm">98.2</td>
+    <td class="tg-xkkm">98.2</td>
+    <td class="tg-xkkm">98.2</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">15</td>
+    <td class="tg-xkkm">79.4</td>
+    <td class="tg-xkkm">79.2</td>
+    <td class="tg-xkkm">79.4</td>
+    <td class="tg-xkkm">91.2</td>
+    <td class="tg-xkkm">91.3</td>
+    <td class="tg-xkkm">91.3</td>
+    <td class="tg-xkkm">96.4</td>
+    <td class="tg-xkkm">96.5</td>
+    <td class="tg-xkkm">96.5</td>
+    <td class="tg-xkkm">98.6</td>
+    <td class="tg-xkkm">98.7</td>
+    <td class="tg-xkkm">98.7</td>
+  </tr>
+</tbody>
+</table>
+
+<br>
+
+Primeiramente, vale ressaltar que nem todas as amostras resultaram em estimativas válidas para os parâmetros. Especificamente, quando $N=100$ e Cenário $P_1$,
+ obteve-se um total de 42 amostras sem estimativas quando $k= 5$ e cinco amostras sem estimativas quando $K=6$, número relativamente baixo se comparado ao total de amostras simuladas (10.000). É conhecido em modelos de captura-recaptura que quando não se observa animais marcados em nenhuma época, a estimativa de máxima verossimilhança de $N$ é infinito, ou extremamente elevada quando o número de recapturados é muito baixo que, em geral, leva a não convergência dos processos de maximização. Geralmente, baixos números de animais recapturados são observados em cenários com $N$ e $k$ pequenos e baixa probabilidade de captura, em concordância com os cenários observados sem estimativas no nosso estudo de simulação. De fato, as medidas de desempenho foram calculadas utilizando somente as estimativas válidas para os parâmetros.
+ 
+ 
+Discutemos em sequência o comportamento do estimador de máxima verossimilhança de $N$.  
+A Figura <a href="#fg1">4.1</a> abaixo apresenta os Viéses Relativo e o EQM para as estimativas de $N$ do modelo $M_t$. Visualmente, observamos que conforme aumentam o número de épocas de captura, a estimação do tamanho da população torna-se mais precisa no sentido que diminui o viés relativo e o erro quadrático médio. Como esperado, o Cenário $P_1$ acarreta em viéses e EQM's maiores se comparado aos demais cenários pois tem probabilidades de captura $p_j$ mais baixas, variando de 0,05 a 0,15. Em geral, podemos assumir uma boa precisão das estimativas para $k\geq 10$ para todos os cenários, até mesmo para o cenário $P_1$, o que corresponde aproximadamente pelo menos 60\%  dos animais capturados da população (veja Tabela <a href="#tb10">4.9</a>).
+
+ <br>
+
+<h6 class="clt" id = "fg1">
+      <strong>Figura: 4.1</strong> Medidas de desempenho das estimativas do tamanho da população, $N$ para o modelo $M_{t}$.
+    </h6>
+<img src="grafic1.jpg" alt="grafico 01" class ="imagem">
+
+ <br>
+
 
 ### Modelo $M_{tb}$
+
+Com o propósito de analisar o comportamento das estimativas dos parâmetros $N$ e $c$ para o modelo $M_{tb}$, foi realizado um estudo de simulação com 10000 amostras simuladas para cada valor verdadeiro fixado do parâmetro de efeito comportamental, $c = (-1.5, -1.0, -0.5, 0, 0.5, 1.0, 1.5)$,   número de épocas de captura, $k = (5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ,15)$, e cada  tamanho populacional, $N = (100, 300, 500)$.
+Fixamos a geração dos $p_j \sim \text{Uniforme}(0,10; ~0,20)$ para todos os cenários acima. Considerando a combinação das quantidades acima, temos $3 \times 7 \times 11 = 231$ cenários diferentes.
+
+
+A Tabela <a href="#tb11">4.10</a> exibe a porcentagem média de animais distintos observados em cada cenário. Note que são bem parecidos ao Cenário $P_2$ do estudo de simulação anterior, pois utilizamos a mesma variação para os $p_j$. Outro fato que observados é que não há diferença no número de animais distintos observados de acordo com o parâmetro $c$ e por isso exibimos na tabela apenas quatro cenários diferentes para $c$. De fato, esse parâmetro modifica a probabilidade de capturar os animais marcados, que não influencia a probabilidade de capturar novos animais.
+
+<br>
+<table class="tg">
+<thead>
+  <tr id="tb10">
+    <h6 class="clt">
+      <strong>Tabela: 4.9</strong> Relação em porcentagem do número médio de animais distintos observados dividido pelo tamanho da população no primeiro estudo de.
+    </h6>
+  </tr>
+  <tr>
+    <th class="tg-64eq"></th>
+    <th class="tg-64eq" colspan="3">$c=-1,5$</th>
+    <th class="tg-64eq" colspan="3">$c=-0,5$</th>
+    <th class="tg-64eq" colspan="3">$c=0,5$</th>
+    <th class="tg-64eq" colspan="3">$c=1,5$</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-64eq2">$k$</td>
+    <td class="tg-64eq2">$N=100$</td>
+    <td class="tg-64eq2">$300$</td>
+    <td class="tg-64eq2">$500$</td>
+    <td class="tg-64eq2">$100$</td>
+    <td class="tg-64eq2">$300$</td>
+    <td class="tg-64eq2">$500$</td>
+    <td class="tg-64eq2">$100$</td>
+    <td class="tg-64eq2">$300$</td>
+    <td class="tg-64eq2">$500$</td>
+    <td class="tg-64eq2">$100$</td>
+    <td class="tg-64eq2">$300$</td>
+    <td class="tg-64eq2">$500$</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">5</td>
+    <td class="tg-xkkm">55.8</td>
+    <td class="tg-xkkm">55.6</td>
+    <td class="tg-xkkm">55.7</td>
+    <td class="tg-xkkm">55.8</td>
+    <td class="tg-xkkm">55.6</td>
+    <td class="tg-xkkm">55.7</td>
+    <td class="tg-xkkm">55.8</td>
+    <td class="tg-xkkm">55.6</td>
+    <td class="tg-xkkm">55.7</td>
+    <td class="tg-xkkm">55.8</td>
+    <td class="tg-xkkm">55.6</td>
+    <td class="tg-xkkm">55.6</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">6</td>
+    <td class="tg-xkkm">62.4</td>
+    <td class="tg-xkkm">62.3</td>
+    <td class="tg-xkkm">62.3</td>
+    <td class="tg-xkkm">62.4</td>
+    <td class="tg-xkkm">62.3</td>
+    <td class="tg-xkkm">62.3</td>
+    <td class="tg-xkkm">62.4</td>
+    <td class="tg-xkkm">62.3</td>
+    <td class="tg-xkkm">62.3</td>
+    <td class="tg-xkkm">62.4</td>
+    <td class="tg-xkkm">62.3</td>
+    <td>62.3</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">7</td>
+    <td class="tg-xkkm">68.0</td>
+    <td class="tg-xkkm">67.9</td>
+    <td class="tg-xkkm">67.9</td>
+    <td class="tg-xkkm">68.0</td>
+    <td class="tg-xkkm">67.9</td>
+    <td class="tg-xkkm">67.9</td>
+    <td class="tg-xkkm">68.0</td>
+    <td class="tg-xkkm">67.9</td>
+    <td class="tg-xkkm">68.0</td>
+    <td class="tg-xkkm">68.0</td>
+    <td class="tg-xkkm">67.9</td>
+    <td class="tg-xkkm">67.9</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">8</td>
+    <td class="tg-xkkm">72.8</td>
+    <td class="tg-xkkm">72.7</td>
+    <td class="tg-xkkm">72.8</td>
+    <td class="tg-xkkm">72.8</td>
+    <td class="tg-xkkm">72.7</td>
+    <td class="tg-xkkm">72.8</td>
+    <td class="tg-xkkm">72.8</td>
+    <td class="tg-xkkm">72.7</td>
+    <td class="tg-xkkm">72.8</td>
+    <td class="tg-xkkm">72.8</td>
+    <td class="tg-xkkm">72.7</td>
+    <td class="tg-xkkm">72.7</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">9</td>
+    <td class="tg-xkkm">76.9</td>
+    <td class="tg-xkkm">76.8</td>
+    <td class="tg-xkkm">76.8</td>
+    <td class="tg-xkkm">76.9</td>
+    <td class="tg-xkkm">76.8</td>
+    <td class="tg-xkkm">76.8</td>
+    <td class="tg-xkkm">76.9</td>
+    <td class="tg-xkkm">76.8</td>
+    <td class="tg-xkkm">76.8</td>
+    <td class="tg-xkkm">76.9</td>
+    <td class="tg-xkkm">76.8</td>
+    <td class="tg-xkkm">76.8</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">10</td>
+    <td class="tg-xkkm">80.3</td>
+    <td class="tg-xkkm">80.3</td>
+    <td class="tg-xkkm">80.3</td>
+    <td class="tg-xkkm">80.3</td>
+    <td class="tg-xkkm">80.3</td>
+    <td class="tg-xkkm">80.3</td>
+    <td class="tg-xkkm">80.3</td>
+    <td class="tg-xkkm">80.3</td>
+    <td class="tg-xkkm">80.3</td>
+    <td class="tg-xkkm">80.3</td>
+    <td class="tg-xkkm">80.3</td>
+    <td class="tg-xkkm">80.3</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">11</td>
+    <td class="tg-xkkm">83.2</td>
+    <td class="tg-xkkm">83.2</td>
+    <td class="tg-xkkm">83.2</td>
+    <td class="tg-xkkm">83.2</td>
+    <td class="tg-xkkm">83.2</td>
+    <td class="tg-xkkm">83.2</td>
+    <td class="tg-xkkm">83.2</td>
+    <td class="tg-xkkm">83.2</td>
+    <td class="tg-xkkm">83.3</td>
+    <td class="tg-xkkm">83.2</td>
+    <td class="tg-xkkm">83.3</td>
+    <td class="tg-xkkm">83.3</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">12</td>
+    <td class="tg-xkkm">85.7</td>
+    <td class="tg-xkkm">85.7</td>
+    <td class="tg-xkkm">85.8</td>
+    <td class="tg-xkkm">85.7</td>
+    <td class="tg-xkkm">85.7</td>
+    <td class="tg-xkkm">85.8</td>
+    <td class="tg-xkkm">85.7</td>
+    <td class="tg-xkkm">85.7</td>
+    <td class="tg-xkkm">85.8</td>
+    <td class="tg-xkkm">85.7</td>
+    <td class="tg-xkkm">85.8</td>
+    <td class="tg-xkkm">85.8</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">13</td>
+    <td class="tg-xkkm">87.9</td>
+    <td class="tg-xkkm">87.9</td>
+    <td class="tg-xkkm">87.9</td>
+    <td class="tg-xkkm">87.9</td>
+    <td class="tg-xkkm">87.9</td>
+    <td class="tg-xkkm">87.9</td>
+    <td class="tg-xkkm">87.9</td>
+    <td class="tg-xkkm">87.9</td>
+    <td class="tg-xkkm">87.9</td>
+    <td class="tg-xkkm">87.9</td>
+    <td class="tg-xkkm">87.9</td>
+    <td class="tg-xkkm">87.9</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">14</td>
+    <td class="tg-xkkm">89.7</td>
+    <td class="tg-xkkm">89.7</td>
+    <td class="tg-xkkm">89.7</td>
+    <td class="tg-xkkm">89.7</td>
+    <td class="tg-xkkm">89.7</td>
+    <td class="tg-xkkm">89.7</td>
+    <td class="tg-xkkm">89.7</td>
+    <td class="tg-xkkm">89.7</td>
+    <td class="tg-xkkm">89.7</td>
+    <td class="tg-xkkm">89.7</td>
+    <td class="tg-xkkm">89.7</td>
+    <td class="tg-xkkm">89.7</td>
+  </tr>
+  <tr>
+    <td class="tg-xkkm">15</td>
+    <td class="tg-xkkm">91.2</td>
+    <td class="tg-xkkm">91.2</td>
+    <td class="tg-xkkm">91.3</td>
+    <td class="tg-xkkm">91.2</td>
+    <td class="tg-xkkm">91.2</td>
+    <td class="tg-xkkm">91.3</td>
+    <td class="tg-xkkm">91.2</td>
+    <td class="tg-xkkm">91.2</td>
+    <td class="tg-xkkm">91.3</td>
+    <td class="tg-xkkm">91.2</td>
+    <td class="tg-xkkm">91.3</td>
+    <td class="tg-xkkm">91.3</td>
+  </tr>
+</tbody>
+</table>
+
+<br>
+
+A Figura <a href="#fg2">4.2</a> exibe a quantidade de estimativas que convergiram para cada cenário. Diferente do que se observou no primeiro estudo de simulação, o modelo $M_{tb}$ apresentou maior proporção de amostras que não tiveram estimativas válidas, principalmente para valores de $k$ pequenos. Não se observou diferença aparente para os diferentes valores do parâmetro $N$. Contudo, se observou no geral que pelo menos 90\% das amostras convergiram e que este número aumenta significativamente com o aumento de $k$.
+
+<br>
+
+<h6 class="clt" id = "fg2">
+      <strong>Figura: 4.2</strong> Quantidade das estimativas válidas de cada cenário para o modelo $M_{tb}$.
+    </h6>
+<img src="grafic2.jpg" alt="grafico 02" class ="imagem">
+
+<br>
+
+Analisando a Figura <a href="#fg3">4.3</a>, podemos verificar um comportamento interessante do estimador do tamanho populacional: quando $N=100$, tem-se subestimativas para $N$ quando $k$ é pequeno, passando para estimativas viesadas (viés positivo) quando $k$ está em torno de 8 e quando $k$ está acima de 10 tem-se que praticamente os viéses relativos convergem para zero. Quando $N=300$ ou $N=500$, as subestimativas são geradas praticamente só quando $c$ verdadeiro é negativo. No geral, observa-se a forte dependência do estimador de $N$ com o valor verdadeiro do parâmetro $c$, e que o viés relativo tende a zero e EQM tende a diminuir quando $k$ aumenta, principalmente para $k\geq 10$.
+
+<br>
+
+<h6 class="clt" id = "fg3">
+      <strong>Figura: 4.3</strong> Medidas de desempenho das estimativas do tamanho da população, $N$, para o modelo $M_{tb}$.
+    </h6>
+<img src="grafic3.jpg" alt="grafico 03" class ="imagem">
+
+<br>
+
+
+ A Figura <a href="#fg4">4.4</a> mostra um comportamento de subestimativas para o parâmetro $c$, principalmente para valores de $c$ negativos. Contudo, observa-se para crescimento de $N$ e $k$, o estimador torna-se mais preciso no sentido que viés e EQM tendem a zero.
+ 
+ 
+ <br>
+
+<h6 class="clt" id = "fg4">
+      <strong>Figura: 4.4</strong> Medidas de desempenho das estimativas do parâmetro de efeito comportamental à marcação, $c$, para o modelo $M_{tb}$.
+    </h6>
+<img src="grafic4.jpg" alt="grafico 04" class ="imagem">
+
+<br>
+ 
+ 
+
