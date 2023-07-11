@@ -319,39 +319,46 @@ Animais selecionados
 um animal não altera a probabilidade de captura de qualquer outro. Adicionalmente, supomos que a captura (ou não) de um animal não altera sua probabilidade de recaptura, ou seja, animais marcados e não marcados tem a mesma probabilidade <span class="math inline">\(p_j\)</span> de serem capturados na ocasião <span class="math inline">\(j\)</span>.</p>
 <p>Note que, por se tratar de uma sequência de sucessos ou fracassos (captura o não captura) e independência das capturas e mesma probabilidade de sucesso (captura) para as quantidades <span class="math inline">\(u_j\)</span> e <span class="math inline">\(m_j\)</span>, temos as seguintes distribuições:</p>
 <p><br></p>
+<div id="rolagem">
 <p><span class="math display">\[\begin{equation}
 u_j|N,p_j, M_j \sim \mathrm{Binomial}(N-M_j,p_j), ~~ j = 1,2,...,k  
 \end{equation}\]</span></p>
+</div>
 <p><br></p>
-<p>e
+<p>e</p>
+<div id="rolagem"><p>
 <span class="math display">\[\begin{equation}
 m_j|p_j,M_j \sim \mathrm{Binomial}(M_j, p_j),   ~~   j = 2,...,k  
-\end{equation}\]</span></p>
+\end{equation}\]</span></p></div>
 <p><br></p>
 <p>Logo, a função de verossimilhança do modelo <span class="math inline">\(M_t\)</span> para os parâmetros <span class="math inline">\(N\)</span> e <span class="math inline">\(\mathbf{p} = (p_1,\ldots,p_k)\)</span>, dada uma amostra de captura-marcação-recaptura <span class="math inline">\(\mathbf{u}=(u_1,u_2,\ldots,u_k)\)</span> e <span class="math inline">\(\mathbf{m} = (m_2,m_3,\ldots,m_k)\)</span>, é definida por</p>
 <p><br></p>
+<div id="rolagem">
 <p><span class="math display">\[\begin{align*}
 L(N,\textbf{p}|\textbf{u,m}) &amp;= \mathrm{p}(\textbf{u,m}|N, \textbf{p})\\
 &amp;= p(u_1|N,p_1)\prod^k_{j=2}p(u_j|N,p_j,M_j)p(m_j|M_j,p_j)\\
 &amp;= \prod^k_{j=1}\binom{N-M_j}{u_j}p^{u_j}_j(1-p_j)^{N-M_j-u_j}\times \prod^k_{j=2}\binom{M_j}{m_j}p^{m_j}_j(1-p_j)^{M_j-m_j}\\
 &amp;= \prod^k_{j=2}\binom{M_j}{m_j}\times \prod^k_{j=1}\binom{N-M_j}{n_j-M_j}p_j^{n_j}(1-p_j)^{N-n_j}
 \end{align*}\]</span></p>
+</div>
 <p><br></p>
 <p>para <span class="math inline">\(N\geq r\)</span>, onde <span class="math inline">\(r = M_k+u_k\)</span> é o número de animais distintos observados no estudo, e <span class="math inline">\(0&lt;p_j&lt;1\)</span>, para <span class="math inline">\(j=1,2,,\ldots,k\)</span>, sendo <span class="math inline">\(n_j = u_j+m_j\)</span>.</p>
 <p>Observe que, como <span class="math inline">\(M_{j+1} = M_j+u_j\)</span>, temos</p>
 <p><br></p>
+<div id="rolagem">
 <p><span class="math display">\[\begin{align*}
   \prod^k_{j=1}\binom{N-M_j}{u_j} &amp;= \prod^k_{j=1}\frac{(N-M_j)!}{u_j!(N-M_j - u_j)!} \\
 &amp;= \prod_{j=1}^k\dfrac{1}{u_j!}\prod_{j=1}^k\dfrac{(N-M_j)!}{(N-M_{j+1})!}\\
 &amp;= \prod^k_{j=1}\dfrac{1}{u_j!}\times \dfrac{N!}{(N-r)!}
-\end{align*}\]</span></p>
+\end{align*}\]</span></p></div>
 <p><br></p>
 <p>Logo, a função de verossimilhança pode ser reescrita em termos proporcionais à</p>
 <p><br></p>
+<div id="rolagem">
 <p><span class="math display">\[\begin{align*}
 L(N,\textbf{p}|\textbf{u,m}) &amp;\propto  \dfrac{N!}{(N-r)!}\prod^{k}_{j=1}p_j^{n_j}(1-p_j)^{N-n_j}
 \end{align*}\]</span></p>
-<p>para <span class="math inline">\(N\geq r\)</span> e <span class="math inline">\(0&lt;p_j&lt;1\)</span>, para <span class="math inline">\(j=1,2,,\ldots,k\)</span>,</p>
+<p>para <span class="math inline">\(N\geq r\)</span> e <span class="math inline">\(0&lt;p_j&lt;1\)</span>, para <span class="math inline">\(j=1,2,,\ldots,k\)</span>,</p></div>
 <p><br><br></p>
 </div>
 <div id="modelo-de-captura-recaptura-com-heterogeneidade-e-efeito-à-marcação" class="section level2 hasAnchor" number="3.2">
@@ -359,18 +366,20 @@ L(N,\textbf{p}|\textbf{u,m}) &amp;\propto  \dfrac{N!}{(N-r)!}\prod^{k}_{j=1}p_j^
 <p>Nesta seção apresentamos o modelo captura-recaptura com heterogeneidade temporal das probabilidades de captura e com efeito da marcação. O modelo foi originalmente proposto por <span class="citation">Pollock (<a href="#ref-pollock1980">1980</a>)</span>, e na literatura é referido como o modelo <span class="math inline">\(M_{tb}\)</span> (ver <span class="citation">Otis et al. (<a href="#ref-otis1978">1978</a>)</span>). O modelo <span class="math inline">\(M_{tb}\)</span> pressupõe, para cada ocasião de amostragem, que todos os animais não marcados têm uma probabilidade de captura e todos os animais marcados têm outra probabilidade de captura, e assume que essas probabilidades variam de uma ocasião de amostragem para outra.</p>
 <p>Seja <span class="math inline">\(c_j\)</span> a probabilidade de recapturar na ocasião <span class="math inline">\(j\)</span> um animal marcado. Neste caso, as seguintes distribuições condicionais são definidas para as quantidades <span class="math inline">\(m_j\)</span> com essa nova probabilidade:</p>
 <p><br></p>
+<div id="rolagem">
 <p><span class="math display">\[\begin{equation}
     m_j | c_j,M_j \sim \text{Binomial}\big(M_j,c_j\big), \ \ \ \ \ j = 2, 3, ..., k \tag{3.2.1}
-\end{equation}\]</span></p>
+\end{equation}\]</span></p></div>
 <p><br></p>
 <p>enquanto que as distribuições para <span class="math inline">\(u_j\)</span> permanecem como previamente definidas na equação? Observe que a modelagem permite probabilidades diferentes entre marcados (<span class="math inline">\(p_j\)</span>) e não marcados (<span class="math inline">\(c_j\)</span>) em uma determinada ocasião <span class="math inline">\(j\)</span>.</p>
 <p>De maneira similar ao modelo <span class="math inline">\(M_t\)</span>, temos a função de verossimilhança para <span class="math inline">\(N\)</span>, <span class="math inline">\(\mathbf{p} = (p_1,p_2,\ldots,p_k)\)</span> e <span class="math inline">\(\mathbf{c} = (c_2,\ldots,c_k)\)</span> dada por</p>
 <p><br></p>
+<div id="rolagem">
 <p><span class="math display">\[\begin{align*}
 L(N, \mathbf{p} , \mathbf{c} |\mathbf{u},\mathbf{m}) &amp;= \mathrm{p}(\mathbf{u},\mathbf{m}|N,\mathbf{p},\mathbf{c})\\
 &amp;= \prod_{j=1}^{k}\binom{N-M_j}{u_j}p_j^{u_j}(1-p_j)^{N-M_j-u_j} \times \prod_{j=2}^{k}\binom{M_j}{m_j}c_j^{m_j}(1-c_j)^{M_j-m_j}\\
   &amp;\propto \frac{N!}{(N-r)!}\prod_{j=1}^{k}p_j^{u_j}(1-p_j)^{N-M_{j+1}}\prod_{j=2}^{k}c_j^{m_j}(1-c_j)^{M_j-m_j} \\
-\end{align*}\]</span></p>
+\end{align*}\]</span></p></div>
 <p><br></p>
 <p>para:</p>
 <p><br></p>
@@ -382,22 +391,25 @@ L(N, \mathbf{p} , \mathbf{c} |\mathbf{u},\mathbf{m}) &amp;= \mathrm{p}(\mathbf{u
 <p>Contudo, o modelo acima não é identificável pois temos <span class="math inline">\(2k-1\)</span> estatísticas suficientes em <span class="math inline">\(\mathbf{u}=(u_1,u_2,\ldots,u_k)\)</span> e <span class="math inline">\(\mathbf{m}=(m_2,m_3,\ldots,m_k)\)</span> para <span class="math inline">\(2K\)</span> parâmetros (<span class="math inline">\(N,\textbf{p},\textbf{c}\)</span>), isto é, tem-se mais parâmetros que dados. Portanto, restrições no espaço paramétrico são necessárias.</p>
 <p>A restrição proposta por <span class="citation">Wang (<a href="#ref-wang2002">2002</a>)</span> considera a razão da chance de capturas e recapturas da seguinte forma:</p>
 <p><br></p>
+<div id="rolagem">
 <p><span class="math display">\[\begin{equation}
     \frac{c_j}{1-c_j}=w\times\frac{p_j}{1-p_j}, \ \ \ \ j=2,3,...,k  \tag{3.2.3}
-\end{equation}\]</span></p>
+\end{equation}\]</span></p></div>
 <p><br></p>
 <p>onde existe três situações para a razão de chances <span class="math inline">\(w\)</span>:</p>
-<p><span class="math inline">\(w&gt;1\)</span>: probabilidade de capturar um animal marcado é maior que a probabilidade de capturar um animal não marcado (efeito ``feliz’’ da marcação);</p>
+<p><span class="math inline">\(w&gt;1\)</span>: probabilidade de capturar um animal marcado é maior que a probabilidade de capturar um animal não marcado (efeito "feliz" da marcação);</p>
 <p><span class="math inline">\(w=1\)</span>: probabilidade de capturar um animal marcado é igual à probabilidade de capturar um animal não marcado, (sem efeito à marcação);</p>
-<p><span class="math inline">\(w&lt;1\)</span>: probabilidade de capturar um animal marcado é menor que a probabilidade de capturar um animal não marcado, (efeito ``triste’’ à marcação).</p>
+<p><span class="math inline">\(w&lt;1\)</span>: probabilidade de capturar um animal marcado é menor que a probabilidade de capturar um animal não marcado, (efeito "triste" à marcação).</p>
 <p>O efeito “feliz” à marcação pode ser gerado por agrados durante a captura, como petiscos. O efeito “triste” pode ser derivado por possíveis situações de desconforto durante a marcação como, por exemplo, <em>tags</em> e pulseiras apertadas.</p>
 <p><br></p>
 <p>Conseguinte, consideramos as seguintes transformações:
+
+  <div id="rolagem">
 <span class="math display">\[\begin{align*}
 c &amp;= \log(w)  \tag{3.2.4}\\
 \eta_{j0}&amp;= \log\left ( \frac{p_j}{1-p_j} \right ), \ \ \ \ j=1,2,...,k \tag{3.2.5}\\
 \eta_{j1}&amp;= \log\left ( \frac{c_j}{1-c_j} \right ), \ \ \ \ j=2,3,...,k \tag{3.2.6}
-\end{align*}\]</span>
+\end{align*}\]</span></div>
 com <span class="math inline">\(\eta_{j0}\in(-\infty,\infty),\)</span> <span class="math inline">\(\eta_{j1}\in(-\infty,\infty)\)</span> e <span class="math inline">\(c \in(-\infty,\infty)\)</span>.
 <br></p>
 <p>Logo, temos a seguinte relação entre os parâmetros:</p>
@@ -407,10 +419,11 @@ com <span class="math inline">\(\eta_{j0}\in(-\infty,\infty),\)</span> <span cla
 <p>diminuindo o espaço paramétrico para <span class="math inline">\(k+2\)</span> parâmetros: (<span class="math inline">\(N,\mathbf{\eta} = (\eta_{10},\eta_{20},\ldots,\eta_{k0}),c)\)</span>. Portanto, se <span class="math inline">\(k\geq3\)</span>, temos que a quantidade de estatísticas suficientes será pelo menos igual ao número de parâmetros e, consequentemente, garantimos a identificabilidade do modelo.</p>
 <p>Como <span class="math inline">\(p_j = e^{\eta_{j0}}/(1+e^{\eta_{j0}})\)</span> e <span class="math inline">\(c_j = e^{c+\eta_{j0}}/(1+e^{c+\eta_{j0}})\)</span>, podemos reescrever a função de verossimilhança para os novos parâmetros da seguinte forma:</p>
 <p><br></p>
-<p><span class="math display">\[\begin{align*}
+<div id="rolagem"></div>
+<span class="math display">\[\begin{align*}
 L(N,\mathbf{\eta}, c|\mathbf{u}, \mathbf{m})  
 &amp;\propto \frac{N!}{(N-r)!}\prod_{j=1}^{k} \frac{e^{\eta_{j0} n_j + cm_j}}{\left ( 1+e^{\eta_{j0}} \right )^{N-M_j} \left ( 1+ e^{c+\eta_{j0}} \right )^{M_j}}
-\end{align*}\]</span>
+\end{align*}\]</span></div><p>
 para <span class="math inline">\(N\geq r\)</span>, <span class="math inline">\(\eta_{j0}\in(-\infty,\infty),\)</span> <span class="math inline">\(j=1,2,\ldots,k\)</span>, e <span class="math inline">\(c \in(-\infty,\infty)\)</span>.</p>
 <p><br></p>
 </div>
