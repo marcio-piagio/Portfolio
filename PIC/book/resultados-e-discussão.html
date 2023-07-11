@@ -218,6 +218,7 @@ div.csl-indent {
 <h3><span class="header-section-number">4.1.1</span> Primeira aplicação<a href="resultados-e-discussão.html#primeira-aplicação" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Como parte de um estudo de ciências populacionais, <span class="citation">Coulombe, Ridgway, e Evans (<a href="#ref-coulombe1965respiratory">1965</a>)</span> conduziram um estudo com armadilhas para ratos domésticos selvagens <em>Mus musculus</em>. Um quadrado <span class="math inline">\(10 \times 10\)</span> foi usado com armadilhas espaçadas de 3 metros entre elas e as armadilhas foram verificadas pelos pesquisadores duas vezes ao dia, de manha e a noite, durante 5 dias, totalizando <span class="math inline">\(k=10\)</span> épocas de captura. Um total de <span class="math inline">\(r=173\)</span> ratos diferentes foram capturados. Os dados estão disponíveis em <span class="citation">Otis et al. (<a href="#ref-otis1978">1978</a>)</span> e são exibidos na Tabela <a href="resultados-e-discussão.html#tb2">4.1</a>.</p>
 <p><br></p>
+<div id="rolagem">
 <table class="tg">
 <thead>
 <tr id="tb2">
@@ -418,6 +419,7 @@ Animais selecionados
 </tr>
 </tbody>
 </table>
+</div>
 <p>Observe a baixa frequência de animais não marcados (<span class="math inline">\(u_j)\)</span> nas últimas ocasiões de captura, indicando que poucos animais da população ainda não foram vistos no estudo. Os tamanhos amostrais <span class="math inline">\((n_j)\)</span> diferentes também indicam heterogeneidade ao longo do tempo.</p>
 <p>A Tabela <a href="resultados-e-discussão.html#tb3">4.2</a> a seguir exibe as estimativas dos dois modelos, <span class="math inline">\(M_t\)</span> e <span class="math inline">\(M_{tb}\)</span>.</p>
 <p><br></p>
@@ -1108,6 +1110,7 @@ Distribuição
 Por exemplo, no cenário com <span class="math inline">\(k=5\)</span>, <span class="math inline">\(N=100\)</span> e Cenário <span class="math inline">\(P_1\)</span>, temos que, em média, o número de animais distintos observados nas 10.000 amostras está em torno de 41,4% do total da população, isto é, 41,4 animais em <span class="math inline">\(N=100\)</span>. Já para o caso de <span class="math inline">\(k=15\)</span>, <span class="math inline">\(N=500\)</span> e Cenário <span class="math inline">\(P_4\)</span>, captura-se em torno de 98,7% dos animais (média de 493,5 animais), isto é, quase todos eles são vistos durante o estudo.
 Em geral, observamos que com o crescimento de <span class="math inline">\(k\)</span> ou cenários onde a probabilidade de captura é maior, tem-se em média mais animais capturados, como esperado.</p>
 <p><br></p>
+<div id="rolagem">
 <table class="tg">
 <thead>
 <tr id="tb10">
@@ -1626,6 +1629,7 @@ Cenário <span class="math inline">\(P_4\)</span>
 </tr>
 </tbody>
 </table>
+</div>
 <p><br></p>
 <p>Primeiramente, vale ressaltar que nem todas as amostras resultaram em estimativas válidas para os parâmetros. Especificamente, quando <span class="math inline">\(N=100\)</span> e Cenário <span class="math inline">\(P_1\)</span>,
 obteve-se um total de 42 amostras sem estimativas quando <span class="math inline">\(k= 5\)</span> e cinco amostras sem estimativas quando <span class="math inline">\(K=6\)</span>, número relativamente baixo se comparado ao total de amostras simuladas (10.000). É conhecido em modelos de captura-recaptura que quando não se observa animais marcados em nenhuma época, a estimativa de máxima verossimilhança de <span class="math inline">\(N\)</span> é infinito, ou extremamente elevada quando o número de recapturados é muito baixo que, em geral, leva a não convergência dos processos de maximização. Geralmente, baixos números de animais recapturados são observados em cenários com <span class="math inline">\(N\)</span> e <span class="math inline">\(k\)</span> pequenos e baixa probabilidade de captura, em concordância com os cenários observados sem estimativas no nosso estudo de simulação. De fato, as medidas de desempenho foram calculadas utilizando somente as estimativas válidas para os parâmetros.</p>
@@ -1644,11 +1648,12 @@ A Figura <a href="resultados-e-discussão.html#fg1">4.1</a> abaixo apresenta os 
 Fixamos a geração dos <span class="math inline">\(p_j \sim \text{Uniforme}(0,10; ~0,20)\)</span> para todos os cenários acima. Considerando a combinação das quantidades acima, temos <span class="math inline">\(3 \times 7 \times 11 = 231\)</span> cenários diferentes.</p>
 <p>A Tabela <a href="#tb11">4.10</a> exibe a porcentagem média de animais distintos observados em cada cenário. Note que são bem parecidos ao Cenário <span class="math inline">\(P_2\)</span> do estudo de simulação anterior, pois utilizamos a mesma variação para os <span class="math inline">\(p_j\)</span>. Outro fato que observados é que não há diferença no número de animais distintos observados de acordo com o parâmetro <span class="math inline">\(c\)</span> e por isso exibimos na tabela apenas quatro cenários diferentes para <span class="math inline">\(c\)</span>. De fato, esse parâmetro modifica a probabilidade de capturar os animais marcados, que não influencia a probabilidade de capturar novos animais.</p>
 <br>
+<div id="rolagem">
 <table class="tg">
 <thead>
 <tr id="tb10">
 <h6 class="clt">
-<strong>Tabela: 4.9</strong> Relação em porcentagem do número médio de animais distintos observados dividido pelo tamanho da população no primeiro estudo de.
+<strong>Tabela: 4.10</strong> Relação em porcentagem do número médio de animais distintos observados dividido pelo tamanho da população no primeiro estudo de.
 </h6>
 </tr>
 <tr>
@@ -2163,6 +2168,7 @@ Fixamos a geração dos <span class="math inline">\(p_j \sim \text{Uniforme}(0,1
 </tr>
 </tbody>
 </table>
+</div>
 <p><br></p>
 <p>A Figura <a href="resultados-e-discussão.html#fg2">4.2</a> exibe a quantidade de estimativas que convergiram para cada cenário. Diferente do que se observou no primeiro estudo de simulação, o modelo <span class="math inline">\(M_{tb}\)</span> apresentou maior proporção de amostras que não tiveram estimativas válidas, principalmente para valores de <span class="math inline">\(k\)</span> pequenos. Não se observou diferença aparente para os diferentes valores do parâmetro <span class="math inline">\(N\)</span>. Contudo, se observou no geral que pelo menos 90% das amostras convergiram e que este número aumenta significativamente com o aumento de <span class="math inline">\(k\)</span>.</p>
 <p><br></p>

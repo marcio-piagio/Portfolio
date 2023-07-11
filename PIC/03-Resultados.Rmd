@@ -9,8 +9,8 @@ Nesta seção vamos aplicar os dois modelos de captura-recaptura estudados, $M_t
 <br>
 
 \begin{align*}
-\mathrm{AIC} & = -2\log L(\widehat{\mathbf{\theta}}|\mathbf{x})-2d \\
-\mathrm{BIC} & =-2 \log L(\widehat{\mathbf{\theta}}|\mathbf{x}) - d\log(n)
+\mathrm{AIC} & = -2 \log L(\widehat{\mathbf{\theta}}|\mathbf{x}) - 2 d \\
+\mathrm{BIC} & = -2 \log L(\widehat{\mathbf{\theta}}|\mathbf{x}) - d\log(n)
 \end{align*}
 
 <br>
@@ -1003,6 +1003,3 @@ Analisando a Figura <a href="#fg3">4.3</a>, podemos verificar um comportamento i
 <img src="grafic4.jpg" alt="grafico 04" class ="imagem">
 
 <br>
- 
- 
-

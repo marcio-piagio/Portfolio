@@ -129,3 +129,13 @@ p {
   border-width:1px;
   filter: drop-shadow(#096b7256 0px 0px 7px);
 }
+
+.fa {
+  color: #096B72;
+}
+
+div#rolagem {
+
+  overflow-x: auto;
+
+}
