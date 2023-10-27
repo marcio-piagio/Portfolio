@@ -1,0 +1,1267 @@
+---
+title: "<b>TRABALHO DE CONCLUSÃO DE CURSO <br><br>ESTUDO DE UM MODELO DE CAPTURA-RECAPTURA  COM HETEROGENEIDADE  TEMPORAL E EFEITO COMPORTAMENTAL  À MARCAÇÃO</b> <br><br><br><br>"
+subtitle: "UNIVERSIDADE ESTADUAL DE MARINGÁ<br>CENTRO DE CIÊNCIAS EXATAS<br>DEPARTAMENTO DE ESTATÍSTICA<br>        CURSO DE BACHARELADO EM ESTATÍSTICA"
+author: "<strong>Acadêmico</strong>: Márcio Roger Piagio <br> <strong>Orientador</strong>: Prof. Dr. George Lucas Moraes Pezzott <br><br><br>"
+date: '`r format(Sys.time(),"%d de %B de %Y")`'
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts, metropolis-mod.css]
+    lib_dir: libs
+    nature:
+      highlightStyle: rainbow
+      highlightLines: false
+      highlightSpans: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+      ratio: "18:10"
+---
+
+```{r xaringan-tile-view, echo=FALSE}
+xaringanExtra::use_tile_view()
+```
+
+```{r xaringan-animate-all, echo=FALSE}
+xaringanExtra::use_animate_all("fade")
+```
+
+```{r xaringan-panelset, echo=FALSE}
+xaringanExtra::use_panelset()
+```
+
+# Método Captura-Recaptura
+
+.panelset[
+.panel[.panel-name[Apresentação]
+
+O método de captura-recaptura, também conhecido como método de marcação-recaptura ou captura-marcação-recaptura, é uma técnica de amostragem empregada amplamente nos campos da ecologia e epidemiologia. Este método é utilizado para estimar o tamanho das populações e analisar o padrão de doenças entre outros.
+
+.pull-left[
+A técnica da captura-marcação-recaptura para estimação do tamanho populacional é melhor compreendida com um exemplo simples. 
+
+- Considere que o tamanho da população a ser estimada seja ${N}$ e que na. 
+
+- Primeira ocasião de amostragem tenha-se capturado $n_1$ animais e Todos esses animais recebem uma marcação e, em seguida, são  devolvidos à população. 
+
+- Agora, na segunda ocasião  de amostragem, capturam-se $n_2$ animais, dos quais $m$ estão marcados (recapturas). A ideia é estimar a proporção de animais marcados na população $(n_1/N)$ pela proporção de animais marcados na segunda amostra $(m/n_2)$.
+
+$$\widehat{\left(\dfrac{n_1}{N}\right)} = \dfrac{m}{n_2}$$
+]
+.pull-right[
+
+Resolvendo para $N$, obtemos um estimador $\widehat{N}$ para o tamanho da população:
+
+$$\widehat{N} = \dfrac{n_1 ~  n_2}{m}$$
+
+Este método, conhecido como estimador de Lincoln-Petersen, foi usado inicialmente por Laplace em 1783 para estimar a população francesa. Mais tarde, foi aplicado por Petersen e Lincoln em seus estudos sobre migração de peixes e populações de patos selvagens, respectivamente.
+
+
+- $\widehat{N}$ é o tamanho total da população,
+- $n_1$ é o número de indivíduos marcados e liberados na primeira amostra,
+- $n_2$ é o número total de indivíduos na segunda amostra,
+- $m$ é o número de indivíduos marcados na segunda amostra.
+
+]]
+.panel[.panel-name[Objetivo]
+<b><font size="5"><center>
+<br>
+
+Obter estimativas de máxima verossimilhança para os parâmetros e seus respectivos intervalos de confiança.
+
+<br><br>
+
+Verificar adequação dos parâmetros pontuais e intervalares.
+
+<br><br>
+
+Estudar critérios de seleção de modelo para testar a presença do efeito comportamental dos animais à marcação.
+
+</font></center></b>
+]
+.panel[.panel-name[Suposições]
+
+<br>
+<strong><font size="5"><center>
+
+Não há mortes, nascimentos nem migrações de animais entre as ocasiões de amostragem (diz-se população demográfica e geograficamente ``fechada")
+
+<br><br>
+
+Não há animais marcados na população antes da primeira ocasião de amostragem  e, durante o processo, os animais não perdem suas marcas
+
+<br><br>
+
+A técnica de captura-marcação-recaptura é aplicada  na forma padrão.
+
+
+</font></center></strong>
+]
+
+.panel[.panel-name[Estatísticas]
+<br>
+<b><font size="5">
+
+- $u_j :$ número de animais não marcados na amostra na $j$-ésima ocasião de amostragem, $j = 1, 2, \ldots , k$, com $\mathbf{u}=(u_1, u_2, \ldots , u_k)$
+
+- $m_j :$  número de animais marcados (recapturas) na amostra na $j$-ésima ocasião de amostragem, $j =  2,3, \ldots , k$ com $\mathbf{m} = (m_2, m_3, \ldots , m_k)$. Observe que $m_1=0$.
+
+- $n_j :$ número de animais  (marcados e não marcados) na amostra na $j$-ésima ocasião de amostragem, isto é, $n_j = u_j + m_j, ~j = 1 , 2, \ldots , k;$
+
+- $M_j :$ número de animais marcados na população imediatamente antes da $j$-ésima ocasião de amostragem, $j = 1, 2, \ldots , k,$ com $M_1 = 0$ e $M_{j+1} = M_j + u_j$, para $j =2, 3, \ldots, k.$
+
+- $r:$   número de animais distintos observados no estudo, $r= M_k+u_k$.
+
+</b></font>
+]
+
+.panel[.panel-name[Exemplo]
+
+<br>
+
+<font size="5"><strong><center>Estatísticas observadas no exemplo de um processo de captura-marcação-recaptura.<center></strong></font>
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-byz3{background-color:#ffffff;border-color:#efefef;font-size:22px;text-align:center;vertical-align:top}
+.tg .tg-nhbv{background-color:#010066;border-color:#010066;color:#ffffff;font-size:22px;font-weight:bold;text-align:center;
+  vertical-align:top}
+.tg .tg-pmby{background-color:#efefef;border-color:#efefef;font-size:22px;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-nhbv"></th>
+    <th class="tg-nhbv">j</th>
+    <th class="tg-nhbv">1</th>
+    <th class="tg-nhbv">2</th>
+    <th class="tg-nhbv">3</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-byz3">Animais marcados antes da ocasião</td>
+    <td class="tg-byz3">M<sub>j</td>
+    <td class="tg-byz3">0</td>
+    <td class="tg-byz3">10</td>
+    <td class="tg-byz3">22</td>
+  </tr>
+  <tr>
+    <td class="tg-pmby">Animais capturados (não marcados)</td>
+    <td class="tg-pmby">u<sub>j</td>
+    <td class="tg-pmby">10</td>
+    <td class="tg-pmby">12</td>
+    <td class="tg-pmby">8</td>
+  </tr>
+  <tr>
+    <td class="tg-byz3">Animais recapturados (marcados)</td>
+    <td class="tg-byz3">m<sub>j</td>
+    <td class="tg-byz3">0</td>
+    <td class="tg-byz3">3</td>
+    <td class="tg-byz3">9</td>
+  </tr>
+  <tr>
+    <td class="tg-pmby">Animais selecionados</td>
+    <td class="tg-pmby">n<sub>j</td>
+    <td class="tg-pmby">10</td>
+    <td class="tg-pmby">15</td>
+    <td class="tg-pmby">17</td>
+  </tr>
+</tbody>
+</table>
+
+<br>
+
+<font size="5"><strong>Finalizadas as três épocas de captura, foi possível observar r=30 animais distintos, de um total de N=100 animais.</strong></font>
+
+
+]]
+
+---
+
+# Modelo de captura-recaptura $M_{tb}$
+
+.panelset[
+.panel[.panel-name[Distribuições]
+
+<br>
+<font size="5"><strong>
+
+
+
+- $p_j$ como a probabilidade de um animal não marcado ser capturado na $j$-ésima ocasião de amostragem,  $j = 1 , 2, \ldots  ,k$, com $\textbf{p} = (p_1, p_2, \ldots , p_k)$.
+
+
+
+- $c_j$ como a probabilidade de um animal  marcado ser capturado na $j$-ésima ocasião de amostragem,  $j =  2, \ldots  ,k$,  com $\textbf{c} = (c_2, c_3, \ldots , c_k)$
+
+<br>
+
+- $u_j|N,p_j, M_j \sim \mathrm{Binomial}(N-M_j,p_j), ~~ j = 1,2,\ldots,k$
+
+
+
+- $m_j|c_j,M_j \sim \mathrm{Binomial}(M_j, c_j),   ~~   j = 2,3,\ldots ,k$
+
+
+
+em cada ocasião $j$ de amostragem, temos um total de $N-M_j$ animais não marcados e $M_j$ animais marcados.
+
+</font></strong>
+]
+.panel[.panel-name[verossimilhança]
+
+<br>
+
+<font size="5"><b>
+
+<center>A Função de verossimilhança reescrita em termos proporcionais<center>
+
+</b></font>
+
+<br>
+<font size="4"><b>
+
+$$\begin{align*}
+L(N,\textbf{p},\textbf{c}|\textbf{u},\textbf{m}) &= \mathrm{p}(\textbf{u},\textbf{m}|N, \textbf{p},\textbf{c})\\
+ &= p(u_1|N,p_1)\prod^k_{j=2}p(u_j|N,p_j,M_j)p(m_j|M_j,c_j)\\
+ &= \prod^k_{j=1}\binom{N-M_j}{u_j}p^{u_j}_j(1-p_j)^{N-M_j-u_j} \prod^k_{j=2}\binom{M_j}{m_j}c^{m_j}_j(1-c_j)^{M_j-m_j}\\
+ &\propto  \dfrac{N!}{(N-r)!}\prod^{k}_{j=1}p_j^{u_j}(1-p_j)^{N-M_j-u_j} \prod^{k}_{j=2}c_j^{m_j}(1-c_j)^{M_j-m_j}
+ \end{align*}$$
+ 
+ </b></font>
+ <br>
+ para $0<p_j<1$, $0<c_j<1$ e $N\geq r$, onde $r = M_k+u_k$ é o número de animais distintos observados no estudo.
+ 
+
+
+
+
+]
+.panel[.panel-name[Identificabilidade]
+
+<br>
+<b>
+
+O modelo $M_{tb}$ não é identificável pois temos $2k-1$ estatísticas suficientes em $\mathbf{u}=(u_1,u_2,\ldots,u_k)$ e $\mathbf{m}=(m_2,m_3,\ldots,m_k)$ para $2k$ parâmetros $(N,\mathbf{p},\mathbf{c})$, isto é, tem-se mais parâmetros que dados.
+
+A restrição proposta por Wang, He, Sun et al. (2015) considera a  razão da chance constante no tempo das probabilidades de capturas e recapturas
+
+<br>
+
+$$\frac{c_j}{1-c_j}=w\cdot \frac{p_j}{1-p_j}, \ \ \ \ j=2,3,\ldots ,k$$
+<br>
+- $w>1$: probabilidade de capturar um animal marcado  é maior que a probabilidade de capturar um animal não marcado (efeito ``feliz'' da marcação);
+<br>
+
+
+- $w=1$: probabilidade de capturar um animal marcado  é igual  à probabilidade de capturar um animal não marcado (sem efeito à marcação);
+<br>
+
+- $w<1$: probabilidade de capturar um animal marcado  é menor que a probabilidade de capturar um animal não marcado (efeito ``tímido'' à marcação).
+
+ </b>
+]
+.panel[.panel-name[Transformações]
+
+.pull-left[
+<br><br>
+<font size="5"><b><center>Transformações<center></b></font>
+$$\begin{align*}
+ c &= \log(w)\\
+ \eta_{j}&= \log\left ( \frac{p_j}{1-p_j} \right ), \ \ \ \ j=1,2,\ldots,k\\
+ \delta_{j}&= \log\left ( \frac{c_j}{1-c_j} \right ), \ \ \ \ j=2,3,\ldots ,k
+\end{align*}$$
+
+<br>
+
+com $\eta_{j}\in(-\infty,\infty),$  $\delta_{j}\in(-\infty,\infty)$ e $c \in(-\infty,\infty)$.
+]
+.pull-right[
+<br><br>
+<font size="5"><b><center>Relação entre os parâmetros<center></b></font>
+
+$$\delta_{j}=c+\eta_{j}, \ \ \ \ j=2,3,\ldots ,k$$
+<br>
+<font size="5"><b><center>Identidades<center></b></font>
+
+
+$$p_j = \dfrac{e^{\eta_{j}}}{1+e^{\eta_{j}}},\quad j=1,2,\ldots,k$$
+
+
+
+$$c_j = \dfrac{e^{c+\eta_{j}}}{1+e^{c+\eta_{j}}} , \quad j=2,3,\ldots,k.$$
+]
+]
+
+.panel[.panel-name[Log-verossimilhança]
+
+$$\begin{align*}
+    L(N,\mathbf{\eta}, c|\mathbf{u}, \mathbf{m})  
+& \propto \frac{N!}{(N-r)!}\prod_{j=1}^{k} \left (\frac{e^{\eta_{j} }}{ 1+e^{\eta_{j}} }\right )^{u_j}
+\left(\frac{1}{ 1+e^{\eta_{j}}  }\right)
+^{N-M_j-u_j}  
+\prod_{j=2}^{k} \left (\frac{e^{c+\eta_{j} }}{ 1+e^{c+\eta_{j}} }\right )^{m_j}
+\left(\frac{1}{ 1+e^{c+\eta_{j}}  }\right)
+^{M_j-m_j} 
+\\
+& \propto \frac{N!}{(N-r)!}\prod_{j=1}^{k} \frac{e^{\eta_{j} n_j + cm_j}}{\left ( 1+e^{\eta_{j}} \right )^{N-M_j} \left ( 1+ e^{c+\eta_{j}} \right )^{M_j}}
+\end{align*}$$
+para $N\geq n$, $c\in(-\infty,\infty)$ e $\eta_{j}\in(-\infty,\infty)$, $j=1,2,\ldots,k$.
+
+<br>
+
+<font size="5"><b><center>Função de log-verossimilhança </center></b></font>
+
+$$\begin{align*}
+ \ell(N,\mathbf{\eta}, c|\mathbf{u}, \mathbf{m})  
+ &=\text{constante}+ \log\Bigg(\frac{N!}{(N-r)!}\prod_{j=1}^{k} \frac{e^{\eta_{j} n_j + cm_j}}{\left ( 1+e^{\eta_{j}} \right )^{N-M_j} \left ( 1+ e^{c+\eta_{j}} \right )^{M_j}}\Bigg)  \\
+  &= \text{constante} + \log(N!)-\log\big[(N-r)!\big]+\sum_{j=1}^{n}\Big(\eta_{j}n_j\Big)+c\sum_{j=1}^{n}m_j - \\
+& \hspace{1.85cm}- \sum_{j=1}^{n}\Big(N-M_j\Big)\Big( 1+e^{\eta_{j}} \Big)-\sum_{j=1}^{n}M_j\ \log\Big(1+e^{c +\eta_{j}}\Big)
+\end{align*}$$
+
+onde o termo `constante' acima não depende dos parâmetros do modelo.
+]
+.panel[.panel-name[Estimador]
+
+<font size="5"><b>
+
+<br>
+<br>
+
+<center>Estimador de máxima verossimilhança</center></font>
+
+<br>
+
+O modelo apresenta múltiplos parâmetros e uma função de verossimilhança complexa. Para encontrar as estimativas de máxima verossimilhança, foi utilizado um método iterativo. O algoritmo L-BFGS-B do software R foi empregado para a otimização. A estimativa para o parâmetro $N$, que é um valor inteiro com $N\geq r$, é arredondada para o inteiro mais próximo.
+
+</b></font>
+
+]
+.panel[.panel-name[Intervalo de Confiança]
+
+<b>
+
+<center>Suponha  $\theta$ é o parâmetro da distribuição $f$ de uma variável (escalar ou vetorial) $\mathbf{x}$:</center>.
+
+$$\mathbf{x}  \sim f(\mathbf{x} |\theta)$$
+.pull-left[
+Para realizar uma simulação Bootstrap paramétrico, consideramos os seguintes passos:
+
+
+
+$1.$ obtemos o estimador de estimação de máxima verossimilhança (EMV) de ${\theta}$, $\widehat{\theta}$, utilizando os dados observados $\mathbf{x}$.
+ 
+
+    
+$2.$ Geramos  valores pseudoaleatórios $\mathbf{x}^{p}$ de $f(\mathbf{x}|\theta)$ utilizando  a EMV de $\theta=\widehat{\theta}$: 
+
+$$\begin{align*}
+\mathbf{x}_1^p &\sim f(\mathbf{x}|\widehat{\theta})\\
+\mathbf{x}_2^p&\sim f(\mathbf{x}|\widehat{\theta}) \\
+&\vdots  \\
+\mathbf{x}_B^p&\sim f(\mathbf{x}|\widehat{\theta})
+\end{align*}$$
+    
+$3.$ Para cada amostra $\mathbf{x}^p$, obtemos a respectiva EMV de $\theta$:
+
+$$\widehat{\theta}_1, \ \widehat{\theta}_2, \ \widehat{\theta}_3, \ ..., \ \widehat{\theta}_B$$
+]
+
+.pull-right[
+ para obter um intervalo de confiança $(1-\alpha)100\%$, pode-se utilizar a seguinte abordagem: encontrar os percentis $(\alpha/2)100\%$ e $(1-\alpha/2)100\%$    das estimativas das $B$ reamostras, ou seja,
+ 
+<br>
+ 
+$$IC_{(1-\alpha)100\%}(\theta)=\Big[ Q^*_{\big(\frac{\alpha}{2}\big)} \ \ , \ \ Q^*_{\big(1-\frac{\alpha}{2}\big)} \Big]$$
+
+<br>
+
+onde $Q^*_{\big(\frac{\alpha}{2}\big)}$ e $Q^*_{\big(\frac{1-\alpha}{2}\big)}$ são os percentis obtidos da distribuição bootstrap das $B$ estimativas $\widehat{\theta}_i$'s.
+
+]]]
+
+---
+
+# Desempenho dos estimadores pontuais
+
+.panelset[
+.panel[.panel-name[Estudo de simulação]
+
+
+.pull-left[
+
+<br>
+
+
+<font size="5"><b><center>Parâmetros avaliados</center></b></font>
+
+<br><b>
+
+* Populações (N) de 500 e 1000 indivíduos
+
+* Épocas de captura (k) de 5, 7, 9, 11, 13 e 15. 
+
+* Efeito comportamental (c) de -1.5, -1.0, -0.5, 0, 0.5, 1.0 e 1.5
+
+* No total, foram avaliados 84 cenários diferentes
+
+* As probabilidades de captura (p<sub>j</sub>) foram geradas a partir de uma distribuição uniforme contínua no intervalo de 0,1 a 0,3
+
+* Foram geradas 10.000 amostras de captura-recaptura.
+
+]
+
+.pull-right[
+
+<br>
+
+<font size="5"><b><center>Métricas de desempenho.</center></b></font>
+
+<br>
+
+
+$$\text{Viés} =\frac{1}{M} \sum_{m=1}^{M}\bigg({\widehat{\theta}_m-\theta_{\mathrm{verd.}}}\bigg)$$ 
+$$\text{ViésR} =\frac{1}{M}  \sum_{m=1}^{M}\dfrac{\widehat{\theta}_m-\theta_{\mathrm{verd.}}}{\theta_{\mathrm{verd.}}}$$ 
+$$\text{EQM} =\frac{1}{M} \sum_{m=1}^{M}\bigg(\widehat{\theta}_m-\theta_{\mathrm{verd.}} \bigg)^2$$
+
+
+
+]]
+.panel[.panel-name[Estimativas do parâmetro $N$]
+```{r,echo=FALSE,fig.align='center'}
+knitr::include_graphics('figuras/vies-N.png',dpi = 115)
+```
+
+]
+
+.panel[.panel-name[Estimativas do parâmetro $c$]
+```{r,echo=FALSE,fig.align='center'}
+knitr::include_graphics('figuras/vies-c.png',dpi = 115)
+```
+
+]]
+
+---
+
+# Desempenho dos estimadores intervalares
+
+.panelset[
+.panel[.panel-name[Estudo de simulação]
+
+.pull-left[
+
+<br>
+
+<font size="5"><b><center>Parâmetros avaliados</center></b></font>
+
+<br><b>
+
+* Populações (N) de 500 e 1000 indivíduos
+
+* Épocas de captura (k) de 5, 7, 9, 11, 13 e 15. 
+
+* Efeito comportamental (c) de -1.5, -1.0, -0.5, 0, 0.5, 1.0 e 1.5
+
+* No total, foram avaliados 84 cenários diferentes
+
+* As probabilidades de captura (p<sub>j</sub>) foram geradas a partir de uma distribuição uniforme contínua no intervalo de 0,1 a 0,3
+
+* Foram geradas  M = 1000 amostras de captura-recaptura.
+
+* Reamostragem boostrap de B = 1000
+
+]
+
+.pull-right[
+
+<br>
+
+<font size="5"><b><center>Métricas de desempenho.</center></b></font>
+
+<br>
+
+
+$$\mathrm{PC} = \frac{1}{M}\sum_{m=1}^{M} \jmath 
+ \bigg(LI_m < \theta_{\mathrm{verd.}} < LS_m\bigg)$$
+ 
+ 
+$$\mathrm{AM} = \frac{1}{M}\sum_{m=1}^{M}\bigg(LS_m-LI_m\bigg)$$
+
+<br>
+
+onde $\jmath$ é uma função indicadora sendo $\jmath(A)$  igual a 1 se a condição $A$ é verdadeira ou igual a zero caso contrário.
+]]
+.panel[.panel-name[Estimativas do parâmetro $N$]
+```{r,echo=FALSE,fig.align='center'}
+knitr::include_graphics('figuras/pc-N.png',dpi = 115)
+```
+
+]
+
+.panel[.panel-name[Estimativas do parâmetro $c$]
+
+```{r,echo=FALSE,fig.align='center'}
+knitr::include_graphics('figuras/pc-c.png',dpi = 115)
+```
+
+]]
+
+---
+
+# Critérios de seleção de modelo
+
+.panelset[
+.panel[.panel-name[Simulação]
+
+<font size="5"><b><center>Parâmetros avaliados</center></b></font>
+
+<br><b>
+
+* Populações (N) de 500 e 1000 indivíduos
+
+* Épocas de captura (k) de 5, 7, 9, 11, 13 e 15. 
+
+* Efeito comportamental (c) variando de -2 at ́e 2 em incrementos de 0,2, tendo 21 valores diferentes.
+
+* No total, foram avaliados 252 cenários diferentes
+
+* As probabilidades de captura (p<sub>j</sub>) foram geradas a partir de uma distribuição uniforme contínua no intervalo de 0,1 a 0,3
+
+* Foram geradas 10.000 amostras de captura-recaptura.
+
+
+
+]
+.panel[.panel-name[Boxplots da simulação]
+
+```{r,echo=FALSE,fig.align='center'}
+knitr::include_graphics('figuras/k10.N500.png',dpi = 98)
+```
+
+
+]
+.panel[.panel-name[Critérios]
+.pull-left[
+
+<br>
+<font size="4"><b><center>Critério de Informação de Akaike (AIC).</center></b></font>
+
+$$AIC =  2d -2\log\Big[L(\widehat{\mathbf{\theta}}|\mathbf{x})\Big]$$
+<font size="4"><b><center>Critério de Informação de Akaike corrigido (AICc)</center></b></font>
+
+$$AICc= 2d\ + \bigg(\frac{2d^2+2d}{n-d-1}\bigg)-2\log\Big[L(\widehat{{\theta}}|\mathbf{x})\Big]$$
+<font size="4"><b><center>Critério de Informação Bayesiano (BIC)</center></b></font>
+
+$$BIC =  d \  \log(n)-2\log\Big[L(\widehat{\theta}|\mathbf{x})\Big] $$
+<font size="4"><b><center>Critério de Informação de Hannan-Quinn (HQIC)</center></b></font>
+
+$$HQIC=2d \ \log\big[\log(n)\big] -2\log\Big[L(\widehat{\theta}|\mathbf{x})\Big] $$
+
+]
+
+.pull-right[
+
+<br>
+
+<b>
+
+<font size="4"><b><center>Teste de Razão de Verossimilhanças (TVR)</center></b></font>
+
+O teste de razão de verossimilhanças considera duas maximizações da verossimilhança, uma sob $H_1$ (modelo saturado: $M_{tb}$) e outra sob $H_0$ (espaço paramétrico restrito: modelo $M_t$), gerando as respectivas estimativas de máxima verossimilhança $(\widehat{N},\widehat{\eta},\widehat{c})$ e $(\widehat{N}_0,\widehat{\eta}_0)$.
+A estatística de teste é então definida por
+
+<br>
+
+$$\begin{align*}
+\lambda &= -2 \ \log\Bigg[\frac{L(\widehat{N}_0,\widehat{\eta}_0,0|\mathbf{u},\mathbf{m})}{L(\widehat{N},\widehat{\eta},\widehat{c}|\mathbf{u},\mathbf{m})}\Bigg].
+\end{align*}$$
+
+<br>
+A estatística de teste $\lambda$ tem  assintoticamente distribuição Chi-quadrado onde o número de graus de liberdade é determinado pela diferença entre o número de parâmetros nos modelos $M_{tb}$ e $M_t$, que neste caso é igual a 1.
+
+]]
+.panel[.panel-name[hipóteses]
+
+<br>
+
+$$\left\{\begin{matrix}
+H_0: c = 0 \\
+H_1: c \neq 0
+\end{matrix}\right.$$
+
+<br>
+<font size="5"><b><center>Regra de decisão adotada.</center></b></font>
+
+<b>
+<br>
+
+<font size="4">
+
+* O critério AIC do modelo $M_{tb}$ for menor que o critério AIC do modelo $M_t$, rejeita-se $H_0$. 
+
+* A mesma regra de decisão é adotada para os critérios AICc, BIC e HQIC. 
+
+* Para o teste da razão de verossimilhança construído ao nível 5% de significância, calculada a estatística $\lambda$, rejeitamos $H_0$ se $\lambda>q_{0,95;1}$, onde $q_{0,95;1}$ é o percentil 95% da distribuição Qui-Quadrado com 1 grau de liberdade.
+
+</font>.
+]
+
+.panel[.panel-name[Poder do teste N=500]
+```{r,echo=FALSE,fig.align='center'}
+knitr::include_graphics('figuras/power-500.png',dpi = 98)
+```
+]
+.panel[.panel-name[Poder do teste N=1000]
+```{r,echo=FALSE,fig.align='center'}
+knitr::include_graphics('figuras/power-1000.png',dpi = 98)
+```
+
+]]
+
+---
+
+# Aplicações
+
+.panelset[
+.panel[.panel-name[1° Aplicação]
+<br>
+
+<center><b>Como parte de um estudo de ciências populacionais, Coulombe, RidgwayeEvans (1965) conduziram um estudo com armadilhas para rato-doméstico <i>Mus musculus</i>. Um quadrado 10 x 10 foi usado com armadilhas espaçadas de 3 metros entre elas e  as armadilhas foram verificadas pelos pesquisadores duas vezes ao dia, de manha e a noite, durante 5 dias, totalizando k=10 épocas de captura.</b></center>
+
+<br>
+
+<center><b>Dados reais de captura-recaptura de  ratos (OTIS e tal., 1978).</b></center>
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-qg72{background-color:#010066;border-color:#010066;color:#ffffff;font-size:18px;font-weight:bold;text-align:center;
+  vertical-align:top}
+.tg .tg-y5cb{border-color:#efefef;font-size:18px;text-align:center;vertical-align:top}
+.tg .tg-msyd{background-color:#efefef;border-color:#efefef;font-size:18px;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-qg72"></th>
+    <th class="tg-qg72">j</th>
+    <th class="tg-qg72">1</th>
+    <th class="tg-qg72">2</th>
+    <th class="tg-qg72">3</th>
+    <th class="tg-qg72">4</th>
+    <th class="tg-qg72">5</th>
+    <th class="tg-qg72">6</th>
+    <th class="tg-qg72">7</th>
+    <th class="tg-qg72">8</th>
+    <th class="tg-qg72">9</th>
+    <th class="tg-qg72">10</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-y5cb">Animais marcados antes da ocasião</td>
+    <td class="tg-y5cb">M<sub>j</td>
+    <td class="tg-y5cb">0</td>
+    <td class="tg-y5cb">68</td>
+    <td class="tg-y5cb">102</td>
+    <td class="tg-y5cb">128</td>
+    <td class="tg-y5cb">140</td>
+    <td class="tg-y5cb">156</td>
+    <td class="tg-y5cb">159</td>
+    <td class="tg-y5cb">171</td>
+    <td class="tg-y5cb">171</td>
+    <td class="tg-y5cb">173</td>
+  </tr>
+  <tr>
+    <td class="tg-msyd">Animais capturados (não marcados)</td>
+    <td class="tg-msyd">u<sub>j</td>
+    <td class="tg-msyd">68</td>
+    <td class="tg-msyd">34</td>
+    <td class="tg-msyd">26</td>
+    <td class="tg-msyd">12</td>
+    <td class="tg-msyd">16</td>
+    <td class="tg-msyd">3</td>
+    <td class="tg-msyd">12</td>
+    <td class="tg-msyd">0</td>
+    <td class="tg-msyd">2</td>
+    <td class="tg-msyd">0</td>
+  </tr>
+  <tr>
+    <td class="tg-y5cb">Animais recapturados (marcados)</td>
+    <td class="tg-y5cb">m<sub>j</td>
+    <td class="tg-y5cb">0</td>
+    <td class="tg-y5cb">27</td>
+    <td class="tg-y5cb">36</td>
+    <td class="tg-y5cb">40</td>
+    <td class="tg-y5cb">58</td>
+    <td class="tg-y5cb">38</td>
+    <td class="tg-y5cb">64</td>
+    <td class="tg-y5cb">36</td>
+    <td class="tg-y5cb">74</td>
+    <td class="tg-y5cb">39</td>
+  </tr>
+  <tr>
+    <td class="tg-msyd">Animais selecionados</td>
+    <td class="tg-msyd">n<sub>j</td>
+    <td class="tg-msyd">68</td>
+    <td class="tg-msyd">61</td>
+    <td class="tg-msyd">62</td>
+    <td class="tg-msyd">52</td>
+    <td class="tg-msyd">74</td>
+    <td class="tg-msyd">41</td>
+    <td class="tg-msyd">76</td>
+    <td class="tg-msyd">36</td>
+    <td class="tg-msyd">76</td>
+    <td class="tg-msyd">39</td>
+  </tr>
+</tbody>
+</table>
+
+]
+
+
+.panel[.panel-name[Estimativas]
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-buwd{background-color:#efefef;border-color:#efefef;font-size:14px;text-align:center;vertical-align:top}
+.tg .tg-m85c{background-color:#010066;border-color:#010066;color:#ffffff;font-size:14px;font-weight:bold;text-align:center;
+  vertical-align:top}
+.tg .tg-qlrq{background-color:#ffffff;border-color:#efefef;font-size:14px;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-m85c">Estimativas</th>
+    <th class="tg-m85c">M<sub>t</th>
+    <th class="tg-m85c">2.5%</th>
+    <th class="tg-m85c">97.5%</th>
+    <th class="tg-m85c">M<sub>tb</th>
+    <th class="tg-m85c">2.5%</th>
+    <th class="tg-m85c">97.5%</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-qlrq">N&#x0302</td>
+    <td class="tg-qlrq">175</td>
+    <td class="tg-qlrq">171</td>
+    <td class="tg-qlrq">177</td>
+    <td class="tg-qlrq">176</td>
+    <td class="tg-qlrq">170</td>
+    <td class="tg-qlrq">181</td>
+  </tr>
+  <tr>
+    <td class="tg-buwd">c&#x0302</td>
+    <td class="tg-buwd">-</td>
+    <td class="tg-buwd">-</td>
+    <td class="tg-buwd">-</td>
+    <td class="tg-buwd">0.083</td>
+    <td class="tg-buwd">-0.380</td>
+    <td class="tg-buwd">0.454</td>
+  </tr>
+  <tr>
+    <td class="tg-qlrq">p&#x0302<sub>1</td>
+    <td class="tg-qlrq">0.388</td>
+    <td class="tg-qlrq">0.318</td>
+    <td class="tg-qlrq">0.463</td>
+    <td class="tg-qlrq">0.387</td>
+    <td class="tg-qlrq">0.317</td>
+    <td class="tg-qlrq">0.463</td>
+  </tr>
+  <tr>
+    <td class="tg-buwd">p&#x0302<sub>2</td>
+    <td class="tg-buwd">0.348</td>
+    <td class="tg-buwd">0.279</td>
+    <td class="tg-buwd">0.420</td>
+    <td class="tg-buwd">0.339</td>
+    <td class="tg-buwd">0.265</td>
+    <td class="tg-buwd">0.429</td>
+  </tr>
+  <tr>
+    <td class="tg-qlrq">p&#x0302<sub>3</td>
+    <td class="tg-qlrq">0.354</td>
+    <td class="tg-qlrq">0.284</td>
+    <td class="tg-qlrq">0.427</td>
+    <td class="tg-qlrq">0.341</td>
+    <td class="tg-qlrq">0.259</td>
+    <td class="tg-qlrq">0.449</td>
+  </tr>
+  <tr>
+    <td class="tg-buwd">p&#x0302<sub>4</td>
+    <td class="tg-buwd">0.297</td>
+    <td class="tg-buwd">0.231</td>
+    <td class="tg-buwd">0.367</td>
+    <td class="tg-buwd">0.283</td>
+    <td class="tg-buwd">0.203</td>
+    <td class="tg-buwd">0.395</td>
+  </tr>
+  <tr>
+    <td class="tg-qlrq">p&#x0302<sub>5</td>
+    <td class="tg-qlrq">0.422</td>
+    <td class="tg-qlrq">0.352</td>
+    <td class="tg-qlrq">0.497</td>
+    <td class="tg-qlrq">0.405</td>
+    <td class="tg-qlrq">0.307</td>
+    <td class="tg-qlrq">0.536</td>
+  </tr>
+  <tr>
+    <td class="tg-buwd">p&#x0302<sub>6</td>
+    <td class="tg-buwd">0.234</td>
+    <td class="tg-buwd">0.173</td>
+    <td class="tg-buwd">0.299</td>
+    <td class="tg-buwd">0.220</td>
+    <td class="tg-buwd">0.148</td>
+    <td class="tg-buwd">0.332</td>
+  </tr>
+  <tr>
+    <td class="tg-qlrq">p&#x0302<sub>7</td>
+    <td class="tg-qlrq">0.434</td>
+    <td class="tg-qlrq">0.360</td>
+    <td class="tg-qlrq">0.510</td>
+    <td class="tg-qlrq">0.414</td>
+    <td class="tg-qlrq">0.310</td>
+    <td class="tg-qlrq">0.553</td>
+  </tr>
+  <tr>
+    <td class="tg-buwd">p&#x0302<sub>8</td>
+    <td class="tg-buwd">0.205</td>
+    <td class="tg-buwd">0.148</td>
+    <td class="tg-buwd">0.267</td>
+    <td class="tg-buwd">0.192</td>
+    <td class="tg-buwd">0.123</td>
+    <td class="tg-buwd">0.299</td>
+  </tr>
+  <tr>
+    <td class="tg-qlrq">p&#x0302<sub>9</td>
+    <td class="tg-qlrq">0.434</td>
+    <td class="tg-qlrq">0.364</td>
+    <td class="tg-qlrq">0.510</td>
+    <td class="tg-qlrq">0.412</td>
+    <td class="tg-qlrq">0.302</td>
+    <td class="tg-qlrq">0.556</td>
+  </tr>
+  <tr>
+    <td class="tg-buwd">p&#x0302<sub>10</td>
+    <td class="tg-buwd">0.223</td>
+    <td class="tg-buwd">0.162</td>
+    <td class="tg-buwd">0.286</td>
+    <td class="tg-buwd">0.208</td>
+    <td class="tg-buwd">0.133</td>
+    <td class="tg-buwd">0.323</td>
+  </tr>
+</tbody>
+</table>
+
+
+]
+.panel[.panel-name[Critérios]
+
+.pull-left[
+<br><br><br>
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-7x5m{border-color:#efefef;font-size:20px;text-align:left;vertical-align:top}
+.tg .tg-y4v3{background-color:#ffffff;border-color:#efefef;font-size:20px;text-align:left;vertical-align:top}
+.tg .tg-fvgg{border-color:#ffffff;font-size:20px;font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-lbj7{background-color:#efefef;border-color:#efefef;font-size:20px;font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-91is{background-color:#efefef;border-color:#efefef;font-size:20px;text-align:center;vertical-align:top}
+.tg .tg-3wav{background-color:#010066;border-color:#010066;color:#ffffff;font-size:20px;font-weight:bold;text-align:center;
+  vertical-align:top}
+.tg .tg-c5aa{background-color:#efefef;border-color:#efefef;font-size:20px;text-align:left;vertical-align:top}
+.tg .tg-b8y7{border-color:#ffffff;font-size:20px;text-align:center;vertical-align:top}
+.tg .tg-1a6t{background-color:#010066;border-color:#010066;color:#ffffff;font-size:20px;font-weight:bold;text-align:left;
+  vertical-align:top}
+.tg .tg-su65{border-color:#efefef;font-size:20px;font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-h54w{background-color:#ffffff;border-color:#efefef;font-size:20px;font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-tf5b{background-color:#ffffff;border-color:#efefef;font-size:20px;text-align:center;vertical-align:top}
+.tg .tg-e5wj{border-color:#ffffff;font-size:20px;text-align:left;vertical-align:top}
+.tg .tg-fub8{border-color:#efefef;font-size:20px;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-1a6t">Critério</th>
+    <th class="tg-3wav">M<sub>t</th>
+    <th class="tg-3wav">M<sub>tb</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-y4v3">AIC</td>
+    <td class="tg-h54w">730.94</td>
+    <td class="tg-tf5b">732.78</td>
+  </tr>
+  <tr>
+    <td class="tg-c5aa">BIC</td>
+    <td class="tg-lbj7">765.62</td>
+    <td class="tg-91is">770.61</td>
+  </tr>
+  <tr>
+    <td class="tg-e5wj">AICc</td>
+    <td class="tg-fvgg">732.55</td>
+    <td class="tg-b8y7">734.70</td>
+  </tr>
+  <tr>
+    <td class="tg-7x5m">HQIC</td>
+    <td class="tg-su65">745.01</td>
+    <td class="tg-fub8">748.12</td>
+  </tr>
+</tbody>
+</table>
+
+]
+
+.pull-right[
+
+<br><br><br>
+
+<font size="5"><b><center>Teste de Razão de Verossimilhanças (TVR)</center></b></font>
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-byz3{background-color:#ffffff;border-color:#efefef;font-size:22px;text-align:center;vertical-align:top}
+.tg .tg-ibgz{background-color:#010066;border-color:#010066;color:#ffffff;font-size:22px;font-weight:bold;text-align:left;
+  vertical-align:top}
+.tg .tg-nhbv{background-color:#010066;border-color:#010066;color:#ffffff;font-size:22px;font-weight:bold;text-align:center;
+  vertical-align:top}
+.tg .tg-fwrn{background-color:#ffffff;border-color:#efefef;font-size:22px;text-align:left;vertical-align:top}
+.tg .tg-l7nc{background-color:#ffffff;border-color:#efefef;font-size:18px;text-align:center;vertical-align:top}
+.tg .tg-1wcg{background-color:#efefef;border-color:#efefef;font-size:22px;text-align:left;vertical-align:top}
+.tg .tg-pmby{background-color:#efefef;border-color:#efefef;font-size:22px;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-ibgz">Modelo</th>
+    <th class="tg-nhbv">gl</th>
+    <th class="tg-nhbv">logLik</th>
+    <th class="tg-nhbv">TVR</th>
+    <th class="tg-nhbv">valor p</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-fwrn">M<sub>t</td>
+    <td class="tg-byz3">11</td>
+    <td class="tg-byz3">354.47</td>
+    <td class="tg-l7nc"></td>
+    <td class="tg-byz3"></td>
+  </tr>
+  <tr>
+    <td class="tg-1wcg">M<sub>tb</td>
+    <td class="tg-pmby">12</td>
+    <td class="tg-pmby">354.39</td>
+    <td class="tg-pmby">0.164</td>
+    <td class="tg-pmby">0.69</td>
+  </tr>
+</tbody>
+</table>
+
+]]
+.panel[.panel-name[2° aplicação]
+<br>
+
+<center><b>
+dados reais de captura-recaptura de ratos veados que foram coletados por  S. Hoffman em meados de julho de 1974, inicialmente utilizado  por Otis et al. (1978) e discutidos no contexto bayesiano por  Wang, He, Sun et al. (2015). Os dados foram coletados da seguinte forma:  a captura foi em 5 manhãs consecutivas e 110 ratos distintos foram capturados, onde presumiu-se que exista resposta  comportamental à marcação.
+
+
+</center></b>
+<br>
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-byz3{background-color:#ffffff;border-color:#efefef;font-size:22px;text-align:center;vertical-align:top}
+.tg .tg-nhbv{background-color:#010066;border-color:#010066;color:#ffffff;font-size:22px;font-weight:bold;text-align:center;
+  vertical-align:top}
+.tg .tg-pmby{background-color:#efefef;border-color:#efefef;font-size:22px;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-nhbv"></th>
+    <th class="tg-nhbv">j</th>
+    <th class="tg-nhbv">1</th>
+    <th class="tg-nhbv">2</th>
+    <th class="tg-nhbv">3</th>
+    <th class="tg-nhbv">4</th>
+    <th class="tg-nhbv">5</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-byz3">Animais marcados antes da ocasião</td>
+    <td class="tg-byz3">M<sub>j</td>
+    <td class="tg-byz3">0</td>
+    <td class="tg-byz3">37</td>
+    <td class="tg-byz3">68</td>
+    <td class="tg-byz3">77</td>
+    <td class="tg-byz3">98</td>
+  </tr>
+  <tr>
+    <td class="tg-pmby">Animais capturados (não marcados)</td>
+    <td class="tg-pmby">u<sub>j</td>
+    <td class="tg-pmby">37</td>
+    <td class="tg-pmby">31</td>
+    <td class="tg-pmby">9</td>
+    <td class="tg-pmby">21</td>
+    <td class="tg-pmby">12</td>
+  </tr>
+  <tr>
+    <td class="tg-byz3">Animais recapturados (marcados)</td>
+    <td class="tg-byz3">m<sub>j</td>
+    <td class="tg-byz3">0</td>
+    <td class="tg-byz3">23</td>
+    <td class="tg-byz3">49</td>
+    <td class="tg-byz3">44</td>
+    <td class="tg-byz3">57</td>
+  </tr>
+  <tr>
+    <td class="tg-pmby">Animais selecionados</td>
+    <td class="tg-pmby">n<sub>j</td>
+    <td class="tg-pmby">37</td>
+    <td class="tg-pmby">54</td>
+    <td class="tg-pmby">58</td>
+    <td class="tg-pmby">65</td>
+    <td class="tg-pmby">69</td>
+  </tr>
+</tbody>
+</table>
+]
+
+
+.panel[.panel-name[Estimativas]
+
+<br>
+
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-7xnf{background-color:#efefef;border-color:#efefef;text-align:center;vertical-align:top}
+.tg .tg-qg72{background-color:#010066;border-color:#010066;color:#ffffff;font-size:18px;font-weight:bold;text-align:center;
+  vertical-align:top}
+.tg .tg-uj0o{background-color:#ffffff;border-color:#efefef;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-qg72">Estimativas</th>
+    <th class="tg-qg72">M<sub>t</th>
+    <th class="tg-qg72">2.5%</th>
+    <th class="tg-qg72">97.5%</th>
+    <th class="tg-qg72">M<sub>tb</th>
+    <th class="tg-qg72">2.5%</th>
+    <th class="tg-qg72">97.5%</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-uj0o">N&#x0302</td>
+    <td class="tg-uj0o">113</td>
+    <td class="tg-uj0o">108</td>
+    <td class="tg-uj0o">116</td>
+    <td class="tg-uj0o">215</td>
+    <td class="tg-uj0o">114</td>
+    <td class="tg-uj0o">680</td>
+  </tr>
+  <tr>
+    <td class="tg-7xnf">c&#x0302</td>
+    <td class="tg-7xnf">-</td>
+    <td class="tg-7xnf">-</td>
+    <td class="tg-7xnf">-</td>
+    <td class="tg-7xnf">2.518</td>
+    <td class="tg-7xnf">0.869</td>
+    <td class="tg-7xnf">4.108</td>
+  </tr>
+  <tr>
+    <td class="tg-uj0o">p&#x0302<sub>1</td>
+    <td class="tg-uj0o">0.329</td>
+    <td class="tg-uj0o">0.244</td>
+    <td class="tg-uj0o">0.420</td>
+    <td class="tg-uj0o">0.172</td>
+    <td class="tg-uj0o">0.051</td>
+    <td class="tg-uj0o">0.350</td>
+  </tr>
+  <tr>
+    <td class="tg-7xnf">p&#x0302<sub>2</td>
+    <td class="tg-7xnf">0.480</td>
+    <td class="tg-7xnf">0.390</td>
+    <td class="tg-7xnf">0.575</td>
+    <td class="tg-7xnf">0.158</td>
+    <td class="tg-7xnf">0.041</td>
+    <td class="tg-7xnf">0.412</td>
+  </tr>
+  <tr>
+    <td class="tg-uj0o">p&#x0302<sub>3</td>
+    <td class="tg-uj0o">0.515</td>
+    <td class="tg-uj0o">0.424</td>
+    <td class="tg-uj0o">0.613</td>
+    <td class="tg-uj0o">0.112</td>
+    <td class="tg-uj0o">0.025</td>
+    <td class="tg-uj0o">0.377</td>
+  </tr>
+  <tr>
+    <td class="tg-7xnf">p&#x0302<sub>4</td>
+    <td class="tg-7xnf">0.577</td>
+    <td class="tg-7xnf">0.489</td>
+    <td class="tg-7xnf">0.673</td>
+    <td class="tg-7xnf">0.120</td>
+    <td class="tg-7xnf">0.027</td>
+    <td class="tg-7xnf">0.441</td>
+  </tr>
+  <tr>
+    <td class="tg-uj0o">p&#x0302<sub>5</td>
+    <td class="tg-uj0o">0.613</td>
+    <td class="tg-uj0o">0.523</td>
+    <td class="tg-uj0o">0.706</td>
+    <td class="tg-uj0o">0.101</td>
+    <td class="tg-uj0o">0.021</td>
+    <td class="tg-uj0o">0.416</td>
+  </tr>
+</tbody>
+</table>
+
+
+]
+.panel[.panel-name[Critérios]
+
+.pull-left[
+<br><br><br>
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-lbj7{background-color:#efefef;border-color:#efefef;font-size:20px;font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-91is{background-color:#efefef;border-color:#efefef;font-size:20px;text-align:center;vertical-align:top}
+.tg .tg-3wav{background-color:#010066;border-color:#010066;color:#ffffff;font-size:20px;font-weight:bold;text-align:center;
+  vertical-align:top}
+.tg .tg-tf5b{background-color:#ffffff;border-color:#efefef;font-size:20px;text-align:center;vertical-align:top}
+.tg .tg-h54w{background-color:#ffffff;border-color:#efefef;font-size:20px;font-weight:bold;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-3wav">Critério</th>
+    <th class="tg-3wav">M<sub>t</th>
+    <th class="tg-3wav">M<sub>tb</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-tf5b">AIC</td>
+    <td class="tg-tf5b">-72.34</td>
+    <td class="tg-h54w">-94.03</td>
+  </tr>
+  <tr>
+    <td class="tg-91is">BIC</td>
+    <td class="tg-91is">-56.13</td>
+    <td class="tg-lbj7">-75.13</td>
+  </tr>
+  <tr>
+    <td class="tg-tf5b">AICc</td>
+    <td class="tg-tf5b">-71.54</td>
+    <td class="tg-h54w">-92.96</td>
+  </tr>
+  <tr>
+    <td class="tg-91is">HQIC</td>
+    <td class="tg-91is">-65.77</td>
+    <td class="tg-lbj7">-86.37</td>
+  </tr>
+</tbody>
+</table>
+
+]
+
+.pull-right[
+
+<br><br><br>
+
+<font size="5"><b><center>Teste de Razão de Verossimilhanças (TVR)</center></b></font>
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-91is{background-color:#efefef;border-color:#efefef;font-size:20px;text-align:center;vertical-align:top}
+.tg .tg-3wav{background-color:#010066;border-color:#010066;color:#ffffff;font-size:20px;font-weight:bold;text-align:center;
+  vertical-align:top}
+.tg .tg-tf5b{background-color:#ffffff;border-color:#efefef;font-size:20px;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-3wav">Modelo</th>
+    <th class="tg-3wav">gl</th>
+    <th class="tg-3wav">logLik</th>
+    <th class="tg-3wav">TVR</th>
+    <th class="tg-3wav">valor p</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-tf5b">M<sub>t</td>
+    <td class="tg-tf5b">6</td>
+    <td class="tg-tf5b">-42.17</td>
+    <td class="tg-tf5b"></td>
+    <td class="tg-tf5b"></td>
+  </tr>
+  <tr>
+    <td class="tg-91is">M<sub>tb</td>
+    <td class="tg-91is">7</td>
+    <td class="tg-91is">-54.02</td>
+    <td class="tg-91is">23.696</td>
+    <td class="tg-91is">&lt;0.001</td>
+  </tr>
+</tbody>
+</table>
+]]
+
+
+]
+
+---
+
+class: inverse, center, middle
+
+# Conclusões
+
+<br>
+
+<b>
+
+- O desempenho é fraco para poucas épocas de amostragem, mas melhora quando o número de épocas aumenta para 10 ou mais. O parâmetro c de efeito comportamental influencia as estimativas, especialmente quando é negativo, levando a maiores vieses e erros quadráticos.
+
+- Quando a probabilidade de recaptura diminui, o intervalo de confiança pode não atingir o nível de confiança desejado em alguns cenários. No entanto, com valores positivos para c, os intervalos de confiança apresentam boa precisão, alta probabilidade de cobertura e menor amplitude média.
+
+- O poder do teste se mostra adequado para um número de ocasiões de amostragem igual ou superior a 10. Além disso, o modelo Mt tem uma melhor adequação que o modelo Mtb quando c está próximo de zero, o que é esperado quando se aproxima da hipótese nula “H0 : c = 0”.
