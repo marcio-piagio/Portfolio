@@ -106,7 +106,7 @@
       transform: rotate(0);
     }
   }
-  
+
   .remark-slide-content{
     background-color: #fff;
     border-top: 65px solid #0c035c;
@@ -376,4 +376,28 @@
     font-size: 200%;
   }
   
+.title-slide::before {
+    content: "";
+    position: fixed; /* Usa fixed para cobrir toda a viewport */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('fundo2.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 9999; /* Valor alto para ficar acima de tudo */
+    pointer-events: none; /* Permite interação com elementos abaixo */
+}
 
+.title-slide .remark-slide-content {
+    position: relative;
+    z-index: 10000; /* Garante que o conteúdo fique acima do fundo */
+    background-color: transparent; /* Remove o fundo branco */
+}
+
+/* Remove o fundo branco semi-transparente padrão */
+.title-slide .remark-slide-content::before {
+    content: none;
+}

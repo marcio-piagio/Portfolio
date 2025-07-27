@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>  MODELO ESPACIAL DE CAPTURA COM REMOÇÃO PARA ESTIMAÇÃO DE CASOS NÃO NOTIFICADOS EM EPIDEMIOLOGIA    </title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Programa de Pós-graduação em Bioestatística   Universidade Estadual de Maringá   Banca Examinadora:           Prof. Dr. Diogo Francisco Rossoni (Orientador)           Prof. Dr. Josmar Mazucheli (Membro PBE)           Prof. Dr. George Lucas Moraes Pezzott (Membro Externo)" />
+    <script src="libs/header-attrs-2.29/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/metropolis.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/metropolis-fonts.css" rel="stylesheet" />
+    <link href="libs/tile-view-0.2.6/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view-0.2.6/tile-view.js"></script>
+    <link href="libs/animate.css-xaringan-3.7.2/animate.fade.css" rel="stylesheet" />
+    <link href="libs/panelset-0.3.0/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset-0.3.0/panelset.js"></script>
+    <link rel="stylesheet" href="metropolis-mod.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# <br><br><b>MODELO ESPACIAL DE CAPTURA COM REMOÇÃO PARA ESTIMAÇÃO DE CASOS NÃO NOTIFICADOS EM EPIDEMIOLOGIA</b> <br><br><br>
+]
+.subtitle[
+## Márcio Roger Piagio<br>
+]
+.author[
+### Programa de Pós-graduação em Bioestatística <br> Universidade Estadual de Maringá<br><br> <b>Banca Examinadora:</b><br>          Prof. Dr. Diogo Francisco Rossoni (Orientador)<br>          Prof. Dr. Josmar Mazucheli (Membro PBE)<br>          Prof. Dr. George Lucas Moraes Pezzott (Membro Externo)
+]
+.date[
+### 26 de julho de 2025
+]
+
+---
+
+
+
+
+
+
+
+
+# Roteiro da Apresentação
+
+.panelset[
+.panel[.panel-name[\.]
+&lt;br&gt;
+&lt;strong&gt;&lt;font size="5"&gt;
+
+- Contexto: O Desafio da Dengue e a Subnotificação
+
+- Metodologia:
+  - Modelo de Remoção  
+  - Modelo N-mistura População Fechcada
+  - Modelo N-mistura População Aberta
+  - O Modelo Proposto N-mistura Dinâmico com Remoção
+  
+- Justificativa Empírica: Evidências dos Dados do SINAN
+
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+.panel[.panel-name[Glossário]
+&lt;br&gt;
+&lt;strong&gt;&lt;font size="5"&gt;
+
+- 
+
+&lt;/strong&gt;&lt;/font&gt;
+]]
+
+---
+
+# O Desafio da Dengue e a Subnotificação
+
+.panelset[
+
+.panel[.panel-name[A escala do problema]
+&lt;br&gt;
+&lt;strong&gt;&lt;font size="4"&gt;
+
+A dengue, juntamente com outras arboviroses como Zika e chikungunya, configura um dos mais significativos e persistentes desafios para a saúde pública do Brasil. A sua complexidade vai além da simples transmissão, sendo perpetuada pelo vetor Aedes aegypti e agravada por uma complicada rede de fatores. Entre eles, destacam-se:
+
+- **Fatores Socioambientais e Estruturais:** As desigualdades socioambientais e as falhas em políticas de saneamento básico criam um ambiente ideal para a proliferação do mosquito em áreas urbanas.
+
+- **Impacto das Mudanças Climáticas:** O aumento das temperaturas médias globais favorece diretamente o vetor, pois acelera tanto o ciclo de vida do mosquito quanto a replicação do vírus em seu organismo, tornando a transmissão mais rápida e eficiente.
+
+- **Resistência do Vetor:** O Aedes aegypti demonstra uma crescente resistência às intervenções de controle utilizadas nas cidades, o que torna o seu combate ainda mais difícil.
+
+Essa junção de fatores cria um cenário epidemiológico cada vez mais complexo e de difícil controle. A magnitude real deste desafio foi demonstrada de forma convincente em 2024, ano que marcou a pior epidemia da história do Brasil, com um registro alarmante de mais de 4 milhões de casos prováveis e 3.809 mortes confirmadas.
+
+
+&lt;/font&gt;&lt;/strong&gt;
+]
+
+.panel[.panel-name[Causas e consequências da subnotificação]
+&lt;br&gt;
+&lt;strong&gt;&lt;font size="4"&gt;
+
+- **O Fenômeno da Subnotificação:** O número oficial de casos de dengue registrados representa apenas uma pequena parte da verdadeira quantidade de infecções na população. Essa discrepância, conhecida como subnotificação, mascara a real dimensão do problema e compromete a eficácia das estratégias de vigilância.
+
+- **As Causas Multifatoriais da Subnotificação:** A subnotificação ocorre por dois motivos principais. Fatores clínicos, como infecções assintomáticas ou com sintomas leves que não levam a pessoa a procurar um médico. E fatores sistêmicos, como o acesso desigual aos serviços de saúde, a falta de uso de testes de diagnóstico precisos e atrasos operacionais no registo e envio de dados para os sistemas de informação (como o SINAN).
+
+- **As Graves Consequências para a Saúde Pública:** Ter um retrato incompleto da epidemia impede que os gestores de saúde compreendam a real velocidade e distribuição da doença. Como resultado, o planejamento de ações de controle, a alocação de recursos (como testes e leitos) e as campanhas de prevenção são subdimensionados ou mal direcionados, o que diminui a capacidade de resposta e ajuda a perpetuar o ciclo de transmissão.
+
+&lt;/font&gt;&lt;/strong&gt;
+]
+
+.panel[.panel-name[Pergunta de pesquisa e objetivos]
+&lt;br&gt;
+&lt;strong&gt;&lt;font size="4"&gt;
+
+- **A Questão Central da Pesquisa:** O ponto de partida do trabalho é o desafio da subnotificação da dengue. A pesquisa busca responder à pergunta fundamental de como estimar com precisão a verdadeira quantidade de casos da doença, a fim de superar as limitações dos dados oficiais e fornecer uma base mais sólida para as decisões em saúde pública.
+
+- **O Objetivo Geral e a Solução Proposta:** O principal objetivo do trabalho é desenvolver um modelo estatístico robusto, que seja capaz de estimar a real incidência da dengue. A inovação deste modelo está na sua capacidade de incorporar e quantificar explicitamente tanto os casos que não são notificados (subnotificação) quanto os atrasos que ocorrem no processo de registo.
+
+&lt;/font&gt;&lt;/strong&gt;
+]
+]
+
+
+---
+
+class: inverse, center, middle
+
+# Metodologia
+---
+
+# Modelo de Remoção
+
+.panelset[
+.panel[.panel-name[Introdução]
+&lt;br&gt;
+&lt;strong&gt;&lt;font size="4"&gt;
+
+O Modelo de **Captura com Remoção**, conforme descrito por Rivera &amp; McCrea (2021), é uma extensão dos métodos clássicos de amostragem por remoção, muito usados na Ecologia de populações. A sua finalidade é estimar o tamanho total de uma população (`\(N\)`) que não pode ser contada diretamente.
+
+A sua lógica baseia-se em amostragens sucessivas de uma população fechada (onde não há nascimentos, mortes ou migração durante o período de estudo). O processo funciona da seguinte forma:
+
+  - Captura e Remoção: Em cada "ocasião" ou período de amostragem, uma certa quantidade de indivíduos é detetada (capturada).
+
+  - Remoção Permanente: Cada indivíduo capturado é "removido" da população, o que significa que ele não pode ser detetado ou contado novamente nas amostragens futuras.
+
+  - Padrão de Declínio: Essa remoção contínua faz com que o número de indivíduos disponíveis para captura diminua a cada nova tentativa. Consequentemente, se o esforço de amostragem for mantido constante, o número de novos indivíduos capturados por ocasião irá, naturalmente, apresentar um padrão decrescente.
+
+O modelo estatístico utiliza precisamente essa tendência de declínio nas contagens para inferir, por extrapolação, qual era o tamanho total da população (`\(N\)`) antes de a primeira captura ser realizada.
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+
+.panel[.panel-name[Pressupostos]
+&lt;br&gt;
+&lt;strong&gt;&lt;font size="5"&gt;
+
+- A população é considerada **fechada** durante o período de amostragem (sem nascimentos, mortes ou migração).
+
+- Todos os indivíduos remanescentes na população têm a **mesma probabilidade `\(p\)` de serem capturados** em cada ocasião, e essa probabilidade é **constante ao longo das ocasiões**.
+
+- As capturas são **independentes entre si**, e um indivíduo capturado é **removido permanentemente** da população (não pode ser recapturado).
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+
+.panel[.panel-name[Estrutura do Modelo]
+&lt;strong&gt;&lt;font size="5"&gt;
+
+- O número de indivíduos capturados na **primeira ocasião** (`\(y_1\)`) segue:
+  - `\(y_1|N,p \sim \mathrm{Binomial}(N,p)\)`
+
+- Nas ocasiões seguintes `\((t&gt;1)\)`, a captura é condicionada ao número de indivíduos ainda não removidos:
+  - `\(y_t|N,p,n_t \sim \mathrm{Binomial}(N-n_t,p)  \quad \mbox{para } t=2,3,\ldots,T\)`,  
+    onde `\(n_t = y_1+\ldots+y_{t-1}\)` é o total capturado até `\(t-1\)`.
+
+- Probabilidades associadas:
+  - Probabilidade de captura na ocasião `\(t\)`: `\((1-p)^{t-1}p\)`
+  - Probabilidade de nunca ser capturado: `\((1-p)^T\)`
+
+- Representação multinomial do processo:
+  - `\((y_1,\ldots,y_T)|N \sim \mathrm{Multinomial}\bigg\{N; ~(p,(1-p)p,(1-p)^2p,\ldots,(1-p)^{T-1}p,(1-p)^T\bigg\} \quad  \text{com} \quad  y_t\geq 0 \quad\text{e} \quad y_1+\ldots+y_T\leq N\)`
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+
+.panel[.panel-name[Função de Verossimilhança]
+&lt;strong&gt;&lt;font size="5"&gt;
+
+- Para cada região `\(r\)`, com abundância `\(N_r\)` e probabilidade de captura `\(p_r\)`, temos:
+
+  - `\(\begin{align*}  (y_{r,1},\ldots,y_{r,T})|N_r \sim   \mathrm{Multinomial}\Big\{ N_r; (p_r,(1-p_r)p_r,(1-p_r)^2p_r,\ldots,(1-p_r)^{T-1}p_r,(1-p_r)^T) \Big\}.  \end{align*}\)`
+  
+  com `\(y_{r,t}\geq 0\)` e `\(y_{r,1}+\ldots+y_{r,T}\leq N_r\)`
+
+- Função de verossimilhança por região:
+
+  - `\(\begin{align*}L_r(N_r,p_r|\mathbf{y}_r) &amp;= \Pr(y_{r,1},\ldots,y_{r,T}|N_r,p_r) \\&amp;\propto \dfrac{N_r!}{(N_r-n_r)!}  \prod_{t=1}^T \big[(1-p_r)^{t-1}p_r\big]^{y_{r,t}} (1-p_r)^{T(N_r-n_r)},  \end{align*}\)`
+
+  onde `\(n_t = y_1+\ldots+y_{t-1}\)`.
+  
+&lt;/strong&gt;&lt;/font&gt;
+]
+
+.panel[.panel-name[Estrutura hierárquica Regiões `\(R\)`]
+&lt;strong&gt;&lt;font size="5"&gt;
+
+- Função de verossimilhança para Compartilhando Informação entre  Regiões `\(R\)`
+
+  - `\(\begin{align*}L(N_1,\ldots,N_R,p_1,\ldots,p_R|\mathbf{y})= \prod_{r=1}^R L_r(N_r,p_r|\mathbf{y}_r)  \end{align*}\)`
+  
+- Dorazio, Jelks e Jordan (2005)   adotam uma estrutura hierarquica `\(N_r  \sim \text{Poisson}(\lambda)\)`  e `\(p_r\sim \mathrm{Beta}(a,b).\)` Neste caso, a função de verossimilhança marginal para os parâmetros `\((\lambda,a,b)\)` 
+    - `\(\begin{align*}L(\lambda,a,b|\mathbf{y}) = \prod_{r=1}^R\left\{\sum_{N_r=n_r}^\infty \int L_r(N_r,p_r|\mathbf{y})f(p_r|a,b)d p_r P(N_r=n_r) \right\}\end{align*}\)`
+    
+- Uso de abordagens Bayesianas não paramétricas (Processo de Dirichlet) para modelar a heterogeneidade de forma mais flexível (Royle &amp; Link, 2006).
+
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+]
+
+---
+
+class: inverse, center, middle
+
+# Modelos N-Mistura
+
+
+---
+
+# Modelo N-Mistura para População Fechada
+
+.panelset[
+.panel[.panel-name[Introdução]
+&lt;br&gt;
+&lt;strong&gt;&lt;font size="5"&gt;
+
+O Modelo N-Mistura para População Fechada, proposto por Royle (2004), é amplamente utilizado para estimar a abundância de populações animais a partir de contagens repetidas realizadas em múltiplas regiões.
+
+Diferentemente dos Modelos de Remoção, o processo de amostragem não interfere na população, ou seja, os indivíduos observados não são removidos após serem contados. Assim, trata-se de um processo puramente observacional, baseado em contagens com detecção imperfeita.
+
+A ideia central do modelo é considerar que a abundância verdadeira em cada região é uma variável latente não observada, enquanto as contagens observadas são modeladas como realizações condicionais, dadas a abundância e a probabilidade de detecção.
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+
+.panel[.panel-name[Pressupostos]
+&lt;br&gt;
+&lt;strong&gt;&lt;font size="5"&gt;
+
+- A população é considerada fechada durante todas as ocasiões de amostragem (sem nascimentos, mortes ou migração).
+
+- A abundância `\(N_r\)` em cada região `\(r\)` é desconhecida, mas segue uma distribuição Poisson(`\(\lambda\)`).
+
+- Todos os indivíduos presentes em uma região têm a mesma probabilidade `\(p\)` de serem detectados em cada ocasião.
+
+- As contagens em diferentes ocasiões são condicionalmente independentes, dado `\(N_r\)`.
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+
+.panel[.panel-name[Estrutura do Modelo]
+&lt;strong&gt;&lt;font size="5"&gt;
+
+- Estrutura hierárquica:
+
+  -  **Processo observacional:** (`\(y_{r,t}|N_r,p\)`),  para cada região `\(r\)` e ocasião `\(t\)`, a contagem observada segue:
+  
+      - `\(y_{r,t}|N_r,p \sim \mathrm{Binomial}(N_r,p), \quad r=1,\ldots,R, \quad; \quad t=1,\ldots,T\)`
+  
+  - **Processo latente:** (`\(N_r\)`), a abundância verdadeira em cada região é modelada como:
+  
+     - `\(N_r \sim \mathrm{Poisson}(\lambda), \quad r = 1,\dots,R\)`
+
+O modelo assume mesma `\(p\)` e `\(\lambda\)` para todas as regiões (mas extensões permitem efeitos de covariáveis).
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+
+.panel[.panel-name[Função de Verossimilhança]
+&lt;strong&gt;&lt;font size="5"&gt;
+
+Como os valores de `\(N_r\)` são desconhecidos, a verossimilhança marginal para os parâmetros `\((\lambda,p)\)` é obtida somando sobre todos os valores possíveis para as variáveis latentes `\(N_1,\ldots,N_R\)`.
+
+- `\(\begin{align*}L(\lambda,p|\mathbf{y}) = \prod_{r=1}^RL_r(\lambda,p|\mathbf{y}_r)\end{align*}\)`
+  
+  - onde considera independência condicional entre as regiões `\(r\)`
+  
+  
+- `\(\begin{align*}  L_r(\lambda,p|\mathbf{y}_r) =   \sum_{N_r=y_{i+}}^{\infty}   \left[     \prod_{t=1}^{T}       \binom{N_r}{y_{r,t}} p^{y_{r,t}} (1-p)^{N_r - y_{r,t}}   \right]   \cdot   \frac{e^{-\lambda}\lambda^{N_r}}{N_r!} \end{align*}\)`
+
+  - com `\(y_{r+} = \max_{t}\{y_{r,t}\}\)` representando o máximo observado de animais na região `\(r\)`.
+
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+]
+
+---
+
+# Modelo dinâmico para população aberta
+
+.panelset[
+.panel[.panel-name[Introdução]
+&lt;br&gt;
+&lt;strong&gt;&lt;font size="5"&gt;
+
+O Modelo N-Mistura Dinâmico, proposto por Dail &amp; Madsen (2011), estende o modelo de Royle (2004) para populações abertas, permitindo variação temporal na abundância devido a sobrevivência e recrutamento.
+
+Esse modelo é adequado para dados de contagem repetida em múltiplas regiões e ocasiões, em que há entrada (recrutamento/colonização) e saída (mortalidade/emigração) de indivíduos entre os períodos.
+
+O objetivo é estimar a abundância inicial e a dinâmica populacional ao longo do tempo, levando em conta a detecção imperfeita.
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+
+.panel[.panel-name[Pressupostos]
+&lt;br&gt;
+&lt;strong&gt;&lt;font size="5"&gt;
+
+- A população em cada local `\(r\)` pode **variar entre períodos** devido a sobrevivência e recrutamento.
+
+- O número de indivíduos em cada local e período é uma **variável latente**.
+
+- As detecções são **imperfeitas**, com probabilidade `\(p_{r,t}\)` em cada ocasião.
+
+- As contagens são **independentes entre locais**, condicionadas ao processo latente.
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+
+.panel[.panel-name[Pressupostos]
+&lt;br&gt;
+&lt;strong&gt;&lt;font size="5"&gt;
+
+- A abundância pode variar entre as ocasiões, por meio de processos de sobrevivência e recrutamento.
+
+- As contagens são condicionalmente independentes dadas as abundâncias latentes.
+
+- A probabilidade de detecção `\(p\)` é constante (ou depende de covariáveis), e todos os indivíduos têm a mesma `\(p\)`.
+
+- O processo latente de abundância é Markoviano, ou seja, `\(N_{r,t}\)` depende apenas de `\(N_{r,t-1}\)`.
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+
+.panel[.panel-name[Estrutura do Modelo]
+&lt;strong&gt;&lt;font size="4"&gt;
+
+1. **Processo latente inicial:**
+
+  - `\(N_{r,1} \sim \mathrm{Poisson}(\lambda) , \quad r = 1,\dots,R\)`
+      - `\(\lambda\)`: Taxa média da abundância inicial.
+    
+2. **Processo dinâmico:**
+
+  - `\(S_{r,t+1} \mid N_{r,t} \sim \text{Binomial}(N_{r,t},\, \phi)\)` 
+      - `\(\phi\)`: Probabilidade de sobrevivência dos indivíduos entre tempos consecutivos.
+
+  - `\(R_{r,t+1} \mid N_{r,t} \sim \text{Poisson}(N_{r,t}\,\gamma)\)` 
+      - `\(\gamma\)`: Taxa de recrutamento (novos indivíduos por indivíduo existente).
+
+  - `\(N_{r,t+1} = S_{r,t+1} + R_{r,t+1}\)`
+      - `\(S_{r,t+1}\)`: número de indivíduos presentes na população 
+      - `\(R_{r,t+1}\)`: número de indivíduos recrutados
+
+
+
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+
+.panel[.panel-name[Função de Verossimilhança]
+&lt;strong&gt;&lt;font size="4"&gt;
+
+1. **Convolução discreta:**
+
+  `$$\begin{align*}P_{jk} = \sum_{c = 0}^{\min\{j, k\}}\binom{j}{c} \omega^j(1-\omega)^{j-c}\dfrac{e^{-\gamma j}(\gamma j)^{k-c}}{(k-c)!}\end{align*}$$`
+Onde `\(S_{r,t}\)` e `\(R_{r,t}\)` são independentes, a probabilidade de transição em um passo do estado `\(N_{r,t-1} = j\)` para o estado `\(N_{r,t} = k\)`, denotada por `\(P_{jk}\)`
+
+2. **função de verossimilhança:**
+
+Assumindo independência condicional entre as regiões, temos a função de verossimilhança para os parâmetros `\((p,\lambda,\gamma,\phi)\)` é dada por 
+`$$L(\lambda,p|\mathbf{y}) = \prod_{r=1}^RL_r(\lambda,p,\gamma,\phi|\mathbf{y}_r)$$`
+donde
+
+
+`$$\begin{align}
+  L_r(p, \lambda, \gamma, \omega \mid \{ \mathbf{y}_r \})
+=   
+  \sum_{N_{r,1}=y_{r,1}}^{\infty} \cdots 
+  \sum_{N_{r,T}=y_{r,T}}^{\infty} &amp;
+  \Bigg\{
+    \left( \prod_{t=1}^{T}\binom{N_{r,t}}{y_{r,t}}p^{y_{r,t}}(1-p)^{N_{r,t}-y_{r,t}} \right)
+    \times
+    \frac{e^{-\lambda} \lambda^{N_{r,1}}}{N_{r,1}!}
+    \cdot
+    \prod_{t=2}^{T} P_{N_{r,t-1}, N_{r,t}}
+  \Bigg\} .  
+\end{align}$$`
+
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+]
+
+
+---
+
+# Modelo proposto
+
+.panelset[
+.panel[.panel-name[Contextualização]
+&lt;br&gt;
+&lt;strong&gt;&lt;font size="4"&gt;
+
+- **Adaptação de Modelos para a Epidemiologia:** Modelos de estimação de abundância populacional são aqui reinterpretados para estimar o número de pessoas infetadas por doenças (como Dengue ou COVID-19), utilizando os dados de notificação do sistema de saúde como forma de "captura".
+
+- **Limitações dos Modelos Existentes:**  Os modelos clássicos de captura com remoção falham por assumirem uma população fechada, o que é irrealista para doenças. Modelos mais avançados para populações abertas (e.g., Dail e Madsen, 2011) ainda são insuficientes, pois não aproveitam uma informação crucial disponível nos dados epidemiológicos: a data de início dos sintomas, o que leva à perda de precisão.
+
+- **Inovação Proposta:** Apresentamos um novo modelo N-mixture com remoção, desenhado especificamente para explorar a informação temporal dupla (data de infeção e data de notificação), superando as limitações dos modelos anteriores e fornecendo estimativas mais acuradas da dinâmica da doença.
+
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+
+.panel[.panel-name[Pressupostos]
+&lt;br&gt;
+&lt;strong&gt;&lt;font size="5"&gt;
+
+- **População Aberta:** O número de infetados pode aumentar (novas infeções) ou diminuir (curas) ao longo do tempo.
+
+- **Processo de Notificação (Captura):** Um indivíduo infetado tem uma probabilidade p de ser notificado (capturado) em um dado período, desde que ainda esteja doente.
+
+- **Processo de Sobrevivência/Cura:** Um indivíduo infetado e não notificado tem uma probabilidade `\(\phi\)` de permanecer infetado no período seguinte. Logo, `\(1−phi\)` é a taxa de cura entre os não notificados.
+
+- **Distinção Temporal:** O modelo diferencia o momento da infeção (índice `\(t\)`) do momento da notificação (índice `\(k\)`).
+
+
+
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+
+.panel[.panel-name[Processo latente]
+&lt;strong&gt;&lt;font size="5"&gt;
+
+
+
+  - Define-se `\(N_{r,t}\)` como o número de indivíduos contaminados na região `\(r\)` no tempo `\(t\)`, sem incluir os infectados anteriores que permanecem doentes.
+  
+  - O modelo assume evolução ao longo do tempo via processo Poisson:
+
+      - `\(\begin{align} N_{r,1} \sim \text{Poisson}(\lambda_r)\end{align}\)`  
+          - `\(\lambda_r\)`: valor esperado do número inicial de casos na localidade `\(r\)`
+      
+      - `\(\begin{align}N_{r,t} \mid N_{r,t-1} \sim \text{Poisson}(\gamma \cdot N_{r,t-1}), \quad t \geq 2 \end{align}\)`
+          - `\(\gamma\)`: taxa per capita de crescimento ou declínio do número de casos entre períodos sucessivos.
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+
+.panel[.panel-name[Estrutura de Captura com Remoção]
+&lt;strong&gt;&lt;font size="5"&gt;
+
+
+- No período inicial de contágio, os casos notificados seguem:
+
+  -  `\(\begin{align*}y_{r,t}^t &amp;\sim \text{Binomial}(N_{r,t}, p)\end{align*}\)`
+    
+     - `\(p\)`: taxa de notificação dos casos ativos.
+
+- Considera-se atraso na notificação e probabilidade de cura entre períodos:
+
+  - `\(\phi\)`: probabilidade de permanecer contaminado de `\(k\)` para `\(k+1\)`
+  
+  - `\(1-\phi\)`: fração de indivíduos que se “curam” (ou desistem de notificação).
+
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+.panel[.panel-name[Probabilidade de Captura ao Longo do Tempo]
+&lt;strong&gt;&lt;font size="5"&gt;
+
+
+- Para indivíduos infectados no tempo `\(t\)`, a probabilidade de serem capturados em `\(k(k\geq t)\)` 
+
+  -  `\(\theta_k^t = p\)` se `\(k=t\)` 
+    
+  - `\(\theta_k^t = \phi^{k-t} (1-p)^{k-t}p\)`, se `\(k &gt; t\)`
+
+- Vetor de probabilidades de captura:
+
+  - `\((\theta_t^t,\theta_{t+1}^t, \ldots,\theta_{T}^t) = (p,\phi(1-p)p, ~\phi^2(1-p)^2p,~\ldots,~\phi^{T-t}(1-p)^{T-t}p)\)`
+  
+- Probabilidade de nunca ser capturado:
+  
+  - `\(\begin{align}1-\sum_{k=t}^T [\phi(1-p)]^{k-t}p = \dfrac{p\big(\big[\phi(1-p)\big]^{T-t+1}-1\big)}{\phi(1-p)-1}\end{align}\)`
+  
+- Os registros de notificações seguem distribuição Multinomial:
+
+  - `\(\mathbf{y}_{r,t} \sim \mathrm{Multinomial}\Big(N_{r,t},(\theta_t,\ldots,\theta_T^t)\Big)\)`
+
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+]
+
+---
+
+class: inverse, center, middle
+
+# Tabela de resumo das características dos modelos
+
+&lt;style type="text/css"&gt;
+.tg  {border:none;border-collapse:collapse;border-color:#93a1a1;border-spacing:0;}
+.tg td{background-color:#fdf6e3;border-color:#93a1a1;border-style:solid;border-width:0px;color:#002b36;
+  font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{background-color:#657b83;border-color:#93a1a1;border-style:solid;border-width:0px;color:#fdf6e3;
+  font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-3zbe{background-color:#c0c0c0;text-align:center;vertical-align:bottom}
+.tg .tg-2c30{background-color:#c0c0c0;text-align:center;vertical-align:top}
+.tg .tg-zf6m{background-color:#010066;font-weight:bold;text-align:center;vertical-align:bottom}
+.tg .tg-wfu4{background-color:#010066;font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-oo9c{background-color:#ffffff;text-align:center;vertical-align:bottom}
+&lt;/style&gt;
+&lt;table class="tg"&gt;&lt;thead&gt;
+  &lt;tr&gt;
+    &lt;th class="tg-zf6m"&gt;Característica&lt;/th&gt;
+    &lt;th class="tg-zf6m"&gt;Modelo de Remoção Clássico&lt;/th&gt;
+    &lt;th class="tg-zf6m"&gt;N-mistura (Royle, 2004)&lt;/th&gt;
+    &lt;th class="tg-zf6m"&gt;N-mistura Dinâmico (Dail &amp;amp; Madsen, 2011)&lt;/th&gt;
+    &lt;th class="tg-wfu4"&gt;Modelo Proposto&lt;/th&gt;
+  &lt;/tr&gt;&lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+    &lt;td class="tg-3zbe"&gt;População Aberta (Novos Casos)&lt;/td&gt;
+    &lt;td class="tg-3zbe"&gt;Não&lt;/td&gt;
+    &lt;td class="tg-3zbe"&gt;Não&lt;/td&gt;
+    &lt;td class="tg-3zbe"&gt;Sim&lt;/td&gt;
+    &lt;td class="tg-3zbe"&gt;Sim&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td class="tg-oo9c"&gt;Processo de Remoção&lt;/td&gt;
+    &lt;td class="tg-oo9c"&gt;Sim&lt;/td&gt;
+    &lt;td class="tg-oo9c"&gt;Não&lt;/td&gt;
+    &lt;td class="tg-oo9c"&gt;Não&lt;/td&gt;
+    &lt;td class="tg-oo9c"&gt;Sim&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td class="tg-3zbe"&gt;Modela Atraso na Notificação&lt;/td&gt;
+    &lt;td class="tg-3zbe"&gt;Limitado&lt;/td&gt;
+    &lt;td class="tg-3zbe"&gt;Não&lt;/td&gt;
+    &lt;td class="tg-3zbe"&gt;Não&lt;/td&gt;
+    &lt;td class="tg-2c30"&gt;Sim (Sequencial)&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td class="tg-oo9c"&gt;Utiliza Data de Contágio&lt;/td&gt;
+    &lt;td class="tg-oo9c"&gt;Não&lt;/td&gt;
+    &lt;td class="tg-oo9c"&gt;Não&lt;/td&gt;
+    &lt;td class="tg-oo9c"&gt;Não&lt;/td&gt;
+    &lt;td class="tg-oo9c"&gt;Sim&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td class="tg-3zbe"&gt;Estima "Cura"/Perda do Sistema&lt;/td&gt;
+    &lt;td class="tg-3zbe"&gt;Não&lt;/td&gt;
+    &lt;td class="tg-3zbe"&gt;Não&lt;/td&gt;
+    &lt;td class="tg-3zbe"&gt;Sim (Sobrevivência)&lt;/td&gt;
+    &lt;td class="tg-3zbe"&gt;Sim (ϕ)&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+
+---
+
+# Justificativa Empírica: Evidências dos Dados do SINAN
+
+
+.panelset[
+.panel[.panel-name[Base de Dados Utilizada]
+&lt;br&gt;
+&lt;strong&gt;&lt;font size="5"&gt;
+
+- 452.650 notificações de dengue registradas no SINAN para o estado do Paraná (2021–2023).
+
+- O conjunto original possuía 121 variáveis; foram selecionadas:
+
+  - Data de início dos primeiros sintomas.
+  
+  - Data de notificação do caso.
+  
+  - Regional de Saúde (22 RS no total).
+
+- A seleção permitiu calcular o atraso na notificação, métrica central do estudo, e analisar padrões temporais e espaciais.
+
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+.panel[.panel-name[Atraso na Notificação]
+&lt;strong&gt;&lt;font size="4"&gt;
+
+.pull-left[
+
+- A maioria das notificações ocorre nos primeiros 10 dias, mas existe cauda longa, com casos notificados até 60 dias após os sintomas.
+
+- Em escala semanal, o processo se prolonga por mais de 24 semanas (~6 meses).
+
+- Fatores explicativos para atrasos:
+
+  - Clínicos: casos assintomáticos ou sintomas inespecíficos.
+
+  - Sociais: acesso precário à saúde, desinformação, baixa percepção de risco.
+
+  - Institucionais: burocracia, falta de profissionais treinados, sobrecarga durante surtos.
+
+]
+&lt;/strong&gt;&lt;/font&gt;
+
+.pull-right[
+&lt;img src="apresentacao-mestrado_2_files/figure-html/unnamed-chunk-1-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+.panel[.panel-name[Heterogeneidade Regional]
+&lt;strong&gt;&lt;font size="4"&gt;
+
+Observa-se a presença de hotspots de alta incidência de dengue nas Regionais de Saúde de Maringá (15ª RS), Londrina (17ª RS) e Cianorte (13ª RS), ao mesmo tempo em que se verificam diferenças marcantes na eficiência da notificação entre as regiões. Em Paranaguá (1ª RS), o tempo médio entre o início dos sintomas e a notificação é de aproximadamente 3,5 dias, enquanto na Região Metropolitana (2ª RS) esse valor atinge cerca de 6,5 dias. Essas disparidades podem ser explicadas por fatores estruturais, como a capacidade instalada e o nível de informatização do sistema de saúde, a organização dos fluxos de informação e o próprio contexto social, político e a atuação dos gestores locais, que influenciam diretamente a agilidade e a efetividade da vigilância epidemiológica.
+
+&lt;/strong&gt;&lt;/font&gt;
+
+
+.pull-left[
+
+&lt;img src="apresentacao-mestrado_2_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" /&gt;
+
+]
+.pull-right[
+&lt;img src="apresentacao-mestrado_2_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+
+]
+
+]
+.panel[.panel-name[Dinâmica da Dengue]
+&lt;br&gt;
+&lt;strong&gt;&lt;font size="5"&gt;
+
+.pull-left[
+
+- Séries mensais mostram não estacionariedade e forte sazonalidade, com picos nos meses mais quentes e chuvosos.
+
+- A intensidade dos surtos é influenciada por:
+
+  - Fatores ambientais e climáticos (chuvas, temperatura).
+
+  - Fatores sociais e demográficos (densidade urbana, mobilidade populacional).
+
+  - Resposta institucional (ações de controle vetorial, eficiência da vigilância).
+
+]
+.pull-right[
+
+&lt;img src="apresentacao-mestrado_2_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+
+]
+
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+.panel[.panel-name[Componentes do Modelo Justificados pelos Dados]
+&lt;br&gt;
+&lt;strong&gt;&lt;font size="5"&gt;
+
+
+
+- **Remoção sequencial:**
+
+  - A cauda longa dos atrasos justifica permitir que indivíduos permaneçam latentes e possam ser notificados em períodos futuros.
+
+- **Efeitos regionais:**
+
+  - Variabilidade espacial na incidência e na eficiência da notificação exige parâmetros específicos por região (`\(\lambda_r\)`)
+  
+- **Componente dinâmico:**
+
+  - A forte sazonalidade e as variações interanuais justificam modelar `\(N_{r,t}\)` como um processo dinâmico dependente de `\(N_{r,t+1}\)`
+
+
+
+
+&lt;/strong&gt;&lt;/font&gt;
+]
+]
+
+---
+
+class: inverse, center, middle
+
+# Obrigado!
+
+&lt;strong&gt;&lt;font size="5"&gt;
+
+&lt;center&gt;
+&lt;br&gt; &lt;br&gt;
+
+
+
+ 💡 Agradeço a atenção e estou aberto a sugestões e contribuições
+ 
+ &lt;br&gt; &lt;br&gt; &lt;br&gt; &lt;br&gt; &lt;br&gt; &lt;br&gt; &lt;br&gt; 
+ 
+ &lt;img src="PBE.png" width="150" height="100"&gt; 
+ &lt;img src="uem.png" width="150" height="100"&gt; 
+ &lt;img src="CNPq.png" width="150" height="100"&gt; 
+ &lt;img src="LEEP.png" width="100" height="100"&gt; 
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "rainbow",
+  "highlightLines": false,
+  "highlightSpans": true,
+  "countIncrementalSlides": false,
+  "slideNumberFormat": "%current%/%total%",
+  "ratio": "18:10"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

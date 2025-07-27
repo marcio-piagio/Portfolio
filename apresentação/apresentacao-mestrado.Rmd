@@ -1,0 +1,332 @@
+---
+title: "<br><br><b>MODELO ESPACIAL DE CAPTURA COM REMOÇÃO PARA ESTIMAÇÃO DE CASOS NÃO NOTIFICADOS EM EPIDEMIOLOGIA</b> <br><br><br>"
+subtitle: "Márcio Roger Piagio<br>"
+author: "Programa de Pós-graduação em Bioestatística <br> Universidade Estadual de Maringá<br><br>
+<b>Banca Examinadora:</b><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Prof. Dr. Diogo Francisco Rossoni (Orientador)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Prof. Dr. Josmar Mazucheli (Membro PBE)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Prof. Dr. George Lucas Moraes Pezzott (Membro Externo)"
+date: '`r format(Sys.time(),"%d de %B de %Y")`'
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts, metropolis-mod.css]
+    lib_dir: libs
+    nature:
+      highlightStyle: rainbow
+      highlightLines: false
+      highlightSpans: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+      ratio: "18:10"
+---
+
+```{r xaringan-tile-view, echo=FALSE}
+xaringanExtra::use_tile_view()
+```
+
+```{r xaringan-animate-all, echo=FALSE}
+xaringanExtra::use_animate_all("fade")
+```
+
+```{r xaringan-panelset, echo=FALSE}
+xaringanExtra::use_panelset()
+```
+
+# Roteiro da Apresentação
+
+
+<br>
+<strong><font size="5.5">
+
+- Contexto: O Desafio da Dengue e a Subnotificação
+
+- Metodologia:
+  - Modelo de Remoção  
+  - Modelo N-mistura População Fechcada
+  - Modelo N-mistura População Aberta
+  - O Modelo Proposto N-mistura Dinâmico com Remoção
+  
+- Justificativa Empírica: Evidências dos Dados do SINAN
+
+- Implementação, Contribuições e Próximos Passos
+
+</strong></font>
+
+---
+
+# O Desafio da Dengue e a Subnotificação
+
+.panelset[
+.panel[.panel-name[O Desafio Persistente da Dengue no Brasil]
+<br>
+<strong><font size="5">
+
+- A dengue representa uma ameaça significativa e persistente à saúde pública no Brasil, caracterizada por uma epidemiologia complexa com múltiplos sorotipos circulantes (DENV-1 a DENV-4), o que eleva o risco de reinfecções e formas graves da doença.
+
+- A escala do problema é alarmante e atual. Em 2024, o Brasil registrou mais de 6,6 milhões de casos prováveis e quase 6.000 óbitos confirmados. O estado do Paraná, foco deste estudo, foi um dos mais afetados, com mais de 640.000 casos registrados nesse período.
+
+- A transmissão é perpetuada pelo vetor Aedes aegypti e agravada por fatores socioambientais, como saneamento inadequado, e por mudanças climáticas, que aceleram o ciclo do vetor e a replicação viral.
+
+</strong></font>
+]
+.panel[.panel-name[O Problema Central: A Subnotificação Crônica]
+<br>
+<strong><font size="5">
+
+- A tese central do trabalho é que as estatísticas oficiais, por mais alarmantes que sejam, subestimam sistematicamente a verdadeira incidência da doença. A magnitude real da epidemia permanece oculta.
+
+- Mecanismos de subnotificação:
+  - Fatores Clínicos: Uma proporção significativa de casos é assintomática ou oligossintomática, não motivando a procura por atendimento médico e, consequentemente, o registro. 
+  - Fatores Sistêmicos: O acesso a diagnósticos de precisão, como RT-PCR e testes sorológicos, é desigual entre as regiões e os serviços de saúde, criando lacunas na notificação.
+  
+- A consequência direta desta falha de vigilância é severa: "A discrepância entre os casos ocorridos e os efetivamente registrados compromete a eficácia das estratégias de vigilância e controle". Dados imprecisos levam à má alocação de recursos, ao planejamento falho de intervenções e a uma avaliação incorreta do impacto das políticas de saúde pública. 
+
+</strong></font>
+]
+.panel[.panel-name[A Pergunta de Pesquisa e os Objetivos]
+<br>
+<strong><font size="5">
+
+- Pergunta Central de Pesquisa: Como estimar com precisão a carga real da dengue em uma população, considerando a conhecida discrepância entre os casos ocorridos e os efetivamente notificados?
+
+- Objetivo Primário: Desenvolver e validar um novo modelo estatístico, o "Modelo N-mistura Dinâmico com Remoção", que estende métodos de estimação de abundância da ecologia para o contexto epidemiológico, a fim de estimar a verdadeira carga da dengue, contabilizando os casos não notificados e os atrasos no registro.
+
+]]
+
+---
+
+class: inverse, center, middle
+
+# Fundamentos Metodológicos
+
+---
+
+# Modelo de Remoção 
+
+.panelset[
+.panel[.panel-name[Introdução]
+<br>
+<strong><font size="5">
+
+O modelo de captura com remoção (RIVERA; MCCREA, 2021) é uma extensão moderna dos modelos de remoção clássicos. Ele permite estimar o tamanho populacional a partir de capturas sucessivas, em que **os indivíduos capturados são removidos da população** e **não podem ser recapturados**.  A redução progressiva da população ao longo das ocasiões gera um **padrão decrescente nas contagens**, a partir do qual a abundância inicial é estimada.
+
+- Aplicações:
+  - Estudos de fauna em que os indivíduos capturados **não podem ser marcados e soltos novamente**, como **remoção de espécies invasoras**, coleta para **estudos genéticos** (DNA), ou para **programas de controle populacional**.
+  - Situações em que é necessário **erradicar ou controlar** elementos, como em inspeções de qualidade, em que **itens defeituosos são removidos permanentemente**.
+
+</strong></font>
+]
+.panel[.panel-name[Pressupostos]
+<br>
+<strong><font size="5">
+
+- A população é considerada **fechada** durante o período de amostragem (sem nascimentos, mortes ou migração).
+
+- Todos os indivíduos remanescentes na população têm a **mesma probabilidade $p$ de serem capturados** em cada ocasião, e essa probabilidade é **constante ao longo das ocasiões**.
+
+- As capturas são **independentes entre si**, e um indivíduo capturado é **removido permanentemente** da população (não pode ser recapturado).
+
+</strong></font>
+]
+.panel[.panel-name[Estrutura do Modelo]
+<strong><font size="5">
+
+- O número de indivíduos capturados na **primeira ocasião** ($y_1$) segue:
+  - $y_1|N,p \sim \mathrm{Binomial}(N,p)$
+
+- Nas ocasiões seguintes $(t>1)$, a captura é condicionada ao número de indivíduos ainda não removidos:
+  - $y_t|N,p,n_t \sim \mathrm{Binomial}(N-n_t,p)$,  
+    onde $n_t = y_1+\ldots+y_{t-1}$ é o total capturado até $t-1$.
+
+- Probabilidades associadas:
+  - Probabilidade de captura na ocasião $t$: $(1-p)^{t-1}p$
+  - Probabilidade de nunca ser capturado: $(1-p)^T$
+
+- Representação multinomial do processo:
+  - $(y_1,\ldots,y_T)|N \sim \mathrm{Multinomial}\bigg\{N; ~(p,(1-p)p,(1-p)^2p,\ldots,(1-p)^{T-1}p,(1-p)^T\bigg\}$
+
+</strong></font>
+]
+.panel[.panel-name[Função de Verossimilhança]
+<strong><font size="5">
+
+- Para cada região $r$, com abundância $N_r$ e probabilidade de captura $p_r$, temos:
+
+  - $\begin{align*}(y_{r,1},\ldots,y_{r,T})|N_r \sim \mathrm{Multinomial}\Big\{ N_r; (p_r,(1-p_r)p_r,(1-p_r)^2p_r,\ldots,(1-p_r)^{T-1}p_r,(1-p_r)^T) \Big\}.  \end{align*}$
+
+- Função de verossimilhança por região:
+
+  - $\begin{align*} L_r(N_r,p_r|\mathbf{y}_r) &= \Pr(y_{r,1},\ldots,y_{r,T}|N_r,p_r) \\ &\propto \dfrac{N_r!}{(N_r-n_r)!}   \prod_{t=1}^T \big[(1-p_r)^{t-1}p_r\big]^{y_{r,t}} (1-p_r)^{T(N_r-n_r)},  \end{align*}$
+
+  onde $n_r = \sum_{t=1}^T y_{r,t}$.
+
+- Estrutura hierárquica para $R$ regiões:
+
+  - $\begin{align*}   L(N_1,\ldots,N_R,p_1,\ldots,p_R|\mathbf{y})   = \prod_{r=1}^R L_r(N_r,p_r|\mathbf{y}_r)  \end{align*}$
+
+</strong></font>
+]
+]
+
+
+---
+
+class: inverse, center, middle
+
+# Modelos N-Mistura
+
+
+---
+
+# Modelo N-Mistura para população fechada
+
+.panelset[
+.panel[.panel-name[Introdução]
+<br>
+<strong><font size="5">
+
+O modelo N‑mistura de Royle (2004) é um modelo hierárquico que permite estimar a **abundância média de uma população** a partir de **contagens repetidas**, considerando que nem todos os indivíduos presentes são detectados em cada visita.
+Ele é especialmente útil quando **não é possível capturar, marcar ou identificar individualmente os indivíduos**, mas ainda assim se pode realizar contagens em várias visitas a um mesmo local.
+
+- **Aplicações práticas:**
+  - Estudos de fauna em que os indivíduos **não são marcados**, como contagem de aves por **pontos de escuta** ou **transectos lineares**, observação de mamíferos por **armadilhas fotográficas**, ou monitoramento de anfíbios por **chamadas noturnas**.
+  - **Programas de conservação** em que é necessário estimar a abundância de espécies em diferentes áreas sem recaptura, apenas com **contagens repetidas em diferentes dias**.
+  - **Avaliações populacionais rápidas**, em que métodos de captura‑recaptura são inviáveis ou muito caros, mas se pode repetir a amostragem para estimar **abundância e detectabilidade**.
+
+</strong></font>
+]
+
+.panel[.panel-name[Pressupostos]
+<br>
+<strong><font size="5">
+
+- As unidades amostrais (locais) são **populações fechadas** durante o período de amostragem (sem imigração, emigração, nascimentos ou mortes).
+
+- O número de indivíduos em cada local $r$ ($N_r$) é uma **variável latente** que segue uma distribuição de contagem (tipicamente Poisson).
+
+- A detecção é **imperfeita** e independente entre indivíduos, com probabilidade de detecção $p$ em cada visita.
+
+- As visitas são **replicadas** ($t = 1,\ldots,T$), fornecendo informação sobre $p$ e $N_r$.
+
+</strong></font>
+]
+.panel[.panel-name[Estrutura do Modelo]
+<strong><font size="5">
+
+- **Processo de estado (abundância verdadeira em cada local):**
+  - $N_r \sim \mathrm{Poisson}(\lambda)$
+  - $\lambda$ pode depender de covariáveis: $\log(\lambda_i) = \mathbf{x}_i^\top\boldsymbol{\beta}$
+
+- **Processo de observação (contagens com detecção imperfeita):**
+  - $y_{r,t}|N_r,p \sim \mathrm{Binomial}(N_r,p)$
+
+- **Hierarquia completa:**
+  - $\begin{cases} N_r \sim \mathrm{Poisson}(\lambda) \\ y_{ij}|N_i,p \sim \mathrm{Binomial}(N_i,p) \end{cases}$
+
+- O modelo permite a inclusão de covariáveis tanto na **abundância** ($\lambda_i$) quanto na **detecção** ($p_{ij}$):
+  - $\mathrm{logit}(p_{r,t}) = \mathbf{w}_{r,t}^\top\boldsymbol{\alpha}$
+
+</strong></font>
+]
+.panel[.panel-name[Função de Verossimilhança]
+<strong><font size="5">
+
+- A verossimilhança marginal é obtida ao integrar sobre o estado latente $N_i$:
+
+  - $\begin{align*}
+  L(\lambda,p|\mathbf{y}) &= \prod_{i=1}^R \sum_{N_i = y_i^{\text{max}}}^{\infty} 
+  \underbrace{\mathrm{Poisson}(N_i|\lambda)}_{\text{processo de estado}}
+  \times 
+  \underbrace{\prod_{j=1}^J \mathrm{Binomial}(y_{ij}|N_i,p)}_{\text{processo de observação}}
+  \end{align*}$
+
+- Em que $y_i^{\text{max}} = \max_j(y_{ij})$ garante que $N_i$ seja no mínimo o maior valor observado.
+
+- Estrutura hierárquica com **compartilhamento de informação** entre locais via parâmetros comuns $\lambda$ e $p$.
+
+</strong></font>
+]
+]
+
+
+---
+
+# teste
+
+.panelset[
+.panel[.panel-name[Introdução]
+<br>
+<strong><font size="5">
+
+O modelo de captura com remoção (RIVERA; MCCREA, 2021) é uma extensão moderna dos modelos de remoção clássicos.  
+Ele permite estimar o tamanho populacional a partir de capturas sucessivas, em que **os indivíduos capturados são removidos da população** e **não podem ser recapturados**.  
+A redução progressiva da população ao longo das ocasiões gera um **padrão decrescente nas contagens**, a partir do qual a abundância inicial é estimada.
+
+- Aplicações:
+  - Estudos de fauna em que os indivíduos capturados **não podem ser marcados e soltos novamente**, como **remoção de espécies invasoras**, coleta para **estudos genéticos** (DNA), ou para **programas de controle populacional**.
+  - Situações em que é necessário **erradicar ou controlar** indivíduos, como em inspeções de qualidade, em que **itens defeituosos são removidos permanentemente**.
+
+</strong></font>
+]
+.panel[.panel-name[Pressupostos]
+<br>
+<strong><font size="5">
+
+- A população é considerada **fechada** durante o período de amostragem (sem nascimentos, mortes ou migração).
+
+- Todos os indivíduos remanescentes na população têm a **mesma probabilidade $p$ de serem capturados** em cada ocasião, e essa probabilidade é **constante ao longo das ocasiões**.
+
+- As capturas são **independentes entre si**, e um indivíduo capturado é **removido permanentemente** da população (não pode ser recapturado).
+
+</strong></font>
+]
+.panel[.panel-name[Estrutura do Modelo]
+<strong><font size="5">
+
+- O número de indivíduos capturados na **primeira ocasião** ($y_1$) segue:
+  - $y_1|N,p \sim \mathrm{Binomial}(N,p)$
+
+- Nas ocasiões seguintes $(t>1)$, a captura é condicionada ao número de indivíduos ainda não removidos:
+  - $y_t|N,p,n_t \sim \mathrm{Binomial}(N-n_t,p)$,  
+    onde $n_t = \sum_{k=1}^{t-1} y_k$ é o total capturado até $t-1$.
+
+- Probabilidades associadas:
+  - Probabilidade de captura na ocasião $t$: $(1-p)^{t-1}p$
+  - Probabilidade de nunca ser capturado: $(1-p)^T$
+
+- Representação multinomial do processo:
+  - $(y_1,\ldots,y_T)|N \sim \mathrm{Multinomial}\bigg\{N; ~(p,(1-p)p,(1-p)^2p,\ldots,(1-p)^{T-1}p,(1-p)^T\bigg\}$
+
+</strong></font>
+]
+.panel[.panel-name[Função de Verossimilhança]
+<strong><font size="5">
+
+- Para cada região $r$, com abundância $N_r$ e probabilidade de captura $p_r$, temos:
+
+  - $\begin{align*}
+  (y_{r,1},\ldots,y_{r,T})|N_r \sim 
+  \mathrm{Multinomial}\Big\{ N_r; (p_r,(1-p_r)p_r,(1-p_r)^2p_r,\ldots,(1-p_r)^{T-1}p_r,(1-p_r)^T) \Big\}.
+  \end{align*}$
+
+- Função de verossimilhança por região:
+
+  - $\begin{align*}
+  L_r(N_r,p_r|\mathbf{y}_r) 
+  &= \Pr(y_{r,1},\ldots,y_{r,T}|N_r,p_r) \\
+  &\propto \dfrac{N_r!}{(N_r-n_r)!} 
+  \prod_{t=1}^T \big[(1-p_r)^{t-1}p_r\big]^{y_{r,t}} (1-p_r)^{T(N_r-n_r)},
+  \end{align*}$
+
+  onde $n_r = \sum_{t=1}^T y_{r,t}$.
+
+- Estrutura hierárquica para $R$ regiões:
+
+  - $\begin{align*}
+  L(N_1,\ldots,N_R,p_1,\ldots,p_R|\mathbf{y}) 
+  = \prod_{r=1}^R L_r(N_r,p_r|\mathbf{y}_r)
+  \end{align*}$
+
+</strong></font>
+]
+]
